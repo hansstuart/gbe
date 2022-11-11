@@ -1,0 +1,3603 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.pcf.co.uk/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://www.pcf.co.uk/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.pcf.co.uk/">
+      <s:element name="is_alive">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_aliveResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="is_aliveResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_module_spool_barcodes">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="module" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_module_spool_barcodesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_module_spool_barcodesResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfAnyType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="anyType" nillable="true" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="c_schedule_rec">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="barcode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="schd" type="tns:schedule_data" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="schedule_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="spool_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="dt" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="slots" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="batch_number" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="vehicle" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="status" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="welder" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="fitter" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="project" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="cut_and_clean" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="site" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="delivered" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="e_code" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="material" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="module" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="welder_rates" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="fitter_rates" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="schedule_delivery_data">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:schedule_data" />
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="schedule_fab_data">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:schedule_data" />
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="c_schedule_deliv_rec">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:c_schedule_rec" />
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="scheduled_delivery_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="contract" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="site" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="datetime_of_delivery" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="datetime_of_load" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="driver" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="vehicle" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="loading_requirements" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="additional_items" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="active" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="part_stock_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="part_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="location_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="qty_in_stock" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="generate_back_order" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="delivery_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="user_id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="vehicle" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="driver" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="datetime_stamp" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="delivery_note" type="s:base64Binary" />
+          <s:element minOccurs="1" maxOccurs="1" name="delivered" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="datetime_delivered" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="receipt_notes" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="address_table" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="address_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="shipped" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="pick_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="part_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="loc_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="qty_len" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="spool_id" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="pick_list">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="part_id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="part" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="qty" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="location_id" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="po_orderlines_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="part_id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="part_desc" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="qty" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="porder_id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="project" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="qty_delivered" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="unit_cost" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="supplier" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="location" type="tns:location_data" />
+          <s:element minOccurs="0" maxOccurs="1" name="existing_locations_for_this_part" type="tns:ArrayOfAnyType" />
+          <s:element minOccurs="0" maxOccurs="1" name="note" type="tns:po_orderline_notes_data" />
+          <s:element minOccurs="1" maxOccurs="1" name="active" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="status" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="generate_back_order" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="location_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="location" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="po_orderline_notes_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="note" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="po_orderline_id" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="address">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="address_line" type="tns:ArrayOfAnyType" />
+          <s:element minOccurs="0" maxOccurs="1" name="table" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="porder_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="pdf" type="s:base64Binary" />
+          <s:element minOccurs="0" maxOccurs="1" name="doc" type="s:base64Binary" />
+          <s:element minOccurs="0" maxOccurs="1" name="order_no" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="active" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="part_type" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="delivery_address_id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="delivery_date" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="order_date" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="supplier" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="total_value" type="s:decimal" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="consignment_delivery_line_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="part_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="consignment_reference_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="qty_dispatched" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="qty_delivered" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="description" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="consignment_reference_data" type="tns:consignment_reference_data" />
+          <s:element minOccurs="0" maxOccurs="1" name="location" type="tns:location_data" />
+          <s:element minOccurs="0" maxOccurs="1" name="existing_locations_for_this_part" type="tns:ArrayOfAnyType" />
+          <s:element minOccurs="0" maxOccurs="1" name="note" type="tns:consignment_delivery_line_notes_data" />
+          <s:element minOccurs="1" maxOccurs="1" name="active" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="consignment_reference_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="owner" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="reference_number" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="reference" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="delivery_date" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="delivered" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="project" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="consignment_delivery_line_notes_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="note" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="consignment_id" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="key_value_container">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="container" type="tns:ArrayOfAnyType" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="key_value">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="key" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="value" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="new_spool_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="spool_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="printed" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="assembly_type" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="barcode" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="module_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="module" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="revision" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="barcode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="status" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="builder" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="builder_data" type="tns:user_data" />
+          <s:element minOccurs="0" maxOccurs="1" name="weld_job_data" type="tns:weld_job_data" />
+          <s:element minOccurs="0" maxOccurs="1" name="qa_data" type="tns:ArrayOfAnyType" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="user_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="login_id" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="role" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="job_title" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="imsl_username" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="special_permissions" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="weld_job_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="spool_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="start" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="finish" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="start_fit" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="finish_fit" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="user_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="fitter_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="site_fitter_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="installed_on" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="assembly_type" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="robot" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="spool_data" type="tns:spool_data" />
+          <s:element minOccurs="0" maxOccurs="1" name="module_data" type="tns:module_data" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="spool_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="spool" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="revision" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="barcode" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="welder" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="fitter" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="delivery_address" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="porder_created" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="cad_user_id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="status" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="on_hold" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="cost_centre" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="imsl_cost_centre" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="tag" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="site_fitter" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="material" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="pipe_size" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="cut_size1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="cut_size2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="cut_size3" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="cut_size4" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="drawing_id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="welder_data" type="tns:user_data" />
+          <s:element minOccurs="0" maxOccurs="1" name="fitter_data" type="tns:user_data" />
+          <s:element minOccurs="0" maxOccurs="1" name="site_fitter_data" type="tns:user_data" />
+          <s:element minOccurs="0" maxOccurs="1" name="spool_part_data" type="tns:ArrayOfAnyType" />
+          <s:element minOccurs="0" maxOccurs="1" name="weld_job_data" type="tns:weld_job_data" />
+          <s:element minOccurs="0" maxOccurs="1" name="qa_data" type="tns:ArrayOfAnyType" />
+          <s:element minOccurs="1" maxOccurs="1" name="picked" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="include_in_weld_map" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="weld_required" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="fit_required" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="date_created" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="delivery_date" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="schedule_fab_data" type="tns:schedule_fab_data" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="upd_spools_as_picked">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_spool_ids" type="tns:ArrayOfAnyType" />
+            <s:element minOccurs="0" maxOccurs="1" name="picked_part_ids" type="tns:ArrayOfAnyType" />
+            <s:element minOccurs="0" maxOccurs="1" name="user_id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="upd_spools_as_pickedResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="upd_spools_as_picked2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_spool_ids" type="tns:ArrayOfAnyType" />
+            <s:element minOccurs="0" maxOccurs="1" name="user_id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="upd_spools_as_picked2Response">
+        <s:complexType />
+      </s:element>
+      <s:element name="get_modules">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="module" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="revision" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_modulesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_modulesResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_module">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="barcode" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_moduleResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_moduleResult" type="tns:module_data" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_spools_for_sceduled_load">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="contract" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="dt_delivery_date" type="s:dateTime" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_spools_for_sceduled_loadResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_spools_for_sceduled_loadResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_spools">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="bnew" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="spool" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="revision" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_spoolsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_spoolsResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_spool">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="barcode" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_spoolResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_spoolResult" type="tns:spool_data" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_spool_by_id">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_spool_by_idResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_spool_by_idResult" type="tns:spool_data" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_welders">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_weldersResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_weldersResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_fitters">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_fittersResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_fittersResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_module_builders">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_module_buildersResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_module_buildersResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_new_spool_data">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ansd" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_new_spool_dataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="save_new_spool_dataResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_spool_data">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="asd" type="tns:ArrayOfAnyType" />
+            <s:element minOccurs="0" maxOccurs="1" name="user_id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_spool_dataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="save_spool_dataResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_welder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_welderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="is_welderResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_fitter">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_fitterResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="is_fitterResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_module_builder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_module_builderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="is_module_builderResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_qa_user">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_qa_userResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="is_qa_userResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_admin_user">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_admin_userResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="is_admin_userResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_weld_tester">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_weld_testerResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="is_weld_testerResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_driver_or_loader">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_driver_or_loaderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="is_driver_or_loaderResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_user_id">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_user_idResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="get_user_idResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_login_id">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_login_idResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_login_idResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_weld_job_data_2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="spool_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="assembly_type" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_weld_job_data_2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_weld_job_data_2Result" type="tns:weld_job_data" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_weld_job_2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="spool_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="assembly_type" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="weld_job_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="welder_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="status" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_weld_job_2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="save_weld_job_2Result" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_weld_job_2_OLD">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="spool_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="assembly_type" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="weld_job_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="welder_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="status" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_weld_job_2_OLDResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="save_weld_job_2_OLDResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_fitted_and_welded">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="spool_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="bfit_started" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="bfit_finished" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="bweld_started" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="bweld_finished" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_fitted_and_weldedResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="is_fitted_and_weldedResult" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="bfit_started" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="bfit_finished" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="bweld_started" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="bweld_finished" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_module_built">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="module_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="bbuild_started" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="bbuild_finished" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_module_builtResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="is_module_builtResult" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="bbuild_started" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="bbuild_finished" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_qa_job_2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="spool_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="assembly_type" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="user_id" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="result" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_qa_job_2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="save_qa_job_2Result" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_weld_totals">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="spool_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_weld_totalsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_weld_totalsResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_driver_names">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="user_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_driver_namesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_driver_namesResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_vehicle_reg">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="user_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_vehicle_regResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_vehicle_regResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_weld_test">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="spool_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="user_id" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="report_number" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="report2_number" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="fw" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="bw" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_weld_testResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="save_weld_testResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_delivery_3">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="user_id" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="vehicle" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="driver" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="spool_barcodes" type="tns:ArrayOfAnyType" />
+            <s:element minOccurs="0" maxOccurs="1" name="address_table" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="address_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="delivery_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="b_ship" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_delivery_3Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="save_delivery_3Result" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="delivery_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_delivery_2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="user_id" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="vehicle" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="driver" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="spool_barcodes" type="tns:ArrayOfAnyType" />
+            <s:element minOccurs="0" maxOccurs="1" name="address_table" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="address_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_delivery_2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="save_delivery_2Result" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_delivery">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="user_id" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="vehicle" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="driver" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="spool_barcodes" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_deliveryResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="save_deliveryResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="delete_new_spool_data">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adel_ids" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="delete_new_spool_dataResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="get_active_consignments_from_customer">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_active_consignments_from_customerResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_active_consignments_from_customerResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_active_consignment_delivery_lines">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="consignment_reference_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_active_consignment_delivery_linesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_active_consignment_delivery_linesResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_active_orders">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_active_ordersResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_active_ordersResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_active_orders_2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="delivery_address_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_active_orders_2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_active_orders_2Result" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_addresses">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="contract_number" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_addressesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_addressesResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_po_orderlines">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="porder_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_po_orderlinesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_po_orderlinesResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="book_in_customer_delivery">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_cdld" type="tns:ArrayOfAnyType" />
+            <s:element minOccurs="0" maxOccurs="1" name="user_id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="book_in_part_stock">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_pol" type="tns:ArrayOfAnyType" />
+            <s:element minOccurs="0" maxOccurs="1" name="user_id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="book_out_consignment">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="user" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="location" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_cons_parts" type="tns:ArrayOfAnyType" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_error" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="book_out_consignmentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="book_out_consignmentResult" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_error" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="book_out_consumables">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="user" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_cons_parts" type="tns:ArrayOfAnyType" />
+            <s:element minOccurs="0" maxOccurs="1" name="book_out_to" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_error" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="book_out_consumablesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="book_out_consumablesResult" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_error" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_pick_list">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_spool_ids" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_pick_listResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_pick_listResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="upd_bookout_smat">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_pick_data" type="tns:ArrayOfAnyType" />
+            <s:element minOccurs="0" maxOccurs="1" name="book_out_to" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="user_id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="upd_bookout_smatResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="upd_pick_smat">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_pick_data" type="tns:ArrayOfAnyType" />
+            <s:element minOccurs="0" maxOccurs="1" name="user_id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="upd_pick_smatResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="upd_pick_stock_levels">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_pick_data" type="tns:ArrayOfAnyType" />
+            <s:element minOccurs="0" maxOccurs="1" name="user_id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="upd_pick_stock_levelsResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="upd_spool_parts_as_picked">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_pick_data" type="tns:ArrayOfAnyType" />
+            <s:element minOccurs="0" maxOccurs="1" name="user_id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="upd_spool_parts_as_pickedResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="set_stock_level">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="part_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="loc_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="qty_len" type="s:decimal" />
+            <s:element minOccurs="0" maxOccurs="1" name="user_id" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="set_stock_levelResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="upd_stock_levels">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_kv" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="upd_stock_levelsResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="get_locations">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_locationsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_locationsResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="validate_delivery_number">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="delivery_number" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="validate_delivery_numberResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="validate_delivery_numberResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="delivery_received">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="delivery_id" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="notes" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="delivery_receivedResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="delivery_received_2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="delivery_id" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="notes" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="delivery_received_2Response">
+        <s:complexType />
+      </s:element>
+      <s:element name="spools_installed">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="user_id" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_spools" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="spools_installedResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="spools_installed_2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="user_id" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_spools" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="spools_installed_2Response">
+        <s:complexType />
+      </s:element>
+      <s:element name="save_qa_job">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="spool_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="user_id" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="result" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_qa_jobResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="save_qa_jobResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_weld_job_data">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="spool_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_weld_job_dataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_weld_job_dataResult" type="tns:weld_job_data" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_weld_job">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="spool_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="weld_job_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="welder_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="status" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="save_weld_jobResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="save_weld_jobResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_delivery_data">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_delivery_dataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_delivery_dataResult" type="tns:delivery_data" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="assign_delivery_id_to_scheduled_delivery">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_spool_ids" type="tns:ArrayOfAnyType" />
+            <s:element minOccurs="1" maxOccurs="1" name="scheduled_delivery_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="assign_delivery_id_to_scheduled_deliveryResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="get_spool_delivery_barcodes">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="delivery_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_spool_delivery_barcodesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_spool_delivery_barcodesResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_part_id">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="part_description" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_part_idResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="get_part_idResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_part_stock_data">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="part_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_part_stock_dataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_part_stock_dataResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_scheduled_delivery_data">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_filter" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_scheduled_delivery_dataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_scheduled_delivery_dataResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_current_scheduled_delivery_data">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="dttoday" type="s:dateTime" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_current_scheduled_delivery_dataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_current_scheduled_delivery_dataResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="update_scheduled_delivery">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="sdd" type="tns:scheduled_delivery_data" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="update_scheduled_deliveryResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="update_scheduled_deliveryResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="delete_scheduled_delivery">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_ids" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="delete_scheduled_deliveryResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="upd_spool_status">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="barcode" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="status" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="upd_spool_statusResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="valid_pin">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pin" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="valid_pinResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="valid_pinResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_delivery_schedule">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_delivery_scheduleResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_delivery_scheduleResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_delivery_note">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="key" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_delivery_noteResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_delivery_noteResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="is_aliveSoapIn">
+    <wsdl:part name="parameters" element="tns:is_alive" />
+  </wsdl:message>
+  <wsdl:message name="is_aliveSoapOut">
+    <wsdl:part name="parameters" element="tns:is_aliveResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_module_spool_barcodesSoapIn">
+    <wsdl:part name="parameters" element="tns:get_module_spool_barcodes" />
+  </wsdl:message>
+  <wsdl:message name="get_module_spool_barcodesSoapOut">
+    <wsdl:part name="parameters" element="tns:get_module_spool_barcodesResponse" />
+  </wsdl:message>
+  <wsdl:message name="upd_spools_as_pickedSoapIn">
+    <wsdl:part name="parameters" element="tns:upd_spools_as_picked" />
+  </wsdl:message>
+  <wsdl:message name="upd_spools_as_pickedSoapOut">
+    <wsdl:part name="parameters" element="tns:upd_spools_as_pickedResponse" />
+  </wsdl:message>
+  <wsdl:message name="upd_spools_as_picked2SoapIn">
+    <wsdl:part name="parameters" element="tns:upd_spools_as_picked2" />
+  </wsdl:message>
+  <wsdl:message name="upd_spools_as_picked2SoapOut">
+    <wsdl:part name="parameters" element="tns:upd_spools_as_picked2Response" />
+  </wsdl:message>
+  <wsdl:message name="get_modulesSoapIn">
+    <wsdl:part name="parameters" element="tns:get_modules" />
+  </wsdl:message>
+  <wsdl:message name="get_modulesSoapOut">
+    <wsdl:part name="parameters" element="tns:get_modulesResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_moduleSoapIn">
+    <wsdl:part name="parameters" element="tns:get_module" />
+  </wsdl:message>
+  <wsdl:message name="get_moduleSoapOut">
+    <wsdl:part name="parameters" element="tns:get_moduleResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_spools_for_sceduled_loadSoapIn">
+    <wsdl:part name="parameters" element="tns:get_spools_for_sceduled_load" />
+  </wsdl:message>
+  <wsdl:message name="get_spools_for_sceduled_loadSoapOut">
+    <wsdl:part name="parameters" element="tns:get_spools_for_sceduled_loadResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_spoolsSoapIn">
+    <wsdl:part name="parameters" element="tns:get_spools" />
+  </wsdl:message>
+  <wsdl:message name="get_spoolsSoapOut">
+    <wsdl:part name="parameters" element="tns:get_spoolsResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_spoolSoapIn">
+    <wsdl:part name="parameters" element="tns:get_spool" />
+  </wsdl:message>
+  <wsdl:message name="get_spoolSoapOut">
+    <wsdl:part name="parameters" element="tns:get_spoolResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_spool_by_idSoapIn">
+    <wsdl:part name="parameters" element="tns:get_spool_by_id" />
+  </wsdl:message>
+  <wsdl:message name="get_spool_by_idSoapOut">
+    <wsdl:part name="parameters" element="tns:get_spool_by_idResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_weldersSoapIn">
+    <wsdl:part name="parameters" element="tns:get_welders" />
+  </wsdl:message>
+  <wsdl:message name="get_weldersSoapOut">
+    <wsdl:part name="parameters" element="tns:get_weldersResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_fittersSoapIn">
+    <wsdl:part name="parameters" element="tns:get_fitters" />
+  </wsdl:message>
+  <wsdl:message name="get_fittersSoapOut">
+    <wsdl:part name="parameters" element="tns:get_fittersResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_module_buildersSoapIn">
+    <wsdl:part name="parameters" element="tns:get_module_builders" />
+  </wsdl:message>
+  <wsdl:message name="get_module_buildersSoapOut">
+    <wsdl:part name="parameters" element="tns:get_module_buildersResponse" />
+  </wsdl:message>
+  <wsdl:message name="save_new_spool_dataSoapIn">
+    <wsdl:part name="parameters" element="tns:save_new_spool_data" />
+  </wsdl:message>
+  <wsdl:message name="save_new_spool_dataSoapOut">
+    <wsdl:part name="parameters" element="tns:save_new_spool_dataResponse" />
+  </wsdl:message>
+  <wsdl:message name="save_spool_dataSoapIn">
+    <wsdl:part name="parameters" element="tns:save_spool_data" />
+  </wsdl:message>
+  <wsdl:message name="save_spool_dataSoapOut">
+    <wsdl:part name="parameters" element="tns:save_spool_dataResponse" />
+  </wsdl:message>
+  <wsdl:message name="is_welderSoapIn">
+    <wsdl:part name="parameters" element="tns:is_welder" />
+  </wsdl:message>
+  <wsdl:message name="is_welderSoapOut">
+    <wsdl:part name="parameters" element="tns:is_welderResponse" />
+  </wsdl:message>
+  <wsdl:message name="is_fitterSoapIn">
+    <wsdl:part name="parameters" element="tns:is_fitter" />
+  </wsdl:message>
+  <wsdl:message name="is_fitterSoapOut">
+    <wsdl:part name="parameters" element="tns:is_fitterResponse" />
+  </wsdl:message>
+  <wsdl:message name="is_module_builderSoapIn">
+    <wsdl:part name="parameters" element="tns:is_module_builder" />
+  </wsdl:message>
+  <wsdl:message name="is_module_builderSoapOut">
+    <wsdl:part name="parameters" element="tns:is_module_builderResponse" />
+  </wsdl:message>
+  <wsdl:message name="is_qa_userSoapIn">
+    <wsdl:part name="parameters" element="tns:is_qa_user" />
+  </wsdl:message>
+  <wsdl:message name="is_qa_userSoapOut">
+    <wsdl:part name="parameters" element="tns:is_qa_userResponse" />
+  </wsdl:message>
+  <wsdl:message name="is_admin_userSoapIn">
+    <wsdl:part name="parameters" element="tns:is_admin_user" />
+  </wsdl:message>
+  <wsdl:message name="is_admin_userSoapOut">
+    <wsdl:part name="parameters" element="tns:is_admin_userResponse" />
+  </wsdl:message>
+  <wsdl:message name="is_weld_testerSoapIn">
+    <wsdl:part name="parameters" element="tns:is_weld_tester" />
+  </wsdl:message>
+  <wsdl:message name="is_weld_testerSoapOut">
+    <wsdl:part name="parameters" element="tns:is_weld_testerResponse" />
+  </wsdl:message>
+  <wsdl:message name="is_driver_or_loaderSoapIn">
+    <wsdl:part name="parameters" element="tns:is_driver_or_loader" />
+  </wsdl:message>
+  <wsdl:message name="is_driver_or_loaderSoapOut">
+    <wsdl:part name="parameters" element="tns:is_driver_or_loaderResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_user_idSoapIn">
+    <wsdl:part name="parameters" element="tns:get_user_id" />
+  </wsdl:message>
+  <wsdl:message name="get_user_idSoapOut">
+    <wsdl:part name="parameters" element="tns:get_user_idResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_login_idSoapIn">
+    <wsdl:part name="parameters" element="tns:get_login_id" />
+  </wsdl:message>
+  <wsdl:message name="get_login_idSoapOut">
+    <wsdl:part name="parameters" element="tns:get_login_idResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_weld_job_data_2SoapIn">
+    <wsdl:part name="parameters" element="tns:get_weld_job_data_2" />
+  </wsdl:message>
+  <wsdl:message name="get_weld_job_data_2SoapOut">
+    <wsdl:part name="parameters" element="tns:get_weld_job_data_2Response" />
+  </wsdl:message>
+  <wsdl:message name="save_weld_job_2SoapIn">
+    <wsdl:part name="parameters" element="tns:save_weld_job_2" />
+  </wsdl:message>
+  <wsdl:message name="save_weld_job_2SoapOut">
+    <wsdl:part name="parameters" element="tns:save_weld_job_2Response" />
+  </wsdl:message>
+  <wsdl:message name="save_weld_job_2_OLDSoapIn">
+    <wsdl:part name="parameters" element="tns:save_weld_job_2_OLD" />
+  </wsdl:message>
+  <wsdl:message name="save_weld_job_2_OLDSoapOut">
+    <wsdl:part name="parameters" element="tns:save_weld_job_2_OLDResponse" />
+  </wsdl:message>
+  <wsdl:message name="is_fitted_and_weldedSoapIn">
+    <wsdl:part name="parameters" element="tns:is_fitted_and_welded" />
+  </wsdl:message>
+  <wsdl:message name="is_fitted_and_weldedSoapOut">
+    <wsdl:part name="parameters" element="tns:is_fitted_and_weldedResponse" />
+  </wsdl:message>
+  <wsdl:message name="is_module_builtSoapIn">
+    <wsdl:part name="parameters" element="tns:is_module_built" />
+  </wsdl:message>
+  <wsdl:message name="is_module_builtSoapOut">
+    <wsdl:part name="parameters" element="tns:is_module_builtResponse" />
+  </wsdl:message>
+  <wsdl:message name="save_qa_job_2SoapIn">
+    <wsdl:part name="parameters" element="tns:save_qa_job_2" />
+  </wsdl:message>
+  <wsdl:message name="save_qa_job_2SoapOut">
+    <wsdl:part name="parameters" element="tns:save_qa_job_2Response" />
+  </wsdl:message>
+  <wsdl:message name="get_weld_totalsSoapIn">
+    <wsdl:part name="parameters" element="tns:get_weld_totals" />
+  </wsdl:message>
+  <wsdl:message name="get_weld_totalsSoapOut">
+    <wsdl:part name="parameters" element="tns:get_weld_totalsResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_driver_namesSoapIn">
+    <wsdl:part name="parameters" element="tns:get_driver_names" />
+  </wsdl:message>
+  <wsdl:message name="get_driver_namesSoapOut">
+    <wsdl:part name="parameters" element="tns:get_driver_namesResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_vehicle_regSoapIn">
+    <wsdl:part name="parameters" element="tns:get_vehicle_reg" />
+  </wsdl:message>
+  <wsdl:message name="get_vehicle_regSoapOut">
+    <wsdl:part name="parameters" element="tns:get_vehicle_regResponse" />
+  </wsdl:message>
+  <wsdl:message name="save_weld_testSoapIn">
+    <wsdl:part name="parameters" element="tns:save_weld_test" />
+  </wsdl:message>
+  <wsdl:message name="save_weld_testSoapOut">
+    <wsdl:part name="parameters" element="tns:save_weld_testResponse" />
+  </wsdl:message>
+  <wsdl:message name="save_delivery_3SoapIn">
+    <wsdl:part name="parameters" element="tns:save_delivery_3" />
+  </wsdl:message>
+  <wsdl:message name="save_delivery_3SoapOut">
+    <wsdl:part name="parameters" element="tns:save_delivery_3Response" />
+  </wsdl:message>
+  <wsdl:message name="save_delivery_2SoapIn">
+    <wsdl:part name="parameters" element="tns:save_delivery_2" />
+  </wsdl:message>
+  <wsdl:message name="save_delivery_2SoapOut">
+    <wsdl:part name="parameters" element="tns:save_delivery_2Response" />
+  </wsdl:message>
+  <wsdl:message name="save_deliverySoapIn">
+    <wsdl:part name="parameters" element="tns:save_delivery" />
+  </wsdl:message>
+  <wsdl:message name="save_deliverySoapOut">
+    <wsdl:part name="parameters" element="tns:save_deliveryResponse" />
+  </wsdl:message>
+  <wsdl:message name="delete_new_spool_dataSoapIn">
+    <wsdl:part name="parameters" element="tns:delete_new_spool_data" />
+  </wsdl:message>
+  <wsdl:message name="delete_new_spool_dataSoapOut">
+    <wsdl:part name="parameters" element="tns:delete_new_spool_dataResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_active_consignments_from_customerSoapIn">
+    <wsdl:part name="parameters" element="tns:get_active_consignments_from_customer" />
+  </wsdl:message>
+  <wsdl:message name="get_active_consignments_from_customerSoapOut">
+    <wsdl:part name="parameters" element="tns:get_active_consignments_from_customerResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_active_consignment_delivery_linesSoapIn">
+    <wsdl:part name="parameters" element="tns:get_active_consignment_delivery_lines" />
+  </wsdl:message>
+  <wsdl:message name="get_active_consignment_delivery_linesSoapOut">
+    <wsdl:part name="parameters" element="tns:get_active_consignment_delivery_linesResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_active_ordersSoapIn">
+    <wsdl:part name="parameters" element="tns:get_active_orders" />
+  </wsdl:message>
+  <wsdl:message name="get_active_ordersSoapOut">
+    <wsdl:part name="parameters" element="tns:get_active_ordersResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_active_orders_2SoapIn">
+    <wsdl:part name="parameters" element="tns:get_active_orders_2" />
+  </wsdl:message>
+  <wsdl:message name="get_active_orders_2SoapOut">
+    <wsdl:part name="parameters" element="tns:get_active_orders_2Response" />
+  </wsdl:message>
+  <wsdl:message name="get_addressesSoapIn">
+    <wsdl:part name="parameters" element="tns:get_addresses" />
+  </wsdl:message>
+  <wsdl:message name="get_addressesSoapOut">
+    <wsdl:part name="parameters" element="tns:get_addressesResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_po_orderlinesSoapIn">
+    <wsdl:part name="parameters" element="tns:get_po_orderlines" />
+  </wsdl:message>
+  <wsdl:message name="get_po_orderlinesSoapOut">
+    <wsdl:part name="parameters" element="tns:get_po_orderlinesResponse" />
+  </wsdl:message>
+  <wsdl:message name="book_in_customer_deliverySoapIn">
+    <wsdl:part name="parameters" element="tns:book_in_customer_delivery" />
+  </wsdl:message>
+  <wsdl:message name="book_in_part_stockSoapIn">
+    <wsdl:part name="parameters" element="tns:book_in_part_stock" />
+  </wsdl:message>
+  <wsdl:message name="book_out_consignmentSoapIn">
+    <wsdl:part name="parameters" element="tns:book_out_consignment" />
+  </wsdl:message>
+  <wsdl:message name="book_out_consignmentSoapOut">
+    <wsdl:part name="parameters" element="tns:book_out_consignmentResponse" />
+  </wsdl:message>
+  <wsdl:message name="book_out_consumablesSoapIn">
+    <wsdl:part name="parameters" element="tns:book_out_consumables" />
+  </wsdl:message>
+  <wsdl:message name="book_out_consumablesSoapOut">
+    <wsdl:part name="parameters" element="tns:book_out_consumablesResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_pick_listSoapIn">
+    <wsdl:part name="parameters" element="tns:get_pick_list" />
+  </wsdl:message>
+  <wsdl:message name="get_pick_listSoapOut">
+    <wsdl:part name="parameters" element="tns:get_pick_listResponse" />
+  </wsdl:message>
+  <wsdl:message name="upd_bookout_smatSoapIn">
+    <wsdl:part name="parameters" element="tns:upd_bookout_smat" />
+  </wsdl:message>
+  <wsdl:message name="upd_bookout_smatSoapOut">
+    <wsdl:part name="parameters" element="tns:upd_bookout_smatResponse" />
+  </wsdl:message>
+  <wsdl:message name="upd_pick_smatSoapIn">
+    <wsdl:part name="parameters" element="tns:upd_pick_smat" />
+  </wsdl:message>
+  <wsdl:message name="upd_pick_smatSoapOut">
+    <wsdl:part name="parameters" element="tns:upd_pick_smatResponse" />
+  </wsdl:message>
+  <wsdl:message name="upd_pick_stock_levelsSoapIn">
+    <wsdl:part name="parameters" element="tns:upd_pick_stock_levels" />
+  </wsdl:message>
+  <wsdl:message name="upd_pick_stock_levelsSoapOut">
+    <wsdl:part name="parameters" element="tns:upd_pick_stock_levelsResponse" />
+  </wsdl:message>
+  <wsdl:message name="upd_spool_parts_as_pickedSoapIn">
+    <wsdl:part name="parameters" element="tns:upd_spool_parts_as_picked" />
+  </wsdl:message>
+  <wsdl:message name="upd_spool_parts_as_pickedSoapOut">
+    <wsdl:part name="parameters" element="tns:upd_spool_parts_as_pickedResponse" />
+  </wsdl:message>
+  <wsdl:message name="set_stock_levelSoapIn">
+    <wsdl:part name="parameters" element="tns:set_stock_level" />
+  </wsdl:message>
+  <wsdl:message name="set_stock_levelSoapOut">
+    <wsdl:part name="parameters" element="tns:set_stock_levelResponse" />
+  </wsdl:message>
+  <wsdl:message name="upd_stock_levelsSoapIn">
+    <wsdl:part name="parameters" element="tns:upd_stock_levels" />
+  </wsdl:message>
+  <wsdl:message name="upd_stock_levelsSoapOut">
+    <wsdl:part name="parameters" element="tns:upd_stock_levelsResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_locationsSoapIn">
+    <wsdl:part name="parameters" element="tns:get_locations" />
+  </wsdl:message>
+  <wsdl:message name="get_locationsSoapOut">
+    <wsdl:part name="parameters" element="tns:get_locationsResponse" />
+  </wsdl:message>
+  <wsdl:message name="validate_delivery_numberSoapIn">
+    <wsdl:part name="parameters" element="tns:validate_delivery_number" />
+  </wsdl:message>
+  <wsdl:message name="validate_delivery_numberSoapOut">
+    <wsdl:part name="parameters" element="tns:validate_delivery_numberResponse" />
+  </wsdl:message>
+  <wsdl:message name="delivery_receivedSoapIn">
+    <wsdl:part name="parameters" element="tns:delivery_received" />
+  </wsdl:message>
+  <wsdl:message name="delivery_receivedSoapOut">
+    <wsdl:part name="parameters" element="tns:delivery_receivedResponse" />
+  </wsdl:message>
+  <wsdl:message name="delivery_received_2SoapIn">
+    <wsdl:part name="parameters" element="tns:delivery_received_2" />
+  </wsdl:message>
+  <wsdl:message name="delivery_received_2SoapOut">
+    <wsdl:part name="parameters" element="tns:delivery_received_2Response" />
+  </wsdl:message>
+  <wsdl:message name="spools_installedSoapIn">
+    <wsdl:part name="parameters" element="tns:spools_installed" />
+  </wsdl:message>
+  <wsdl:message name="spools_installedSoapOut">
+    <wsdl:part name="parameters" element="tns:spools_installedResponse" />
+  </wsdl:message>
+  <wsdl:message name="spools_installed_2SoapIn">
+    <wsdl:part name="parameters" element="tns:spools_installed_2" />
+  </wsdl:message>
+  <wsdl:message name="spools_installed_2SoapOut">
+    <wsdl:part name="parameters" element="tns:spools_installed_2Response" />
+  </wsdl:message>
+  <wsdl:message name="save_qa_jobSoapIn">
+    <wsdl:part name="parameters" element="tns:save_qa_job" />
+  </wsdl:message>
+  <wsdl:message name="save_qa_jobSoapOut">
+    <wsdl:part name="parameters" element="tns:save_qa_jobResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_weld_job_dataSoapIn">
+    <wsdl:part name="parameters" element="tns:get_weld_job_data" />
+  </wsdl:message>
+  <wsdl:message name="get_weld_job_dataSoapOut">
+    <wsdl:part name="parameters" element="tns:get_weld_job_dataResponse" />
+  </wsdl:message>
+  <wsdl:message name="save_weld_jobSoapIn">
+    <wsdl:part name="parameters" element="tns:save_weld_job" />
+  </wsdl:message>
+  <wsdl:message name="save_weld_jobSoapOut">
+    <wsdl:part name="parameters" element="tns:save_weld_jobResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_delivery_dataSoapIn">
+    <wsdl:part name="parameters" element="tns:get_delivery_data" />
+  </wsdl:message>
+  <wsdl:message name="get_delivery_dataSoapOut">
+    <wsdl:part name="parameters" element="tns:get_delivery_dataResponse" />
+  </wsdl:message>
+  <wsdl:message name="assign_delivery_id_to_scheduled_deliverySoapIn">
+    <wsdl:part name="parameters" element="tns:assign_delivery_id_to_scheduled_delivery" />
+  </wsdl:message>
+  <wsdl:message name="assign_delivery_id_to_scheduled_deliverySoapOut">
+    <wsdl:part name="parameters" element="tns:assign_delivery_id_to_scheduled_deliveryResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_spool_delivery_barcodesSoapIn">
+    <wsdl:part name="parameters" element="tns:get_spool_delivery_barcodes" />
+  </wsdl:message>
+  <wsdl:message name="get_spool_delivery_barcodesSoapOut">
+    <wsdl:part name="parameters" element="tns:get_spool_delivery_barcodesResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_part_idSoapIn">
+    <wsdl:part name="parameters" element="tns:get_part_id" />
+  </wsdl:message>
+  <wsdl:message name="get_part_idSoapOut">
+    <wsdl:part name="parameters" element="tns:get_part_idResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_part_stock_dataSoapIn">
+    <wsdl:part name="parameters" element="tns:get_part_stock_data" />
+  </wsdl:message>
+  <wsdl:message name="get_part_stock_dataSoapOut">
+    <wsdl:part name="parameters" element="tns:get_part_stock_dataResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_scheduled_delivery_dataSoapIn">
+    <wsdl:part name="parameters" element="tns:get_scheduled_delivery_data" />
+  </wsdl:message>
+  <wsdl:message name="get_scheduled_delivery_dataSoapOut">
+    <wsdl:part name="parameters" element="tns:get_scheduled_delivery_dataResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_current_scheduled_delivery_dataSoapIn">
+    <wsdl:part name="parameters" element="tns:get_current_scheduled_delivery_data" />
+  </wsdl:message>
+  <wsdl:message name="get_current_scheduled_delivery_dataSoapOut">
+    <wsdl:part name="parameters" element="tns:get_current_scheduled_delivery_dataResponse" />
+  </wsdl:message>
+  <wsdl:message name="update_scheduled_deliverySoapIn">
+    <wsdl:part name="parameters" element="tns:update_scheduled_delivery" />
+  </wsdl:message>
+  <wsdl:message name="update_scheduled_deliverySoapOut">
+    <wsdl:part name="parameters" element="tns:update_scheduled_deliveryResponse" />
+  </wsdl:message>
+  <wsdl:message name="delete_scheduled_deliverySoapIn">
+    <wsdl:part name="parameters" element="tns:delete_scheduled_delivery" />
+  </wsdl:message>
+  <wsdl:message name="delete_scheduled_deliverySoapOut">
+    <wsdl:part name="parameters" element="tns:delete_scheduled_deliveryResponse" />
+  </wsdl:message>
+  <wsdl:message name="upd_spool_statusSoapIn">
+    <wsdl:part name="parameters" element="tns:upd_spool_status" />
+  </wsdl:message>
+  <wsdl:message name="upd_spool_statusSoapOut">
+    <wsdl:part name="parameters" element="tns:upd_spool_statusResponse" />
+  </wsdl:message>
+  <wsdl:message name="valid_pinSoapIn">
+    <wsdl:part name="parameters" element="tns:valid_pin" />
+  </wsdl:message>
+  <wsdl:message name="valid_pinSoapOut">
+    <wsdl:part name="parameters" element="tns:valid_pinResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_delivery_scheduleSoapIn">
+    <wsdl:part name="parameters" element="tns:get_delivery_schedule" />
+  </wsdl:message>
+  <wsdl:message name="get_delivery_scheduleSoapOut">
+    <wsdl:part name="parameters" element="tns:get_delivery_scheduleResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_delivery_noteSoapIn">
+    <wsdl:part name="parameters" element="tns:get_delivery_note" />
+  </wsdl:message>
+  <wsdl:message name="get_delivery_noteSoapOut">
+    <wsdl:part name="parameters" element="tns:get_delivery_noteResponse" />
+  </wsdl:message>
+  <wsdl:portType name="cgbeSoap">
+    <wsdl:operation name="is_alive">
+      <wsdl:input message="tns:is_aliveSoapIn" />
+      <wsdl:output message="tns:is_aliveSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_module_spool_barcodes">
+      <wsdl:input message="tns:get_module_spool_barcodesSoapIn" />
+      <wsdl:output message="tns:get_module_spool_barcodesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="upd_spools_as_picked">
+      <wsdl:input message="tns:upd_spools_as_pickedSoapIn" />
+      <wsdl:output message="tns:upd_spools_as_pickedSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="upd_spools_as_picked2">
+      <wsdl:input message="tns:upd_spools_as_picked2SoapIn" />
+      <wsdl:output message="tns:upd_spools_as_picked2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_modules">
+      <wsdl:input message="tns:get_modulesSoapIn" />
+      <wsdl:output message="tns:get_modulesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_module">
+      <wsdl:input message="tns:get_moduleSoapIn" />
+      <wsdl:output message="tns:get_moduleSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_spools_for_sceduled_load">
+      <wsdl:input message="tns:get_spools_for_sceduled_loadSoapIn" />
+      <wsdl:output message="tns:get_spools_for_sceduled_loadSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_spools">
+      <wsdl:input message="tns:get_spoolsSoapIn" />
+      <wsdl:output message="tns:get_spoolsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_spool">
+      <wsdl:input message="tns:get_spoolSoapIn" />
+      <wsdl:output message="tns:get_spoolSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_spool_by_id">
+      <wsdl:input message="tns:get_spool_by_idSoapIn" />
+      <wsdl:output message="tns:get_spool_by_idSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_welders">
+      <wsdl:input message="tns:get_weldersSoapIn" />
+      <wsdl:output message="tns:get_weldersSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_fitters">
+      <wsdl:input message="tns:get_fittersSoapIn" />
+      <wsdl:output message="tns:get_fittersSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_module_builders">
+      <wsdl:input message="tns:get_module_buildersSoapIn" />
+      <wsdl:output message="tns:get_module_buildersSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="save_new_spool_data">
+      <wsdl:input message="tns:save_new_spool_dataSoapIn" />
+      <wsdl:output message="tns:save_new_spool_dataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="save_spool_data">
+      <wsdl:input message="tns:save_spool_dataSoapIn" />
+      <wsdl:output message="tns:save_spool_dataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="is_welder">
+      <wsdl:input message="tns:is_welderSoapIn" />
+      <wsdl:output message="tns:is_welderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="is_fitter">
+      <wsdl:input message="tns:is_fitterSoapIn" />
+      <wsdl:output message="tns:is_fitterSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="is_module_builder">
+      <wsdl:input message="tns:is_module_builderSoapIn" />
+      <wsdl:output message="tns:is_module_builderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="is_qa_user">
+      <wsdl:input message="tns:is_qa_userSoapIn" />
+      <wsdl:output message="tns:is_qa_userSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="is_admin_user">
+      <wsdl:input message="tns:is_admin_userSoapIn" />
+      <wsdl:output message="tns:is_admin_userSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="is_weld_tester">
+      <wsdl:input message="tns:is_weld_testerSoapIn" />
+      <wsdl:output message="tns:is_weld_testerSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="is_driver_or_loader">
+      <wsdl:input message="tns:is_driver_or_loaderSoapIn" />
+      <wsdl:output message="tns:is_driver_or_loaderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_user_id">
+      <wsdl:input message="tns:get_user_idSoapIn" />
+      <wsdl:output message="tns:get_user_idSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_login_id">
+      <wsdl:input message="tns:get_login_idSoapIn" />
+      <wsdl:output message="tns:get_login_idSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_weld_job_data_2">
+      <wsdl:input message="tns:get_weld_job_data_2SoapIn" />
+      <wsdl:output message="tns:get_weld_job_data_2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="save_weld_job_2">
+      <wsdl:input message="tns:save_weld_job_2SoapIn" />
+      <wsdl:output message="tns:save_weld_job_2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="save_weld_job_2_OLD">
+      <wsdl:input message="tns:save_weld_job_2_OLDSoapIn" />
+      <wsdl:output message="tns:save_weld_job_2_OLDSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="is_fitted_and_welded">
+      <wsdl:input message="tns:is_fitted_and_weldedSoapIn" />
+      <wsdl:output message="tns:is_fitted_and_weldedSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="is_module_built">
+      <wsdl:input message="tns:is_module_builtSoapIn" />
+      <wsdl:output message="tns:is_module_builtSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="save_qa_job_2">
+      <wsdl:input message="tns:save_qa_job_2SoapIn" />
+      <wsdl:output message="tns:save_qa_job_2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_weld_totals">
+      <wsdl:input message="tns:get_weld_totalsSoapIn" />
+      <wsdl:output message="tns:get_weld_totalsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_driver_names">
+      <wsdl:input message="tns:get_driver_namesSoapIn" />
+      <wsdl:output message="tns:get_driver_namesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_vehicle_reg">
+      <wsdl:input message="tns:get_vehicle_regSoapIn" />
+      <wsdl:output message="tns:get_vehicle_regSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="save_weld_test">
+      <wsdl:input message="tns:save_weld_testSoapIn" />
+      <wsdl:output message="tns:save_weld_testSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="save_delivery_3">
+      <wsdl:input message="tns:save_delivery_3SoapIn" />
+      <wsdl:output message="tns:save_delivery_3SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="save_delivery_2">
+      <wsdl:input message="tns:save_delivery_2SoapIn" />
+      <wsdl:output message="tns:save_delivery_2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="save_delivery">
+      <wsdl:input message="tns:save_deliverySoapIn" />
+      <wsdl:output message="tns:save_deliverySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="delete_new_spool_data">
+      <wsdl:input message="tns:delete_new_spool_dataSoapIn" />
+      <wsdl:output message="tns:delete_new_spool_dataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_active_consignments_from_customer">
+      <wsdl:input message="tns:get_active_consignments_from_customerSoapIn" />
+      <wsdl:output message="tns:get_active_consignments_from_customerSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_active_consignment_delivery_lines">
+      <wsdl:input message="tns:get_active_consignment_delivery_linesSoapIn" />
+      <wsdl:output message="tns:get_active_consignment_delivery_linesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_active_orders">
+      <wsdl:input message="tns:get_active_ordersSoapIn" />
+      <wsdl:output message="tns:get_active_ordersSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_active_orders_2">
+      <wsdl:input message="tns:get_active_orders_2SoapIn" />
+      <wsdl:output message="tns:get_active_orders_2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_addresses">
+      <wsdl:input message="tns:get_addressesSoapIn" />
+      <wsdl:output message="tns:get_addressesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_po_orderlines">
+      <wsdl:input message="tns:get_po_orderlinesSoapIn" />
+      <wsdl:output message="tns:get_po_orderlinesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="book_in_customer_delivery">
+      <wsdl:input message="tns:book_in_customer_deliverySoapIn" />
+    </wsdl:operation>
+    <wsdl:operation name="book_in_part_stock">
+      <wsdl:input message="tns:book_in_part_stockSoapIn" />
+    </wsdl:operation>
+    <wsdl:operation name="book_out_consignment">
+      <wsdl:input message="tns:book_out_consignmentSoapIn" />
+      <wsdl:output message="tns:book_out_consignmentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="book_out_consumables">
+      <wsdl:input message="tns:book_out_consumablesSoapIn" />
+      <wsdl:output message="tns:book_out_consumablesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_pick_list">
+      <wsdl:input message="tns:get_pick_listSoapIn" />
+      <wsdl:output message="tns:get_pick_listSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="upd_bookout_smat">
+      <wsdl:input message="tns:upd_bookout_smatSoapIn" />
+      <wsdl:output message="tns:upd_bookout_smatSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="upd_pick_smat">
+      <wsdl:input message="tns:upd_pick_smatSoapIn" />
+      <wsdl:output message="tns:upd_pick_smatSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="upd_pick_stock_levels">
+      <wsdl:input message="tns:upd_pick_stock_levelsSoapIn" />
+      <wsdl:output message="tns:upd_pick_stock_levelsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="upd_spool_parts_as_picked">
+      <wsdl:input message="tns:upd_spool_parts_as_pickedSoapIn" />
+      <wsdl:output message="tns:upd_spool_parts_as_pickedSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="set_stock_level">
+      <wsdl:input message="tns:set_stock_levelSoapIn" />
+      <wsdl:output message="tns:set_stock_levelSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="upd_stock_levels">
+      <wsdl:input message="tns:upd_stock_levelsSoapIn" />
+      <wsdl:output message="tns:upd_stock_levelsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_locations">
+      <wsdl:input message="tns:get_locationsSoapIn" />
+      <wsdl:output message="tns:get_locationsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="validate_delivery_number">
+      <wsdl:input message="tns:validate_delivery_numberSoapIn" />
+      <wsdl:output message="tns:validate_delivery_numberSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="delivery_received">
+      <wsdl:input message="tns:delivery_receivedSoapIn" />
+      <wsdl:output message="tns:delivery_receivedSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="delivery_received_2">
+      <wsdl:input message="tns:delivery_received_2SoapIn" />
+      <wsdl:output message="tns:delivery_received_2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="spools_installed">
+      <wsdl:input message="tns:spools_installedSoapIn" />
+      <wsdl:output message="tns:spools_installedSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="spools_installed_2">
+      <wsdl:input message="tns:spools_installed_2SoapIn" />
+      <wsdl:output message="tns:spools_installed_2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="save_qa_job">
+      <wsdl:input message="tns:save_qa_jobSoapIn" />
+      <wsdl:output message="tns:save_qa_jobSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_weld_job_data">
+      <wsdl:input message="tns:get_weld_job_dataSoapIn" />
+      <wsdl:output message="tns:get_weld_job_dataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="save_weld_job">
+      <wsdl:input message="tns:save_weld_jobSoapIn" />
+      <wsdl:output message="tns:save_weld_jobSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_delivery_data">
+      <wsdl:input message="tns:get_delivery_dataSoapIn" />
+      <wsdl:output message="tns:get_delivery_dataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="assign_delivery_id_to_scheduled_delivery">
+      <wsdl:input message="tns:assign_delivery_id_to_scheduled_deliverySoapIn" />
+      <wsdl:output message="tns:assign_delivery_id_to_scheduled_deliverySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_spool_delivery_barcodes">
+      <wsdl:input message="tns:get_spool_delivery_barcodesSoapIn" />
+      <wsdl:output message="tns:get_spool_delivery_barcodesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_part_id">
+      <wsdl:input message="tns:get_part_idSoapIn" />
+      <wsdl:output message="tns:get_part_idSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_part_stock_data">
+      <wsdl:input message="tns:get_part_stock_dataSoapIn" />
+      <wsdl:output message="tns:get_part_stock_dataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_scheduled_delivery_data">
+      <wsdl:input message="tns:get_scheduled_delivery_dataSoapIn" />
+      <wsdl:output message="tns:get_scheduled_delivery_dataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_current_scheduled_delivery_data">
+      <wsdl:input message="tns:get_current_scheduled_delivery_dataSoapIn" />
+      <wsdl:output message="tns:get_current_scheduled_delivery_dataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="update_scheduled_delivery">
+      <wsdl:input message="tns:update_scheduled_deliverySoapIn" />
+      <wsdl:output message="tns:update_scheduled_deliverySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="delete_scheduled_delivery">
+      <wsdl:input message="tns:delete_scheduled_deliverySoapIn" />
+      <wsdl:output message="tns:delete_scheduled_deliverySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="upd_spool_status">
+      <wsdl:input message="tns:upd_spool_statusSoapIn" />
+      <wsdl:output message="tns:upd_spool_statusSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="valid_pin">
+      <wsdl:input message="tns:valid_pinSoapIn" />
+      <wsdl:output message="tns:valid_pinSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_delivery_schedule">
+      <wsdl:input message="tns:get_delivery_scheduleSoapIn" />
+      <wsdl:output message="tns:get_delivery_scheduleSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_delivery_note">
+      <wsdl:input message="tns:get_delivery_noteSoapIn" />
+      <wsdl:output message="tns:get_delivery_noteSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="cgbeSoap" type="tns:cgbeSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="is_alive">
+      <soap:operation soapAction="http://www.pcf.co.uk/is_alive" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_module_spool_barcodes">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_module_spool_barcodes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="upd_spools_as_picked">
+      <soap:operation soapAction="http://www.pcf.co.uk/upd_spools_as_picked" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="upd_spools_as_picked2">
+      <soap:operation soapAction="http://www.pcf.co.uk/upd_spools_as_picked2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_modules">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_modules" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_module">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_module" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_spools_for_sceduled_load">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_spools_for_sceduled_load" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_spools">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_spools" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_spool">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_spool" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_spool_by_id">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_spool_by_id" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_welders">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_welders" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_fitters">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_fitters" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_module_builders">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_module_builders" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_new_spool_data">
+      <soap:operation soapAction="http://www.pcf.co.uk/save_new_spool_data" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_spool_data">
+      <soap:operation soapAction="http://www.pcf.co.uk/save_spool_data" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_welder">
+      <soap:operation soapAction="http://www.pcf.co.uk/is_welder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_fitter">
+      <soap:operation soapAction="http://www.pcf.co.uk/is_fitter" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_module_builder">
+      <soap:operation soapAction="http://www.pcf.co.uk/is_module_builder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_qa_user">
+      <soap:operation soapAction="http://www.pcf.co.uk/is_qa_user" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_admin_user">
+      <soap:operation soapAction="http://www.pcf.co.uk/is_admin_user" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_weld_tester">
+      <soap:operation soapAction="http://www.pcf.co.uk/is_weld_tester" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_driver_or_loader">
+      <soap:operation soapAction="http://www.pcf.co.uk/is_driver_or_loader" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_user_id">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_user_id" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_login_id">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_login_id" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_weld_job_data_2">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_weld_job_data_2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_weld_job_2">
+      <soap:operation soapAction="http://www.pcf.co.uk/save_weld_job_2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_weld_job_2_OLD">
+      <soap:operation soapAction="http://www.pcf.co.uk/save_weld_job_2_OLD" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_fitted_and_welded">
+      <soap:operation soapAction="http://www.pcf.co.uk/is_fitted_and_welded" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_module_built">
+      <soap:operation soapAction="http://www.pcf.co.uk/is_module_built" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_qa_job_2">
+      <soap:operation soapAction="http://www.pcf.co.uk/save_qa_job_2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_weld_totals">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_weld_totals" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_driver_names">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_driver_names" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_vehicle_reg">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_vehicle_reg" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_weld_test">
+      <soap:operation soapAction="http://www.pcf.co.uk/save_weld_test" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_delivery_3">
+      <soap:operation soapAction="http://www.pcf.co.uk/save_delivery_3" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_delivery_2">
+      <soap:operation soapAction="http://www.pcf.co.uk/save_delivery_2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_delivery">
+      <soap:operation soapAction="http://www.pcf.co.uk/save_delivery" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="delete_new_spool_data">
+      <soap:operation soapAction="http://www.pcf.co.uk/delete_new_spool_data" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_active_consignments_from_customer">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_active_consignments_from_customer" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_active_consignment_delivery_lines">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_active_consignment_delivery_lines" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_active_orders">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_active_orders" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_active_orders_2">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_active_orders_2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_addresses">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_addresses" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_po_orderlines">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_po_orderlines" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="book_in_customer_delivery">
+      <soap:operation soapAction="http://www.pcf.co.uk/book_in_customer_delivery" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="book_in_part_stock">
+      <soap:operation soapAction="http://www.pcf.co.uk/book_in_part_stock" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="book_out_consignment">
+      <soap:operation soapAction="http://www.pcf.co.uk/book_out_consignment" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="book_out_consumables">
+      <soap:operation soapAction="http://www.pcf.co.uk/book_out_consumables" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_pick_list">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_pick_list" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="upd_bookout_smat">
+      <soap:operation soapAction="http://www.pcf.co.uk/upd_bookout_smat" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="upd_pick_smat">
+      <soap:operation soapAction="http://www.pcf.co.uk/upd_pick_smat" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="upd_pick_stock_levels">
+      <soap:operation soapAction="http://www.pcf.co.uk/upd_pick_stock_levels" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="upd_spool_parts_as_picked">
+      <soap:operation soapAction="http://www.pcf.co.uk/upd_spool_parts_as_picked" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="set_stock_level">
+      <soap:operation soapAction="http://www.pcf.co.uk/set_stock_level" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="upd_stock_levels">
+      <soap:operation soapAction="http://www.pcf.co.uk/upd_stock_levels" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_locations">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_locations" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="validate_delivery_number">
+      <soap:operation soapAction="http://www.pcf.co.uk/validate_delivery_number" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="delivery_received">
+      <soap:operation soapAction="http://www.pcf.co.uk/delivery_received" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="delivery_received_2">
+      <soap:operation soapAction="http://www.pcf.co.uk/delivery_received_2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="spools_installed">
+      <soap:operation soapAction="http://www.pcf.co.uk/spools_installed" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="spools_installed_2">
+      <soap:operation soapAction="http://www.pcf.co.uk/spools_installed_2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_qa_job">
+      <soap:operation soapAction="http://www.pcf.co.uk/save_qa_job" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_weld_job_data">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_weld_job_data" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_weld_job">
+      <soap:operation soapAction="http://www.pcf.co.uk/save_weld_job" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_delivery_data">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_delivery_data" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="assign_delivery_id_to_scheduled_delivery">
+      <soap:operation soapAction="http://www.pcf.co.uk/assign_delivery_id_to_scheduled_delivery" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_spool_delivery_barcodes">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_spool_delivery_barcodes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_part_id">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_part_id" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_part_stock_data">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_part_stock_data" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_scheduled_delivery_data">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_scheduled_delivery_data" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_current_scheduled_delivery_data">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_current_scheduled_delivery_data" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update_scheduled_delivery">
+      <soap:operation soapAction="http://www.pcf.co.uk/update_scheduled_delivery" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="delete_scheduled_delivery">
+      <soap:operation soapAction="http://www.pcf.co.uk/delete_scheduled_delivery" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="upd_spool_status">
+      <soap:operation soapAction="http://www.pcf.co.uk/upd_spool_status" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="valid_pin">
+      <soap:operation soapAction="http://www.pcf.co.uk/valid_pin" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_delivery_schedule">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_delivery_schedule" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_delivery_note">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_delivery_note" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="cgbeSoap12" type="tns:cgbeSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="is_alive">
+      <soap12:operation soapAction="http://www.pcf.co.uk/is_alive" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_module_spool_barcodes">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_module_spool_barcodes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="upd_spools_as_picked">
+      <soap12:operation soapAction="http://www.pcf.co.uk/upd_spools_as_picked" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="upd_spools_as_picked2">
+      <soap12:operation soapAction="http://www.pcf.co.uk/upd_spools_as_picked2" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_modules">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_modules" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_module">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_module" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_spools_for_sceduled_load">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_spools_for_sceduled_load" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_spools">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_spools" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_spool">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_spool" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_spool_by_id">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_spool_by_id" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_welders">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_welders" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_fitters">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_fitters" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_module_builders">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_module_builders" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_new_spool_data">
+      <soap12:operation soapAction="http://www.pcf.co.uk/save_new_spool_data" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_spool_data">
+      <soap12:operation soapAction="http://www.pcf.co.uk/save_spool_data" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_welder">
+      <soap12:operation soapAction="http://www.pcf.co.uk/is_welder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_fitter">
+      <soap12:operation soapAction="http://www.pcf.co.uk/is_fitter" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_module_builder">
+      <soap12:operation soapAction="http://www.pcf.co.uk/is_module_builder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_qa_user">
+      <soap12:operation soapAction="http://www.pcf.co.uk/is_qa_user" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_admin_user">
+      <soap12:operation soapAction="http://www.pcf.co.uk/is_admin_user" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_weld_tester">
+      <soap12:operation soapAction="http://www.pcf.co.uk/is_weld_tester" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_driver_or_loader">
+      <soap12:operation soapAction="http://www.pcf.co.uk/is_driver_or_loader" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_user_id">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_user_id" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_login_id">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_login_id" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_weld_job_data_2">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_weld_job_data_2" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_weld_job_2">
+      <soap12:operation soapAction="http://www.pcf.co.uk/save_weld_job_2" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_weld_job_2_OLD">
+      <soap12:operation soapAction="http://www.pcf.co.uk/save_weld_job_2_OLD" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_fitted_and_welded">
+      <soap12:operation soapAction="http://www.pcf.co.uk/is_fitted_and_welded" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_module_built">
+      <soap12:operation soapAction="http://www.pcf.co.uk/is_module_built" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_qa_job_2">
+      <soap12:operation soapAction="http://www.pcf.co.uk/save_qa_job_2" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_weld_totals">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_weld_totals" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_driver_names">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_driver_names" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_vehicle_reg">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_vehicle_reg" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_weld_test">
+      <soap12:operation soapAction="http://www.pcf.co.uk/save_weld_test" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_delivery_3">
+      <soap12:operation soapAction="http://www.pcf.co.uk/save_delivery_3" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_delivery_2">
+      <soap12:operation soapAction="http://www.pcf.co.uk/save_delivery_2" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_delivery">
+      <soap12:operation soapAction="http://www.pcf.co.uk/save_delivery" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="delete_new_spool_data">
+      <soap12:operation soapAction="http://www.pcf.co.uk/delete_new_spool_data" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_active_consignments_from_customer">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_active_consignments_from_customer" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_active_consignment_delivery_lines">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_active_consignment_delivery_lines" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_active_orders">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_active_orders" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_active_orders_2">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_active_orders_2" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_addresses">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_addresses" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_po_orderlines">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_po_orderlines" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="book_in_customer_delivery">
+      <soap12:operation soapAction="http://www.pcf.co.uk/book_in_customer_delivery" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="book_in_part_stock">
+      <soap12:operation soapAction="http://www.pcf.co.uk/book_in_part_stock" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="book_out_consignment">
+      <soap12:operation soapAction="http://www.pcf.co.uk/book_out_consignment" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="book_out_consumables">
+      <soap12:operation soapAction="http://www.pcf.co.uk/book_out_consumables" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_pick_list">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_pick_list" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="upd_bookout_smat">
+      <soap12:operation soapAction="http://www.pcf.co.uk/upd_bookout_smat" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="upd_pick_smat">
+      <soap12:operation soapAction="http://www.pcf.co.uk/upd_pick_smat" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="upd_pick_stock_levels">
+      <soap12:operation soapAction="http://www.pcf.co.uk/upd_pick_stock_levels" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="upd_spool_parts_as_picked">
+      <soap12:operation soapAction="http://www.pcf.co.uk/upd_spool_parts_as_picked" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="set_stock_level">
+      <soap12:operation soapAction="http://www.pcf.co.uk/set_stock_level" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="upd_stock_levels">
+      <soap12:operation soapAction="http://www.pcf.co.uk/upd_stock_levels" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_locations">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_locations" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="validate_delivery_number">
+      <soap12:operation soapAction="http://www.pcf.co.uk/validate_delivery_number" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="delivery_received">
+      <soap12:operation soapAction="http://www.pcf.co.uk/delivery_received" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="delivery_received_2">
+      <soap12:operation soapAction="http://www.pcf.co.uk/delivery_received_2" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="spools_installed">
+      <soap12:operation soapAction="http://www.pcf.co.uk/spools_installed" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="spools_installed_2">
+      <soap12:operation soapAction="http://www.pcf.co.uk/spools_installed_2" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_qa_job">
+      <soap12:operation soapAction="http://www.pcf.co.uk/save_qa_job" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_weld_job_data">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_weld_job_data" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="save_weld_job">
+      <soap12:operation soapAction="http://www.pcf.co.uk/save_weld_job" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_delivery_data">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_delivery_data" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="assign_delivery_id_to_scheduled_delivery">
+      <soap12:operation soapAction="http://www.pcf.co.uk/assign_delivery_id_to_scheduled_delivery" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_spool_delivery_barcodes">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_spool_delivery_barcodes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_part_id">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_part_id" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_part_stock_data">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_part_stock_data" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_scheduled_delivery_data">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_scheduled_delivery_data" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_current_scheduled_delivery_data">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_current_scheduled_delivery_data" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update_scheduled_delivery">
+      <soap12:operation soapAction="http://www.pcf.co.uk/update_scheduled_delivery" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="delete_scheduled_delivery">
+      <soap12:operation soapAction="http://www.pcf.co.uk/delete_scheduled_delivery" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="upd_spool_status">
+      <soap12:operation soapAction="http://www.pcf.co.uk/upd_spool_status" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="valid_pin">
+      <soap12:operation soapAction="http://www.pcf.co.uk/valid_pin" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_delivery_schedule">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_delivery_schedule" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_delivery_note">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_delivery_note" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="cgbe">
+    <wsdl:port name="cgbeSoap" binding="tns:cgbeSoap">
+      <soap:address location="http://localhost/gbe_ws/gbe.asmx" />
+    </wsdl:port>
+    <wsdl:port name="cgbeSoap12" binding="tns:cgbeSoap12">
+      <soap12:address location="http://localhost/gbe_ws/gbe.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

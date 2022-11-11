@@ -1,0 +1,1331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.pcf.co.uk/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://www.pcf.co.uk/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.pcf.co.uk/">
+      <s:element name="is_alive">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_aliveResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="is_aliveResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="update_return">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="return_id" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_return_lines" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfAnyType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="anyType" nillable="true" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="location_enquiry">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="part_description" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="heat_number" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="qty_len" type="s:decimal" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="print_data">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="print_type" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="a_print_data" type="tns:ArrayOfString" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="picked_part_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="picked_part_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="qty_len" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="part_description" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="heat_number" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="delivery_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="delivery_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="qo_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="bundles" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="bags" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="boxes" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="pallets" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="order_number" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="pod_pin" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="fab_delivery_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="fab_order_id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="fab_number" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="customer" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="key_value_pair">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Key" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Value" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="data_row" />
+      <s:complexType name="data_row_quotes_and_orders">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:data_row" />
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="location_qty_heat">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="location" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="qty" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="heat_number" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="stock_id" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="pick_data">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="part_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="qty_len" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="orderline_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="stock_id" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="order_parts">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="orderline_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="part_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="qty" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="description" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="a_location_qty" type="tns:ArrayOfAnyType" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="return_rec">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="return_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="user_id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="return_number" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="return_line_location">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="location" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="qty" type="s:decimal" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="return_line_rec">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="return_line_id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="qty_len" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="part_desc" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="bcompleted" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="a_location_qty" type="tns:ArrayOfAnyType" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="update_returnResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="update_pending_return">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="return_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="update_pending_returnResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="raise_credit_note">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="return_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="raise_credit_noteResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="raise_credit_noteResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_return_update_pending">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="return_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="is_return_update_pendingResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="is_return_update_pendingResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_active_return_lines">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="return_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_active_return_linesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_active_return_linesResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_active_returns">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_active_returnsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_active_returnsResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_order_parts">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="order_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_order_partsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_order_partsResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_data">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="tbl" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="search_params" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_dataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_dataResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
+                  <s:any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_orders">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="status" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_ordersResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_ordersResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
+                  <s:any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="update_pick">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="order_id" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_pick_data" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="update_pickResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="update_pickResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_picked_orders">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_picked_ordersResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_picked_ordersResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="load_fab_delivery">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="fab_order_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="load_fab_deliveryResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="get_fab_delivery_data">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="process" type="tns:e_fab_process" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:simpleType name="e_fab_process">
+        <s:restriction base="s:string">
+          <s:enumeration value="NONE" />
+          <s:enumeration value="LOAD_DELIVERY" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="get_fab_delivery_dataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_fab_delivery_dataResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_delivery_data">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="process" type="tns:e_process" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:simpleType name="e_process">
+        <s:restriction base="s:string">
+          <s:enumeration value="NONE" />
+          <s:enumeration value="PICK" />
+          <s:enumeration value="CREATE_DELIVERY" />
+          <s:enumeration value="LOAD_DELIVERY" />
+          <s:enumeration value="DELIVER" />
+          <s:enumeration value="BOOK_IN_STOCK" />
+          <s:enumeration value="STOCK_TAKE" />
+          <s:enumeration value="MOVE_STOCK" />
+          <s:enumeration value="STOCK_ENQUIRY" />
+          <s:enumeration value="RETURN" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="get_delivery_dataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_delivery_dataResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_picked_part_data">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="order_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_picked_part_dataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_picked_part_dataResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="update_delivery">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="delivery_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="order_id" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="process" type="tns:e_process" />
+            <s:element minOccurs="1" maxOccurs="1" name="bundles" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="bags" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="boxes" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="pallets" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="pod_pin" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="notes" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="update_deliveryResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="update_deliveryResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="update_picked_parts">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="a_pick_part_ids" type="tns:ArrayOfAnyType" />
+            <s:element minOccurs="1" maxOccurs="1" name="delivery_id" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="update_picked_partsResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="book_in_adv_stock">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="barcode" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="location_qty" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="book_in_adv_stockResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="book_in_adv_stockResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="update_stock_location">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="barcode" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="location" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="update_stock_locationResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="update_stock_locationResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="update_stock">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="part" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="location" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="qty" type="s:decimal" />
+            <s:element minOccurs="0" maxOccurs="1" name="heat_number" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="update_stockResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="update_stockResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="stock_take">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="part" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="location" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="qty" type="s:decimal" />
+            <s:element minOccurs="0" maxOccurs="1" name="heat_number" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="stock_takeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="stock_takeResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="move_stock">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="part" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="from_location" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="to_location" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="qty" type="s:decimal" />
+            <s:element minOccurs="0" maxOccurs="1" name="heat_number" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="move_stockResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="move_stockResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_stock_count">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="part" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_stock_countResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="get_stock_countResult" type="s:decimal" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_print_data">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_print_dataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_print_dataResult" type="tns:print_data" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="whats_at_location">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="location" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="whats_at_locationResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="whats_at_locationResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="where_is_stock">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="barcode" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="where_is_stockResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="where_is_stockResult" type="tns:ArrayOfAnyType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="is_aliveSoapIn">
+    <wsdl:part name="parameters" element="tns:is_alive" />
+  </wsdl:message>
+  <wsdl:message name="is_aliveSoapOut">
+    <wsdl:part name="parameters" element="tns:is_aliveResponse" />
+  </wsdl:message>
+  <wsdl:message name="update_returnSoapIn">
+    <wsdl:part name="parameters" element="tns:update_return" />
+  </wsdl:message>
+  <wsdl:message name="update_returnSoapOut">
+    <wsdl:part name="parameters" element="tns:update_returnResponse" />
+  </wsdl:message>
+  <wsdl:message name="update_pending_returnSoapIn">
+    <wsdl:part name="parameters" element="tns:update_pending_return" />
+  </wsdl:message>
+  <wsdl:message name="update_pending_returnSoapOut">
+    <wsdl:part name="parameters" element="tns:update_pending_returnResponse" />
+  </wsdl:message>
+  <wsdl:message name="raise_credit_noteSoapIn">
+    <wsdl:part name="parameters" element="tns:raise_credit_note" />
+  </wsdl:message>
+  <wsdl:message name="raise_credit_noteSoapOut">
+    <wsdl:part name="parameters" element="tns:raise_credit_noteResponse" />
+  </wsdl:message>
+  <wsdl:message name="is_return_update_pendingSoapIn">
+    <wsdl:part name="parameters" element="tns:is_return_update_pending" />
+  </wsdl:message>
+  <wsdl:message name="is_return_update_pendingSoapOut">
+    <wsdl:part name="parameters" element="tns:is_return_update_pendingResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_active_return_linesSoapIn">
+    <wsdl:part name="parameters" element="tns:get_active_return_lines" />
+  </wsdl:message>
+  <wsdl:message name="get_active_return_linesSoapOut">
+    <wsdl:part name="parameters" element="tns:get_active_return_linesResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_active_returnsSoapIn">
+    <wsdl:part name="parameters" element="tns:get_active_returns" />
+  </wsdl:message>
+  <wsdl:message name="get_active_returnsSoapOut">
+    <wsdl:part name="parameters" element="tns:get_active_returnsResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_order_partsSoapIn">
+    <wsdl:part name="parameters" element="tns:get_order_parts" />
+  </wsdl:message>
+  <wsdl:message name="get_order_partsSoapOut">
+    <wsdl:part name="parameters" element="tns:get_order_partsResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_dataSoapIn">
+    <wsdl:part name="parameters" element="tns:get_data" />
+  </wsdl:message>
+  <wsdl:message name="get_dataSoapOut">
+    <wsdl:part name="parameters" element="tns:get_dataResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_ordersSoapIn">
+    <wsdl:part name="parameters" element="tns:get_orders" />
+  </wsdl:message>
+  <wsdl:message name="get_ordersSoapOut">
+    <wsdl:part name="parameters" element="tns:get_ordersResponse" />
+  </wsdl:message>
+  <wsdl:message name="update_pickSoapIn">
+    <wsdl:part name="parameters" element="tns:update_pick" />
+  </wsdl:message>
+  <wsdl:message name="update_pickSoapOut">
+    <wsdl:part name="parameters" element="tns:update_pickResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_picked_ordersSoapIn">
+    <wsdl:part name="parameters" element="tns:get_picked_orders" />
+  </wsdl:message>
+  <wsdl:message name="get_picked_ordersSoapOut">
+    <wsdl:part name="parameters" element="tns:get_picked_ordersResponse" />
+  </wsdl:message>
+  <wsdl:message name="load_fab_deliverySoapIn">
+    <wsdl:part name="parameters" element="tns:load_fab_delivery" />
+  </wsdl:message>
+  <wsdl:message name="load_fab_deliverySoapOut">
+    <wsdl:part name="parameters" element="tns:load_fab_deliveryResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_fab_delivery_dataSoapIn">
+    <wsdl:part name="parameters" element="tns:get_fab_delivery_data" />
+  </wsdl:message>
+  <wsdl:message name="get_fab_delivery_dataSoapOut">
+    <wsdl:part name="parameters" element="tns:get_fab_delivery_dataResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_delivery_dataSoapIn">
+    <wsdl:part name="parameters" element="tns:get_delivery_data" />
+  </wsdl:message>
+  <wsdl:message name="get_delivery_dataSoapOut">
+    <wsdl:part name="parameters" element="tns:get_delivery_dataResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_picked_part_dataSoapIn">
+    <wsdl:part name="parameters" element="tns:get_picked_part_data" />
+  </wsdl:message>
+  <wsdl:message name="get_picked_part_dataSoapOut">
+    <wsdl:part name="parameters" element="tns:get_picked_part_dataResponse" />
+  </wsdl:message>
+  <wsdl:message name="update_deliverySoapIn">
+    <wsdl:part name="parameters" element="tns:update_delivery" />
+  </wsdl:message>
+  <wsdl:message name="update_deliverySoapOut">
+    <wsdl:part name="parameters" element="tns:update_deliveryResponse" />
+  </wsdl:message>
+  <wsdl:message name="update_picked_partsSoapIn">
+    <wsdl:part name="parameters" element="tns:update_picked_parts" />
+  </wsdl:message>
+  <wsdl:message name="update_picked_partsSoapOut">
+    <wsdl:part name="parameters" element="tns:update_picked_partsResponse" />
+  </wsdl:message>
+  <wsdl:message name="book_in_adv_stockSoapIn">
+    <wsdl:part name="parameters" element="tns:book_in_adv_stock" />
+  </wsdl:message>
+  <wsdl:message name="book_in_adv_stockSoapOut">
+    <wsdl:part name="parameters" element="tns:book_in_adv_stockResponse" />
+  </wsdl:message>
+  <wsdl:message name="update_stock_locationSoapIn">
+    <wsdl:part name="parameters" element="tns:update_stock_location" />
+  </wsdl:message>
+  <wsdl:message name="update_stock_locationSoapOut">
+    <wsdl:part name="parameters" element="tns:update_stock_locationResponse" />
+  </wsdl:message>
+  <wsdl:message name="update_stockSoapIn">
+    <wsdl:part name="parameters" element="tns:update_stock" />
+  </wsdl:message>
+  <wsdl:message name="update_stockSoapOut">
+    <wsdl:part name="parameters" element="tns:update_stockResponse" />
+  </wsdl:message>
+  <wsdl:message name="stock_takeSoapIn">
+    <wsdl:part name="parameters" element="tns:stock_take" />
+  </wsdl:message>
+  <wsdl:message name="stock_takeSoapOut">
+    <wsdl:part name="parameters" element="tns:stock_takeResponse" />
+  </wsdl:message>
+  <wsdl:message name="move_stockSoapIn">
+    <wsdl:part name="parameters" element="tns:move_stock" />
+  </wsdl:message>
+  <wsdl:message name="move_stockSoapOut">
+    <wsdl:part name="parameters" element="tns:move_stockResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_stock_countSoapIn">
+    <wsdl:part name="parameters" element="tns:get_stock_count" />
+  </wsdl:message>
+  <wsdl:message name="get_stock_countSoapOut">
+    <wsdl:part name="parameters" element="tns:get_stock_countResponse" />
+  </wsdl:message>
+  <wsdl:message name="get_print_dataSoapIn">
+    <wsdl:part name="parameters" element="tns:get_print_data" />
+  </wsdl:message>
+  <wsdl:message name="get_print_dataSoapOut">
+    <wsdl:part name="parameters" element="tns:get_print_dataResponse" />
+  </wsdl:message>
+  <wsdl:message name="whats_at_locationSoapIn">
+    <wsdl:part name="parameters" element="tns:whats_at_location" />
+  </wsdl:message>
+  <wsdl:message name="whats_at_locationSoapOut">
+    <wsdl:part name="parameters" element="tns:whats_at_locationResponse" />
+  </wsdl:message>
+  <wsdl:message name="where_is_stockSoapIn">
+    <wsdl:part name="parameters" element="tns:where_is_stock" />
+  </wsdl:message>
+  <wsdl:message name="where_is_stockSoapOut">
+    <wsdl:part name="parameters" element="tns:where_is_stockResponse" />
+  </wsdl:message>
+  <wsdl:portType name="imsl_wsSoap">
+    <wsdl:operation name="is_alive">
+      <wsdl:input message="tns:is_aliveSoapIn" />
+      <wsdl:output message="tns:is_aliveSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="update_return">
+      <wsdl:input message="tns:update_returnSoapIn" />
+      <wsdl:output message="tns:update_returnSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="update_pending_return">
+      <wsdl:input message="tns:update_pending_returnSoapIn" />
+      <wsdl:output message="tns:update_pending_returnSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="raise_credit_note">
+      <wsdl:input message="tns:raise_credit_noteSoapIn" />
+      <wsdl:output message="tns:raise_credit_noteSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="is_return_update_pending">
+      <wsdl:input message="tns:is_return_update_pendingSoapIn" />
+      <wsdl:output message="tns:is_return_update_pendingSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_active_return_lines">
+      <wsdl:input message="tns:get_active_return_linesSoapIn" />
+      <wsdl:output message="tns:get_active_return_linesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_active_returns">
+      <wsdl:input message="tns:get_active_returnsSoapIn" />
+      <wsdl:output message="tns:get_active_returnsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_order_parts">
+      <wsdl:input message="tns:get_order_partsSoapIn" />
+      <wsdl:output message="tns:get_order_partsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_data">
+      <wsdl:input message="tns:get_dataSoapIn" />
+      <wsdl:output message="tns:get_dataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_orders">
+      <wsdl:input message="tns:get_ordersSoapIn" />
+      <wsdl:output message="tns:get_ordersSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="update_pick">
+      <wsdl:input message="tns:update_pickSoapIn" />
+      <wsdl:output message="tns:update_pickSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_picked_orders">
+      <wsdl:input message="tns:get_picked_ordersSoapIn" />
+      <wsdl:output message="tns:get_picked_ordersSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="load_fab_delivery">
+      <wsdl:input message="tns:load_fab_deliverySoapIn" />
+      <wsdl:output message="tns:load_fab_deliverySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_fab_delivery_data">
+      <wsdl:input message="tns:get_fab_delivery_dataSoapIn" />
+      <wsdl:output message="tns:get_fab_delivery_dataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_delivery_data">
+      <wsdl:input message="tns:get_delivery_dataSoapIn" />
+      <wsdl:output message="tns:get_delivery_dataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_picked_part_data">
+      <wsdl:input message="tns:get_picked_part_dataSoapIn" />
+      <wsdl:output message="tns:get_picked_part_dataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="update_delivery">
+      <wsdl:input message="tns:update_deliverySoapIn" />
+      <wsdl:output message="tns:update_deliverySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="update_picked_parts">
+      <wsdl:input message="tns:update_picked_partsSoapIn" />
+      <wsdl:output message="tns:update_picked_partsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="book_in_adv_stock">
+      <wsdl:input message="tns:book_in_adv_stockSoapIn" />
+      <wsdl:output message="tns:book_in_adv_stockSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="update_stock_location">
+      <wsdl:input message="tns:update_stock_locationSoapIn" />
+      <wsdl:output message="tns:update_stock_locationSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="update_stock">
+      <wsdl:input message="tns:update_stockSoapIn" />
+      <wsdl:output message="tns:update_stockSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="stock_take">
+      <wsdl:input message="tns:stock_takeSoapIn" />
+      <wsdl:output message="tns:stock_takeSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="move_stock">
+      <wsdl:input message="tns:move_stockSoapIn" />
+      <wsdl:output message="tns:move_stockSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_stock_count">
+      <wsdl:input message="tns:get_stock_countSoapIn" />
+      <wsdl:output message="tns:get_stock_countSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_print_data">
+      <wsdl:input message="tns:get_print_dataSoapIn" />
+      <wsdl:output message="tns:get_print_dataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="whats_at_location">
+      <wsdl:input message="tns:whats_at_locationSoapIn" />
+      <wsdl:output message="tns:whats_at_locationSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="where_is_stock">
+      <wsdl:input message="tns:where_is_stockSoapIn" />
+      <wsdl:output message="tns:where_is_stockSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="imsl_wsSoap" type="tns:imsl_wsSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="is_alive">
+      <soap:operation soapAction="http://www.pcf.co.uk/is_alive" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update_return">
+      <soap:operation soapAction="http://www.pcf.co.uk/update_return" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update_pending_return">
+      <soap:operation soapAction="http://www.pcf.co.uk/update_pending_return" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="raise_credit_note">
+      <soap:operation soapAction="http://www.pcf.co.uk/raise_credit_note" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_return_update_pending">
+      <soap:operation soapAction="http://www.pcf.co.uk/is_return_update_pending" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_active_return_lines">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_active_return_lines" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_active_returns">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_active_returns" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_order_parts">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_order_parts" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_data">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_data" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_orders">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_orders" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update_pick">
+      <soap:operation soapAction="http://www.pcf.co.uk/update_pick" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_picked_orders">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_picked_orders" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="load_fab_delivery">
+      <soap:operation soapAction="http://www.pcf.co.uk/load_fab_delivery" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_fab_delivery_data">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_fab_delivery_data" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_delivery_data">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_delivery_data" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_picked_part_data">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_picked_part_data" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update_delivery">
+      <soap:operation soapAction="http://www.pcf.co.uk/update_delivery" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update_picked_parts">
+      <soap:operation soapAction="http://www.pcf.co.uk/update_picked_parts" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="book_in_adv_stock">
+      <soap:operation soapAction="http://www.pcf.co.uk/book_in_adv_stock" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update_stock_location">
+      <soap:operation soapAction="http://www.pcf.co.uk/update_stock_location" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update_stock">
+      <soap:operation soapAction="http://www.pcf.co.uk/update_stock" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="stock_take">
+      <soap:operation soapAction="http://www.pcf.co.uk/stock_take" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="move_stock">
+      <soap:operation soapAction="http://www.pcf.co.uk/move_stock" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_stock_count">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_stock_count" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_print_data">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_print_data" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="whats_at_location">
+      <soap:operation soapAction="http://www.pcf.co.uk/whats_at_location" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="where_is_stock">
+      <soap:operation soapAction="http://www.pcf.co.uk/where_is_stock" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="imsl_wsSoap12" type="tns:imsl_wsSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="is_alive">
+      <soap12:operation soapAction="http://www.pcf.co.uk/is_alive" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update_return">
+      <soap12:operation soapAction="http://www.pcf.co.uk/update_return" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update_pending_return">
+      <soap12:operation soapAction="http://www.pcf.co.uk/update_pending_return" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="raise_credit_note">
+      <soap12:operation soapAction="http://www.pcf.co.uk/raise_credit_note" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="is_return_update_pending">
+      <soap12:operation soapAction="http://www.pcf.co.uk/is_return_update_pending" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_active_return_lines">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_active_return_lines" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_active_returns">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_active_returns" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_order_parts">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_order_parts" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_data">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_data" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_orders">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_orders" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update_pick">
+      <soap12:operation soapAction="http://www.pcf.co.uk/update_pick" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_picked_orders">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_picked_orders" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="load_fab_delivery">
+      <soap12:operation soapAction="http://www.pcf.co.uk/load_fab_delivery" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_fab_delivery_data">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_fab_delivery_data" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_delivery_data">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_delivery_data" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_picked_part_data">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_picked_part_data" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update_delivery">
+      <soap12:operation soapAction="http://www.pcf.co.uk/update_delivery" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update_picked_parts">
+      <soap12:operation soapAction="http://www.pcf.co.uk/update_picked_parts" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="book_in_adv_stock">
+      <soap12:operation soapAction="http://www.pcf.co.uk/book_in_adv_stock" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update_stock_location">
+      <soap12:operation soapAction="http://www.pcf.co.uk/update_stock_location" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update_stock">
+      <soap12:operation soapAction="http://www.pcf.co.uk/update_stock" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="stock_take">
+      <soap12:operation soapAction="http://www.pcf.co.uk/stock_take" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="move_stock">
+      <soap12:operation soapAction="http://www.pcf.co.uk/move_stock" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_stock_count">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_stock_count" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_print_data">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_print_data" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="whats_at_location">
+      <soap12:operation soapAction="http://www.pcf.co.uk/whats_at_location" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="where_is_stock">
+      <soap12:operation soapAction="http://www.pcf.co.uk/where_is_stock" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="imsl_ws">
+    <wsdl:port name="imsl_wsSoap" binding="tns:imsl_wsSoap">
+      <soap:address location="http://localhost/imsl_ws/imsl_ws.asmx" />
+    </wsdl:port>
+    <wsdl:port name="imsl_wsSoap12" binding="tns:imsl_wsSoap12">
+      <soap12:address location="http://localhost/imsl_ws/imsl_ws.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
