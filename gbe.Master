@@ -1,0 +1,69 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="gbe.master.cs" Inherits="gbe.gbe" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title>gbe</title>
+    
+    <link href="~/Styles/Site.css" rel="stylesheet" type="text/css" />
+    
+    
+    
+</head>
+<body bgcolor="#696969" id="MasterBody">
+    <form id="form1" runat="server">
+    <div>
+        &nbsp;<table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 90%;
+            background-color: #c4e2ed">
+            <tr>
+                <td colspan="2" style="height: 132px; background-color: #313131;">
+                    <asp:Image ID="img_logo" runat="server" ImageAlign="Right" ImageUrl="~/gbe_logo.png" /></td>
+            </tr>
+            <tr>
+                <td align="center" style="width: 288px; height: 987px" valign="top">
+                    <table style="width: 281px">
+                        <tr>
+                            <td style="width: 355px">
+                                </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 355px; height: 46px">
+                                <asp:Table ID="tblMenu" runat="server"  BackColor="Transparent">
+                                </asp:Table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 355px; height: 21px"><asp:Table ID="tblMenuStores" runat="server"  BackColor="Transparent">
+                            </asp:Table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="height: 987px" valign="top">
+                    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                    </asp:ContentPlaceHolder>
+                    <asp:HiddenField ID="hdnScroll" runat="server" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="height: 45px; background-color: #313131;">
+                </td>
+            </tr>
+        </table>
+    </div>
+    </form>
+    
+    <script type="text/javascript">
+    
+    window.onscroll = function() {store_scroll_pos()};
+    
+    function store_scroll_pos() 
+    {
+        document.getElementById('ctl00_hdnScroll').value = document.documentElement.scrollLeft + '|' + document.documentElement.scrollTop;
+    }
+    
+    </script>
+ 
+</body>
+</html>

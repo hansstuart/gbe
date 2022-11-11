@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="gbe.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="gbe_gbe_ws_cgbe" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://localhost/gbe_ws/gbe.asmx</Value>
+    </Setting>
+    <Setting Name="gbe_imsl_ws_imsl_ws" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://localhost/imsl_ws/imsl_ws.asmx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

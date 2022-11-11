@@ -1,0 +1,555 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="Current">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{29DBCF35-A333-4090-9B08-6F87297F0FB4}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>gbe</RootNamespace>
+    <AssemblyName>gbe</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UseIISExpress>false</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <HintPath>..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.Mobile" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Web References\imsl_ws\imsl_ws.disco" />
+    <Content Include="Web.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Web References\imsl_ws\imsl_ws.wsdl" />
+    <Content Include="Web References\imsl_ws\print_data.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <Content Include="Web References\imsl_ws\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="add_to_schedule.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>add_to_schedule.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="add_to_schedule.aspx.designer.cs">
+      <DependentUpon>add_to_schedule.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="cfii_deliveries.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>cfii_deliveries.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="cfii_deliveries.aspx.designer.cs">
+      <DependentUpon>cfii_deliveries.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="consignment_delivery_line_notes.cs" />
+    <Compile Include="consignment_delivery_notes.cs" />
+    <Compile Include="consignment_delivery_line.cs" />
+    <Compile Include="consignment_instance.cs" />
+    <Compile Include="consignment_reference.cs" />
+    <Compile Include="cfii_view.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>cfii_view.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="cfii_view.aspx.designer.cs">
+      <DependentUpon>cfii_view.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="consumable_parts.cs" />
+    <Compile Include="cost_centre.cs" />
+    <Compile Include="create_module.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>create_module.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="create_module.aspx.designer.cs">
+      <DependentUpon>create_module.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="create_porder.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>create_porder.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="create_porder.aspx.designer.cs">
+      <DependentUpon>create_porder.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="customer_fab_mat.cs" />
+    <Compile Include="cust_delivery.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>cust_delivery.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="cust_delivery.aspx.designer.cs">
+      <DependentUpon>cust_delivery.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="cust_delnote.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>cust_delnote.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="cust_delnote.aspx.designer.cs">
+      <DependentUpon>cust_delnote.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="cutlist.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>cutlist.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="cutlist.aspx.designer.cs">
+      <DependentUpon>cutlist.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="data_row.cs" />
+    <Compile Include="default.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="default.aspx.designer.cs">
+      <DependentUpon>default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="deliveries.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>deliveries.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="deliveries.aspx.designer.cs">
+      <DependentUpon>deliveries.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="deliveries.cs" />
+    <Compile Include="delivery_addresses.cs" />
+    <Compile Include="delivery_note.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>delivery_note.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="delivery_note.aspx.designer.cs">
+      <DependentUpon>delivery_note.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="delivery_schedule_notes.cs" />
+    <Compile Include="fs.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>fs.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="fs.aspx.designer.cs">
+      <DependentUpon>fs.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="fy.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>fy.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="fy.aspx.designer.cs">
+      <DependentUpon>fy.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="fy_assign_job.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>fy_assign_job.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="fy_assign_job.aspx.designer.cs">
+      <DependentUpon>fy_assign_job.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="fy_delivery.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>fy_delivery.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="fy_delivery.aspx.designer.cs">
+      <DependentUpon>fy_delivery.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="fy_msg.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>fy_msg.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="fy_msg.aspx.designer.cs">
+      <DependentUpon>fy_msg.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="fy_qa.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>fy_qa.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="fy_qa.aspx.designer.cs">
+      <DependentUpon>fy_qa.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="fy_weld.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>fy_weld.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="fy_weld.aspx.designer.cs">
+      <DependentUpon>fy_weld.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="fy_weld_test.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>fy_weld_test.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="fy_weld_test.aspx.designer.cs">
+      <DependentUpon>fy_weld_test.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="gbe_fy.Master.cs">
+      <DependentUpon>gbe_fy.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gbe_fy.Master.designer.cs">
+      <DependentUpon>gbe_fy.Master</DependentUpon>
+    </Compile>
+    <Compile Include="imsl_orders.cs" />
+    <Compile Include="installation_report.cs" />
+    <Compile Include="invoice_request.cs" />
+    <Compile Include="invoicing.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>invoicing.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="invoicing.aspx.designer.cs">
+      <DependentUpon>invoicing.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="key_value.cs" />
+    <Compile Include="locations.cs" />
+    <Compile Include="login.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="login.aspx.designer.cs">
+      <DependentUpon>login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="maint1.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>maint1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="maint1.aspx.designer.cs">
+      <DependentUpon>maint1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="modules.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>modules.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="modules.aspx.designer.cs">
+      <DependentUpon>modules.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="modules.cs" />
+    <Compile Include="new_spools.cs" />
+    <Compile Include="create_spool.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>create_spool.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="create_spool.aspx.designer.cs">
+      <DependentUpon>create_spool.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="customers.cs" />
+    <Compile Include="db_connection.cs" />
+    <Compile Include="gbe.Master.cs">
+      <DependentUpon>gbe.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gbe.Master.designer.cs">
+      <DependentUpon>gbe.Master</DependentUpon>
+    </Compile>
+    <Compile Include="order_parts.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>order_parts.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="order_parts.aspx.designer.cs">
+      <DependentUpon>order_parts.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="parts.cs" />
+    <Compile Include="part_stock.cs" />
+    <Compile Include="PCFsecure.PCFUtil.cs" />
+    <Compile Include="PCFUtil.cs" />
+    <Compile Include="porder.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>porder.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="porder.aspx.designer.cs">
+      <DependentUpon>porder.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="porders.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>porders.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="porders.aspx.designer.cs">
+      <DependentUpon>porders.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="porders.cs" />
+    <Compile Include="po_numbers.cs" />
+    <Compile Include="po_orderlines.cs" />
+    <Compile Include="po_orderline_notes.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="qa.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>qa.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="qa.aspx.designer.cs">
+      <DependentUpon>qa.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="qa_jobs.cs" />
+    <Compile Include="schedule.cs" />
+    <Compile Include="scheduled_delivery.cs" />
+    <Compile Include="settings.cs" />
+    <Compile Include="spools.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>spools.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="spools.aspx.designer.cs">
+      <DependentUpon>spools.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="spools.cs" />
+    <Compile Include="spool_audit_trail.cs" />
+    <Compile Include="spool_parts.cs" />
+    <Compile Include="spool_status.cs" />
+    <Compile Include="stock.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>stock.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="stock.aspx.designer.cs">
+      <DependentUpon>stock.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="stock_movement.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>stock_movement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="stock_movement.aspx.designer.cs">
+      <DependentUpon>stock_movement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="stock_movement_audit_trail.cs" />
+    <Compile Include="suppliers.cs" />
+    <Compile Include="totals.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>totals.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="totals.aspx.designer.cs">
+      <DependentUpon>totals.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="users.cs" />
+    <Compile Include="vehicles.cs" />
+    <Compile Include="view_drawing.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>view_drawing.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="view_drawing.aspx.designer.cs">
+      <DependentUpon>view_drawing.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="view_schedule.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>view_schedule.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="view_schedule.aspx.designer.cs">
+      <DependentUpon>view_schedule.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\gbe_ws\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\imsl_ws\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="welder_activity.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>welder_activity.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="welder_activity.aspx.designer.cs">
+      <DependentUpon>welder_activity.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="weld_jobs.cs" />
+    <Compile Include="weld_mapping.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>weld_mapping.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="weld_mapping.aspx.designer.cs">
+      <DependentUpon>weld_mapping.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="weld_tests.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>weld_tests.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="weld_tests.aspx.designer.cs">
+      <DependentUpon>weld_tests.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="weld_tests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="add_to_schedule.aspx" />
+    <Content Include="cfii_deliveries.aspx" />
+    <Content Include="cfii_view.aspx" />
+    <Content Include="create_module.aspx" />
+    <Content Include="create_porder.aspx" />
+    <Content Include="create_spool.aspx" />
+    <Content Include="cust_delivery.aspx" />
+    <Content Include="cust_delnote.aspx" />
+    <Content Include="default.aspx" />
+    <Content Include="deliveries.aspx" />
+    <Content Include="delivery_note.aspx" />
+    <Content Include="fy.aspx" />
+    <Content Include="Styles\Site.css" />
+    <Content Include="gbe.Master" />
+    <Content Include="gbe_logo.png" />
+    <Content Include="invoicing.aspx" />
+    <Content Include="login.aspx" />
+    <Content Include="maint1.aspx" />
+    <Content Include="modules.aspx" />
+    <Content Include="order_parts.aspx" />
+    <Content Include="porder.aspx" />
+    <Content Include="porders.aspx" />
+    <Content Include="qa.aspx" />
+    <Content Include="spools.aspx" />
+    <Content Include="stock.aspx" />
+    <Content Include="stock_movement.aspx" />
+    <Content Include="view_schedule.aspx" />
+    <Content Include="welder_activity.aspx" />
+    <Content Include="weld_mapping.aspx" />
+    <Content Include="weld_tests.aspx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="cutlist.aspx" />
+    <Content Include="fs.aspx" />
+    <Content Include="fy_assign_job.aspx" />
+    <Content Include="fy_delivery.aspx" />
+    <Content Include="fy_msg.aspx" />
+    <Content Include="fy_qa.aspx" />
+    <Content Include="fy_weld.aspx" />
+    <Content Include="fy_weld_test.aspx" />
+    <Content Include="gbe_fy.Master" />
+    <Content Include="totals.aspx" />
+    <Content Include="view_drawing.aspx" />
+    <None Include="Web References\gbe_ws\gbe.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="http://localhost/gbe_ws/gbe.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\gbe_ws\</RelPath>
+      <UpdateFromURL>http://localhost/gbe_ws/gbe.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>gbe_gbe_ws_cgbe</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://localhost/imsl_ws/imsl_ws.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\imsl_ws\</RelPath>
+      <UpdateFromURL>http://localhost/imsl_ws/imsl_ws.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>gbe_imsl_ws_imsl_ws</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\gbe_ws\delivery_data.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\gbe_ws\gbe.wsdl" />
+    <None Include="Web References\gbe_ws\module_data.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\gbe_ws\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\gbe_ws\spool_data.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\gbe_ws\weld_job_data.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>60447</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
