@@ -52,7 +52,7 @@
             <td style="width: 190px; height: 21px">
             </td>
             <td style="width: 309px; height: 21px">
-                <asp:Label ID="Label1" runat="server" Font-Names="Verdana" Text="Welder (optional):"></asp:Label></td>
+                <asp:Label ID="Label1" runat="server" Font-Names="Verdana" Text="Welder (optional):" Visible="False"></asp:Label></td>
             <td style="width: 133px; height: 21px">
             </td>
             <td style="height: 21px">
@@ -62,7 +62,7 @@
             <td style="width: 190px; height: 21px">
             </td>
             <td style="width: 309px; height: 21px">
-                <asp:DropDownList ID="dlWelder" runat="server" Width="294px">
+                <asp:DropDownList ID="dlWelder" runat="server" Width="294px" Visible="False">
                 </asp:DropDownList></td>
             <td style="width: 133px; height: 21px">
             </td>

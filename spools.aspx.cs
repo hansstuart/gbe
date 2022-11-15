@@ -23,16 +23,20 @@ namespace gbe
         const string VS_RECORD_COUNT = "VS_RECORD_COUNT";
 
         SortedList m_spools = null;
+        SortedList m_welders = null;
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack)
             {
+                m_welders = (SortedList)ViewState["welders"];
                 m_spools = (SortedList)ViewState[VS_SPOOLS];
                 display();
             }
             else
             {
+                get_welders();
+
                 using (spool_status ss = new spool_status())
                 {
                     ArrayList a = ss.get_spool_status_data(new SortedList());
@@ -274,7 +278,7 @@ namespace gbe
                 bool badmin = is_admin(ud);
                 bool bsupervisor = is_supervisor(ud);
 
-                string[] hdr = new string[] { "WM", "Spool", "Revision", "Batch", "Created", "Welder/Fitter", "Start", "Finish", /*"Fit Time", "Weld Time",*/ "Installed By", "Status", "On Hold" };
+                string[] hdr = new string[] { "WM", "Spool", "Revision", "Batch", "Created", "Fitter", "Start", "Finish", /*"Fit Time", "Weld Time",*/ "Installed By", "Status", "On Hold" };
 
                 SortedList sl_barcode_order = new SortedList();
 
@@ -391,6 +395,7 @@ namespace gbe
 
                     string sfw = string.Empty;
 
+                    /* hs. 20221114
                     if (sd.weld_job_data != null)
                     {
                         if (sd.weld_job_data.robot > 0)
@@ -404,6 +409,7 @@ namespace gbe
 
                         sfw += welder;
                     }
+                    */
 
                     if (fitter.Trim().Length > 0)
                     {
@@ -824,6 +830,22 @@ namespace gbe
                     {
                         tbl.Rows.Clear();
                         pnl.Controls.Remove(cntrl);
+                        break;
+                    }
+                }
+            }
+
+            foreach (Control cntrl in pnl.Controls)
+            {
+                if (cntrl.GetType() == typeof(Table))
+                {
+                    Table tbl = (Table)cntrl;
+
+                    if (tbl.ID.StartsWith("tblHdrParts"))
+                    {
+                        tbl.Rows.Clear();
+                        pnl.Controls.Remove(cntrl);
+                        break;
                     }
                 }
             }
@@ -838,6 +860,7 @@ namespace gbe
                     {
                         tbl.Rows.Clear();
                         pnl.Controls.Remove(cntrl);
+                        break;
                     }
                 }
             }
@@ -1020,31 +1043,73 @@ namespace gbe
                     {
                         if (sd.spool_part_data.Count > 0)
                         {
+                            /*
                             SortedList sl_parts_data = new SortedList();
 
                             foreach (spool_part_data spd in sd.spool_part_data)
                             {
                                 if (spd.part_data != null)
-                                    sl_parts_data.Add(spd.part_data.description + sl_parts_data.Count.ToString(), spd);
+                                    sl_parts_data.Add(spd.seq.ToString("000000") + "_" + spd.id.ToString(new string('0', 64)), spd);
                             }
+                            */
+
+                            TableRow r;
+                            TableCell c;
 
                             Panel pnlResults = get_pnlResults(id);
+
+                            
+                            //hs. 20221114
+                            Table tblPartsHdr = new Table();
+                            tblPartsHdr.ID = "tblHdrParts" + id;
+                            pnlResults.Controls.Add(tblPartsHdr);
+
+                            r = new TableRow();
+                            c = new TableCell();
+                            c.Controls.Add(new LiteralControl(string.Empty));
+                            r.Cells.Add(c);
+                            tblPartsHdr.Rows.Add(r);
+
+                            r = new TableRow();
+                            r.Attributes["uid"] = sd.id.ToString();
+
+                            r.BackColor = System.Drawing.Color.FromName("LightGray");
+
+                            c = new TableCell();
+                            c.Controls.Add(new LiteralControl("Parts"));
+                            r.Cells.Add(c);
+
+                            c = new TableCell();
+                            c.HorizontalAlign = HorizontalAlign.Center;
+                            ImageButton btn_save_parts = new ImageButton();
+                            btn_save_parts.ToolTip = "Save changes to all parts for this spool " + sd.barcode;
+                            btn_save_parts.ImageUrl = "~/disk.png";
+                            btn_save_parts.Click += btn_save_parts_Click;
+                            btn_save_parts.ID = "btn_save_parts_" + sd.id.ToString();
+                            btn_save_parts.Attributes["uid"] = sd.id.ToString();
+                            btn_save_parts.Attributes["spool_id"] = sd.id.ToString();
+                            if (!badmin)
+                                btn_save_parts.Visible = false;
+
+                            c.Controls.Add(btn_save_parts);
+                            r.Cells.Add(c);
+
+                            tblPartsHdr.Rows.Add(r);
+                            
                             Table tblParts = new Table();
                             tblParts.ID = "tblParts" + id;
 
                             pnlResults.Controls.Add(tblParts);
 
-                            foreach (DictionaryEntry e1 in sl_parts_data)
-                            //foreach(spool_part_data spd in sd.spool_part_data)
+                            //foreach (DictionaryEntry e1 in sl_parts_data)
+                            foreach(spool_part_data spd in sd.spool_part_data)
                             {
-                                TableRow r;
-                                TableCell c;
-
-                                spool_part_data spd = (spool_part_data)e1.Value;
+                                //spool_part_data spd = (spool_part_data)e1.Value;
 
                                 r = new TableRow();
                                 r.Attributes["uid"] = sd.id.ToString();
                                 r.Attributes["PART_DATA_ROW"] = sd.id.ToString();
+                                r.Attributes["spool_part_id"] = spd.id.ToString();
 
                                 r.BackColor = System.Drawing.Color.FromName("LightGray");
 
@@ -1074,14 +1139,21 @@ namespace gbe
                                 }
 
                                 c = new TableCell();
+                                c.HorizontalAlign = HorizontalAlign.Right;
+                                c.Controls.Add(new LiteralControl((tblParts.Rows.Count + 1).ToString()));
+                                r.Cells.Add(c);
+
+                                c = new TableCell();
                                 c.Width = 500;
                                 c.Controls.Add(new LiteralControl(part_desc));
                                 r.Cells.Add(c);
 
+                                /*
                                 c = new TableCell();
                                 c.Controls.Add(new LiteralControl(part_no));
                                 c.Width = 150;
                                 r.Cells.Add(c);
+                                */
 
                                 c = new TableCell();
 
@@ -1101,6 +1173,7 @@ namespace gbe
                                 {
                                     qtb = create_numeric_textbox("qty_" + spd.id.ToString());
                                     qtb.Text = spd.qty.ToString("0");
+                                    qtb.Enabled = false;
                                 }
 
                                 qtb.MaxLength = 7;
@@ -1131,6 +1204,7 @@ namespace gbe
 
                                 r.Cells.Add(c);
 
+                                /*
                                 c = new TableCell();
                                 c.HorizontalAlign = HorizontalAlign.Center;
                                 ImageButton btn_save_part = new ImageButton();
@@ -1145,6 +1219,7 @@ namespace gbe
 
                                 c.Controls.Add(btn_save_part);
                                 r.Cells.Add(c);
+                                */
 
                                 if (spd.porder > 0)
                                 {
@@ -1161,12 +1236,236 @@ namespace gbe
                                     r.Cells.Add(c);
                                 }
 
+                                // hs. 20221114
+                                c = new TableCell();
+                                c.Controls.Add(new LiteralControl("Welder:"));
+                                DropDownList dl_welder = new DropDownList();
+                                dl_welder.ID = "dl_welder" + spd.id.ToString();
+                                dl_welder.Items.Add(string.Empty);
+                                dl_welder.Attributes["uid"] = spd.id.ToString();
+
+                                foreach (DictionaryEntry e0 in m_welders)
+                                    dl_welder.Items.Add(e0.Key.ToString());
+
+                                if (!m_welders.ContainsKey(spd.welder))
+                                    dl_welder.Items.Add(spd.welder);
+
+                                if (spd.welder.Trim().Length > 0)
+                                    dl_welder.Text = spd.welder;
+                                else
+                                {
+                                    string welder = string.Empty;
+
+                                    if (sd.welder_data != null)
+                                        welder = sd.welder_data.login_id;
+
+                                    string sfw = string.Empty;
+                                    
+                                    if (sd.weld_job_data != null)
+                                    {
+                                        if (sd.weld_job_data.robot > 0)
+                                            sfw = "Robot";
+                                    }
+
+                                    if (welder.Trim().Length > 0)
+                                    {
+                                        if (sfw.Trim().Length > 0)
+                                            sfw += "/";
+
+                                        sfw += welder;
+                                    }
+
+                                    if (sfw.Trim().Length > 0)
+                                    {
+                                        dl_welder.Items.Add(sfw);
+                                        dl_welder.Text = sfw;
+                                    }
+                                }
+
+                                c.Controls.Add(dl_welder);
+                                r.Cells.Add(c);
+
                                 tblParts.Rows.Add(r);
                             }
                         }
                     }
                 }
             }
+        }
+
+        private void btn_save_parts_Click(object sender, ImageClickEventArgs e)
+        {
+            lblMsg.Text = string.Empty;
+
+            ImageButton b = (ImageButton)sender;
+            
+            int id, fw, bw;
+            decimal qty = 0;
+            int nfound = 0;
+            string welder = string.Empty;
+
+            string spool_id = (b.Attributes["spool_id"]);
+
+            Table tblParts = get_tblParts(Convert.ToInt32(spool_id));
+
+            foreach (TableRow r in tblParts.Rows)
+            {
+                id = fw = bw = 0;
+                qty = 0;
+                nfound = 0;
+                welder = string.Empty;
+
+                try { id = Convert.ToInt32((r.Attributes["spool_part_id"])); }
+                catch
+                {
+                    continue;
+                }
+
+                if (id == 0)
+                    return;
+
+                foreach (TableCell c in r.Cells)
+                {
+                    foreach (Control cntrl in c.Controls)
+                    {
+                        if (cntrl.ID != null)
+                        {
+                            if (cntrl.GetType() == typeof(TextBox))
+                            {
+                                if (cntrl.ID.StartsWith("qty_"))
+                                {
+                                    TextBox tb = (TextBox)cntrl;
+                                    try { qty = Convert.ToDecimal(tb.Text); }
+                                    catch { }
+                                    nfound++;
+                                }
+                            }
+
+                            if (cntrl.GetType() == typeof(TextBox))
+                            {
+                                if (cntrl.ID.StartsWith("fw_"))
+                                {
+                                    TextBox tb = (TextBox)cntrl;
+                                    try { fw = Convert.ToInt32(tb.Text); }
+                                    catch { }
+                                    nfound++;
+                                }
+                            }
+
+                            if (cntrl.GetType() == typeof(TextBox))
+                            {
+                                if (cntrl.ID.StartsWith("bw_"))
+                                {
+                                    TextBox tb = (TextBox)cntrl;
+                                    try { bw = Convert.ToInt32(tb.Text); }
+                                    catch { }
+                                    nfound++;
+                                }
+                            }
+
+                            if (cntrl.GetType() == typeof(DropDownList))
+                            {
+                                if (cntrl.ID.StartsWith("dl_welder"))
+                                {
+                                    DropDownList dl_welder = (DropDownList)cntrl;
+                                    welder = dl_welder.Text;
+                                    nfound++;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (nfound > 3)
+                {
+                    SortedList slp = new SortedList();
+
+                    using (spool_parts sp = new spool_parts())
+                    {
+                        slp.Add("id", id);
+                        slp.Add("qty", qty);
+                        slp.Add("fw", fw);
+                        slp.Add("bw", bw);
+                        slp.Add("welder", welder);
+
+                        sp.save_spool_parts_data(slp);
+
+                        int sd_id = Convert.ToInt32(r.Attributes["uid"]);
+
+                        if (m_spools.ContainsKey(sd_id))
+                        {
+                            spool_data sd = ((spool_data_ex)m_spools[sd_id]).sd;
+
+                            foreach (spool_part_data spd in sd.spool_part_data)
+                            {
+                                if (spd.part_data != null)
+                                {
+                                    if (spd.id == id)
+                                    {
+                                        spd.qty = qty;
+                                        spd.fw = fw;
+                                        spd.bw = bw;
+                                        spd.welder = welder;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+            }
+        }
+
+        private void dl_welder_TextChanged(object sender, EventArgs e)
+        {
+            int id = 0;
+
+            DropDownList dl = (DropDownList)sender;
+            string uid = (dl.Attributes["uid"]);
+
+            try { id = Convert.ToInt32(uid); }
+            catch
+            {
+                lblMsg.Text = "Failed to identify part id";
+                return;
+            }
+
+            SortedList slp = new SortedList();
+
+            using (spool_parts sp = new spool_parts())
+            {
+                slp.Add("id", id);
+                slp.Add("welder", dl.Text);
+                
+                sp.save_spool_parts_data(slp);
+            }
+        }
+
+        void get_welders()
+        {
+            m_welders = new SortedList();
+
+            ArrayList a = new ArrayList();
+
+            SortedList sl = new SortedList();
+            sl.Add("role", "WELDER");
+
+            using (users u = new users())
+            {
+                a = u.get_user_data(sl);
+            }
+
+            foreach (user_data ud in a)
+            {
+                if (ud.login_id.Trim().Length > 0)
+                    if (!m_welders.ContainsKey(ud.login_id.Trim()))
+                        m_welders.Add(ud.login_id.Trim(), ud);
+            }
+
+            
+
+            ViewState["welders"] = m_welders;
         }
 
         void btn_save_delivery_date_Click(object sender, ImageClickEventArgs e)

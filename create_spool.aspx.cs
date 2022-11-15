@@ -250,10 +250,17 @@ namespace gbe
 
                             dlCostCentre.SelectedIndex = sd.cost_centre;
 
-                            foreach (DictionaryEntry e0 in m_sl_imsl_cost_centres)
+                            if (sd.imsl_cost_centre == 0)
                             {
-                                if ((int)e0.Value == sd.imsl_cost_centre)
-                                    dlIMSLCostCentre.Text = e0.Key.ToString();
+                                dlIMSLCostCentre.Text = "NONE";
+                            }
+                            else
+                            {
+                                foreach (DictionaryEntry e0 in m_sl_imsl_cost_centres)
+                                {
+                                    if ((int)e0.Value == sd.imsl_cost_centre)
+                                        dlIMSLCostCentre.Text = e0.Key.ToString();
+                                }
                             }
 
                             if (sd.delivery_address == 0)
@@ -299,7 +306,10 @@ namespace gbe
                             foreach (spool_part_data spd in sd.spool_part_data)
                             {
                                 spd.part_data.attributes.Add("spd_id", spd.id);
-                                add_part_to_table(spd.part_data, spd, false);
+                                spd.part_data.attributes.Add("include_in_weld_map", spd.include_in_weld_map.ToString());
+                                spd.part_data.attributes.Add("welder", spd.welder);
+
+                                add_part_to_table(spd.part_data, spd);
 
                                 m_parts_list.Add(spd.part_data);
                             }
@@ -310,7 +320,6 @@ namespace gbe
                             ViewState["state"] = m_state;
 
                             ViewState["modify_id"] = id;
-
                         }
                     }
                 }
@@ -1044,8 +1053,12 @@ namespace gbe
 
                     int sched_slots = 1;
 
+                    int iseq = 0;
+
                     foreach (TableRow r in tblParts.Rows)
                     {
+                        iseq++;
+
                         if (r.Attributes["slots"] != null)
                         {
                             int slots = 0;
@@ -1122,6 +1135,13 @@ namespace gbe
                                 slp.Add("fw", fw);
                                 slp.Add("bw", bw);
                                 slp.Add("picked", b_picked);
+                                slp.Add("seq", iseq);
+
+                                if (r.Attributes["include_in_weld_map"] != null)
+                                    slp.Add("include_in_weld_map", r.Attributes["include_in_weld_map"]);
+
+                                if(r.Attributes["welder"] != null)
+                                    slp.Add("welder", r.Attributes["welder"]);
 
                                 sp.save_spool_parts_data(slp);
                             }
@@ -1171,13 +1191,34 @@ namespace gbe
                     bc = System.Drawing.Color.FromName("WhiteSmoke");
 
                 r.BackColor = bc;
+
+                foreach (TableCell c in r.Cells)
+                {
+                    foreach (Control cntrl in c.Controls)
+                    {
+                        if (cntrl.ID != null)
+                        {
+                            if (cntrl.GetType() == typeof(LiteralControl))
+                            {
+                                LiteralControl lc = (LiteralControl)cntrl;
+
+                                if (lc.ID.StartsWith("seq"))
+                                {
+                                    lc.Text = i.ToString();
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        protected void add_part_to_table(part_data pd, spool_part_data spd, bool b_add_to_top)
+        protected void add_part_to_table(part_data pd, spool_part_data spd)
         {
-            if (!pd.attributes.ContainsKey("uid"))
-                pd.attributes.Add("uid", pd.part_number + Guid.NewGuid().ToString("N"));
+            const string UID = "uid";
+
+            if (!pd.attributes.ContainsKey(UID))
+                pd.attributes.Add(UID, pd.part_number + Guid.NewGuid().ToString("N"));
 
             foreach (TableRow r0 in tblParts.Rows)
             {
@@ -1186,6 +1227,7 @@ namespace gbe
                     if (pd.description.ToUpper().Contains("PIPE"))
                         return;
 
+                    /* hs 20221114
                     string sqty = ((TextBox)r0.Cells[2].Controls[1]).Text;
 
                     int qty = 0;
@@ -1198,6 +1240,7 @@ namespace gbe
                     ((TextBox)r0.Cells[2].Controls[1]).Text = qty.ToString();
 
                     return;
+                    */
                 }
             }
 
@@ -1209,13 +1252,15 @@ namespace gbe
             r.Attributes["part_id"] = pd.id.ToString();
             r.Attributes["source"] = pd.source.ToString();
 
-            //r.BackColor = bc;
-
-            /*
             c = new TableCell();
-            c.Controls.Add(new LiteralControl(pd.part_number));
+            c.HorizontalAlign = HorizontalAlign.Right;
+
+            LiteralControl lc = new LiteralControl();
+            lc.ID = "seq_" + Guid.NewGuid().ToString("N");
+            lc.Text = (tblParts.Rows.Count + 1).ToString();
+
+            c.Controls.Add(lc);
             r.Cells.Add(c);
-            */
 
             c = new TableCell();
             c.Controls.Add(new LiteralControl(pd.description));
@@ -1226,20 +1271,23 @@ namespace gbe
             TextBox qtb = null;
 
             if (pd.description.ToUpper().Contains("PIPE"))
-                qtb = create_decimal_textbox("qty_" + pd.attributes["uid"].ToString());
+                qtb = create_decimal_textbox("qty_" + pd.attributes[UID].ToString());
             else
             {
-                qtb = create_numeric_textbox("qty_" + pd.attributes["uid"].ToString());
+                qtb = create_numeric_textbox("qty_" + pd.attributes[UID].ToString());
                 qtb.Text = "1";
+                qtb.Enabled = false;
             }
 
             if (spd != null)
+            {
                 qtb.Text = spd.qty.ToString();
+            }
 
             c.Controls.Add(qtb);
             r.Cells.Add(c);
 
-            TextBox fwtb = create_numeric_textbox("fw_" + pd.attributes["uid"].ToString());
+            TextBox fwtb = create_numeric_textbox("fw_" + pd.attributes[UID].ToString());
             if (spd != null)
                 fwtb.Text = spd.fw.ToString();
 
@@ -1248,7 +1296,7 @@ namespace gbe
             c.Controls.Add(fwtb);
             r.Cells.Add(c);
 
-            TextBox bwtb = create_numeric_textbox("bw_" + pd.attributes["uid"].ToString());
+            TextBox bwtb = create_numeric_textbox("bw_" + pd.attributes[UID].ToString());
             if (spd != null)
                 bwtb.Text = spd.bw.ToString();
 
@@ -1276,27 +1324,30 @@ namespace gbe
            // btn_remove_part.Text = "X";
             btn_remove_part.ImageUrl = "~/delete.png";
             btn_remove_part.ToolTip = "Remove part";
-            btn_remove_part.ID = "btn_remove_part_" + pd.attributes["uid"].ToString(); // tblParts.Rows.Count.ToString();
-            btn_remove_part.Attributes["uid"] = pd.attributes["uid"].ToString();
+            btn_remove_part.ID = "btn_remove_part_" + pd.attributes[UID].ToString(); // tblParts.Rows.Count.ToString();
+            btn_remove_part.Attributes[UID] = pd.attributes[UID].ToString();
                                     
             c = new TableCell();
             c.HorizontalAlign = HorizontalAlign.Center;
             c.Controls.Add(btn_remove_part);
             r.Cells.Add(c);
 
-            r.Attributes["uid"] = pd.attributes["uid"].ToString();
+            r.Attributes[UID] = pd.attributes[UID].ToString();
 
             r.Attributes["slots"] = schedule_fab.get_slots(pd).ToString();
 
             if (pd.attributes.ContainsKey("spd_id"))
                 r.Attributes["spd_id"] = pd.attributes["spd_id"].ToString();
 
-            string uid = Request.QueryString["uid"];
+            if (pd.attributes.ContainsKey("include_in_weld_map"))
+                r.Attributes["include_in_weld_map"] = pd.attributes["include_in_weld_map"].ToString();
 
-            if (b_add_to_top)
-                tblParts.Rows.AddAt(0, r); // put on top
-            else
-                tblParts.Rows.Add(r);
+            if (pd.attributes.ContainsKey("welder"))
+                r.Attributes["welder"] = pd.attributes["welder"].ToString();
+
+            string uid = Request.QueryString[UID];
+
+            tblParts.Rows.Add(r);
                 
             paint_part_table();
         }
@@ -1331,18 +1382,21 @@ namespace gbe
 
             int i = 0;
 
+            // hs. 20221115
+            /*
             SortedList sl_parts_list = new SortedList();
 
             foreach (part_data pd in m_parts_list)
             {
                 sl_parts_list.Add(pd.description+sl_parts_list.Count.ToString(), pd);
             }
+            */
 
-            foreach(DictionaryEntry e0 in sl_parts_list)
-            //foreach(part_data pd in m_parts_list)
+            //foreach(DictionaryEntry e0 in sl_parts_list)
+            foreach(part_data pd in m_parts_list)
             {
-                part_data pd = (part_data)e0.Value;
-                add_part_to_table(pd, null, false);
+                //part_data pd = (part_data)e0.Value;
+                add_part_to_table(pd, null);
                 i++;
             }
         }
@@ -1372,6 +1426,8 @@ namespace gbe
                     {
 
                         bool b_already_there = false;
+
+                        /* hs 20221114
                         foreach (part_data pd0 in m_parts_list)
                         {
                             if (pd0.description == pd.description)
@@ -1381,13 +1437,9 @@ namespace gbe
                                 break;
                             }
                         }
-
-                        /* moved to add_part_to_table
-                        if (!pd.attributes.ContainsKey("uid"))
-                            pd.attributes.Add("uid", pd.part_number + Guid.NewGuid().ToString("N"));
                         */
 
-                        add_part_to_table(pd, null, true);
+                        add_part_to_table(pd, null);
 
                         if (!b_already_there)
                             m_parts_list.Add(pd);

@@ -92,6 +92,8 @@ namespace gbe
             ArrayList a2 = new ArrayList();
             SortedList sl = new SortedList();
 
+            order_by = " seq, id ";
+
             try
             {
                 DataTable dta = get_data(m_tbl, search_params);
@@ -122,7 +124,12 @@ namespace gbe
 
                         try { sd.include_in_weld_map = (bool)dr["include_in_weld_map"]; }
                         catch { }
-                        
+
+                        try { sd.welder = dr["welder"].ToString(); } catch { }
+
+                        try { sd.seq = (int)dr["seq"]; }
+                        catch { }
+
                     }
                     catch { }
 
@@ -269,9 +276,10 @@ namespace gbe
         public int bw = 0;
         public int porder = 0;
         public bool picked = false;
-
         public part_data part_data = null;
-                
         public bool include_in_weld_map = false;
+        public int seq = 0;
+
+        public string welder = string.Empty;
     }
 }
