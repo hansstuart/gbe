@@ -265,6 +265,8 @@ namespace gbe
         {
             return (System.Web.HttpContext.Current.User.Identity.Name.ToUpper() == "SB")
                     ||(System.Web.HttpContext.Current.User.Identity.Name.ToUpper() == "DU")
+                    || (System.Web.HttpContext.Current.User.Identity.Name.ToUpper() == "JSUMMERS")
+                    || (System.Web.HttpContext.Current.User.Identity.Name.ToUpper() == "JS")
                     || (System.Web.HttpContext.Current.User.Identity.Name.ToUpper() == "PCF");
         }
 
@@ -1951,7 +1953,7 @@ namespace gbe
                     string CM = ",";
 
 
-                    string[] hdr = new string[12] { "spool", "revision", "welder", "start", "finish", "status", "on_hold", "part_number", "description", "qty", "fw", "bw" };
+                    string[] hdr = new string[12] { "spool", "revision", "start", "finish", "status", "on_hold", "part_number", "description", "welder", "qty", "fw", "bw" };
 
                     Response.ContentType = "text/csv";
                     Response.AppendHeader("Content-Disposition", "attachment; filename=spool_data_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".csv");
@@ -1990,13 +1992,7 @@ namespace gbe
                         line_spool += DC + sd.revision + DC;
                         line_spool += CM;
 
-                        string welder = string.Empty;
-
-                        if (sd.welder_data != null)
-                            welder = sd.welder_data.login_id;
-
-                        line_spool += DC + welder + DC;
-                        line_spool += CM;
+                        
 
                         string dts = string.Empty;
                         string dte = string.Empty;
@@ -2037,6 +2033,41 @@ namespace gbe
                                     line_part += DC + spd.part_data.description + DC;
                                     line_part += CM;
 
+                                    string swelder = string.Empty;
+
+                                    if (spd.welder.Trim().Length > 0)
+                                        swelder = spd.welder;
+                                    else
+                                    {
+                                        string welder = string.Empty;
+
+                                        if (sd.welder_data != null)
+                                            welder = sd.welder_data.login_id;
+
+                                        string sfw = string.Empty;
+
+                                        if (sd.weld_job_data != null)
+                                        {
+                                            if (sd.weld_job_data.robot > 0)
+                                                sfw = "Robot";
+                                        }
+
+                                        if (welder.Trim().Length > 0)
+                                        {
+                                            if (sfw.Trim().Length > 0)
+                                                sfw += "/";
+
+                                            sfw += welder;
+                                        }
+
+                                        if (sfw.Trim().Length > 0)
+                                        {
+                                            swelder = sfw;
+                                        }
+                                    }
+
+                                    line_part += DC + swelder + DC;
+                                    line_part += CM;
 
                                     line_part += spd.qty.ToString("0.00");
                                     line_part += CM;

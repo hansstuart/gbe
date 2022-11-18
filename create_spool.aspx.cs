@@ -1220,6 +1220,7 @@ namespace gbe
             if (!pd.attributes.ContainsKey(UID))
                 pd.attributes.Add(UID, pd.part_number + Guid.NewGuid().ToString("N"));
 
+            /* hs 20221116
             foreach (TableRow r0 in tblParts.Rows)
             {
                 if(pd.description.ToUpper() == ((LiteralControl)r0.Cells[1].Controls[0]).Text.ToUpper())
@@ -1227,7 +1228,7 @@ namespace gbe
                     if (pd.description.ToUpper().Contains("PIPE"))
                         return;
 
-                    /* hs 20221114
+                    
                     string sqty = ((TextBox)r0.Cells[2].Controls[1]).Text;
 
                     int qty = 0;
@@ -1240,9 +1241,12 @@ namespace gbe
                     ((TextBox)r0.Cells[2].Controls[1]).Text = qty.ToString();
 
                     return;
-                    */
+                    
                 }
             }
+            */
+    
+            
 
             TableRow r;
             TableCell c;

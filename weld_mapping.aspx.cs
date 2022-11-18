@@ -226,9 +226,10 @@ namespace gbe
 
                 string[] hdr = new string[] { "Spool", "Revision", "Test Report 1", "Test Report 2" };
 
-                
-                string[] hdr2 = new string[] { "Part", "Welder", "Qty", "FW", "BW", "Total FW", "Total BW" };
-                
+
+                //string[] hdr2 = new string[] { "Part", "Welder", "Qty", "FW", "BW", "Total FW", "Total BW" };
+                string[] hdr2 = new string[] { "Part", "Welder", "Qty", "FW", "BW" };
+
 
                 int fw_total_welder = 0;
                 int bw_total_welder = 0;
@@ -381,6 +382,7 @@ namespace gbe
                                     r.Cells.Add(c);
 
                                     
+                                    /*
                                     c = new TableCell();
                                     c.HorizontalAlign = HorizontalAlign.Right;
                                     c.Controls.Add(new LiteralControl((spd.qty*spd.fw).ToString("0")));
@@ -390,13 +392,13 @@ namespace gbe
                                     c.HorizontalAlign = HorizontalAlign.Right;
                                     c.Controls.Add(new LiteralControl((spd.qty*spd.bw).ToString("0")));
                                     r.Cells.Add(c);
-                                    
+                                    */
 
-                                    fw_total_spool += Convert.ToInt32(spd.qty) * spd.fw;
-                                    bw_total_spool += Convert.ToInt32(spd.qty) * spd.bw;
+                                    fw_total_spool +=  spd.fw;
+                                    bw_total_spool +=  spd.bw;
 
-                                    grand_total_wt.fw += Convert.ToInt32(spd.qty) * spd.fw;
-                                    grand_total_wt.bw += Convert.ToInt32(spd.qty) * spd.bw;
+                                    grand_total_wt.fw +=  spd.fw;
+                                    grand_total_wt.bw +=  spd.bw;
 
                                     tblResults.Rows.Add(r);
                                 }
@@ -418,6 +420,7 @@ namespace gbe
                             c.Controls.Add(new LiteralControl("Spool Total"));
                             r.Cells.Add(c);
 
+                            /*
                             for (int n = 0; n < 2; n++)
                             {
                                 c = new TableCell();
@@ -425,6 +428,7 @@ namespace gbe
                                 c.Controls.Add(new LiteralControl(string.Empty));
                                 r.Cells.Add(c);
                             }
+                            */
 
                             c = new TableCell();
                             c.HorizontalAlign = HorizontalAlign.Right;
@@ -459,6 +463,7 @@ namespace gbe
                                 c.Controls.Add(new LiteralControl("Tested"));
                                 r.Cells.Add(c);
 
+                                /*
                                 for (int n = 0; n < 2; n++)
                                 {
                                     c = new TableCell();
@@ -466,6 +471,7 @@ namespace gbe
                                     c.Controls.Add(new LiteralControl(string.Empty));
                                     r.Cells.Add(c);
                                 }
+                                */
 
                                 c = new TableCell();
                                 c.HorizontalAlign = HorizontalAlign.Right;
