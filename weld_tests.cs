@@ -103,6 +103,16 @@ namespace gbe
 
             return a;
         }
+
+        public void update_reports(string r1, string r2, int id)
+        {
+            SortedList sl = new SortedList();
+
+            sl.Add("report_number", r1);
+            sl.Add("report2_number", r2);
+
+            update(sl, m_tbl, id);
+        }
     }
 
     [Serializable]

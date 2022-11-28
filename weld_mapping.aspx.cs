@@ -13,6 +13,11 @@ namespace gbe
 {
     public partial class weld_mapping : System.Web.UI.Page
     {
+        const string ID = "id";
+        const string SPOOL_ID = "spool_id";
+        const string TXT_R1 = "txt_r1";
+        const string TXT_R2 = "txt_r2";
+
         SortedList m_spools = null;
         SortedList m_weld_tests = null;
         SortedList m_welders = null;
@@ -87,7 +92,7 @@ namespace gbe
 
             if (txtSearch.Text.Trim().Length > 3)
             {
-                string select = "select spools.id, spool, barcode, revision, users.login_id, spool_parts.id as spool_parts_id, spool_parts.qty, spool_parts.fw, spool_parts.bw, spool_parts.include_in_weld_map, spool_parts.welder, parts.part_number, parts.description, weld_tests.spool_id, weld_tests.report_number, weld_tests.report2_number, weld_tests.fw as wtfw, weld_tests.bw as wtbw, weld_jobs.robot ";
+                string select = "select spools.id, spool, barcode, revision, users.login_id, spool_parts.id as spool_parts_id, spool_parts.qty, spool_parts.fw, spool_parts.bw, spool_parts.include_in_weld_map, spool_parts.welder, parts.part_number, parts.description, weld_tests.id as weld_test_id, weld_tests.spool_id, weld_tests.report_number, weld_tests.report2_number, weld_tests.fw as wtfw, weld_tests.bw as wtbw, weld_jobs.robot ";
                 select += " from spools ";
                 select += " inner join spool_parts on spool_parts.spool_id=spools.id ";
                 select += " inner join parts on spool_parts.part_id=parts.id ";
@@ -156,6 +161,7 @@ namespace gbe
                                     sd.spool_part_data = new ArrayList();
 
                                     weld_test_data wtd = new weld_test_data();
+                                    wtd.id = dr_wm.i_gf("weld_test_id");
                                     wtd.bw = dr_wm.i_gf("wtbw");
                                     wtd.fw = dr_wm.i_gf("wtfw");
                                     wtd.report_number = dr_wm.s_gf("report_number");
@@ -281,9 +287,11 @@ namespace gbe
                     string r1, r2;
                     r1 = r2 = string.Empty;
 
+                    weld_test_data wtd = null;
+
                     if (m_weld_tests.ContainsKey(sd.id))
                     {
-                        weld_test_data wtd = (weld_test_data)m_weld_tests[sd.id];
+                        wtd = (weld_test_data)m_weld_tests[sd.id];
 
                         r1 = wtd.report_number;
                         r2 = wtd.report2_number;
@@ -295,13 +303,38 @@ namespace gbe
                         grand_total_wt.bw_tested += wtd.bw;
                     }
 
-                    c = new TableCell();
-                    c.Controls.Add(new LiteralControl(r1));
-                    r.Cells.Add(c);
+                    if (wtd.id > 0)
+                    {
+                        c = new TableCell();
+                        TextBox txt_r1 = new TextBox();
+                        txt_r1.ID = TXT_R1 + wtd.id;
+                        txt_r1.Text = r1;
+                        txt_r1.Attributes[ID] = wtd.id.ToString();
+                        c.Controls.Add(txt_r1);
+                        r.Cells.Add(c);
 
-                    c = new TableCell();
-                    c.Controls.Add(new LiteralControl(r2));
-                    r.Cells.Add(c);
+                        c = new TableCell();
+                        TextBox txt_r2 = new TextBox();
+                        txt_r2.ID = TXT_R2 + wtd.id;
+                        txt_r2.Text = r2;
+                        txt_r2.Attributes[ID] = wtd.id.ToString();
+                        c.Controls.Add(txt_r2);
+                        r.Cells.Add(c);
+
+                        c = new TableCell();
+                        c.HorizontalAlign = HorizontalAlign.Center;
+                        ImageButton btn_save_report_details = new ImageButton();
+                        btn_save_report_details.ToolTip = "Save report details";
+                        btn_save_report_details.ImageUrl = "~/disk.png";
+                        btn_save_report_details.Click += btn_save_report_details_Click;
+                        btn_save_report_details.ID = "btn_save_report_details" + wtd.id.ToString();
+                        btn_save_report_details.Attributes[ID] = wtd.id.ToString();
+                        btn_save_report_details.Attributes[SPOOL_ID] = sd.id.ToString();
+                        c.Controls.Add(btn_save_report_details);
+                        r.Cells.Add(c);
+
+                        r.Attributes[ID] = wtd.id.ToString();
+                    }
 
                     tblResults.Rows.Add(r);
 
@@ -445,7 +478,7 @@ namespace gbe
                             // hs. 20221114
                             if (m_weld_tests.ContainsKey(sd.id))
                             {
-                                weld_test_data wtd = (weld_test_data)m_weld_tests[sd.id];
+                                wtd = (weld_test_data)m_weld_tests[sd.id];
 
                                 r = new TableRow();
                                 r.BackColor = System.Drawing.Color.FromName("LightPink");
@@ -799,6 +832,79 @@ namespace gbe
 
                     tblResults.Rows.Add(r);
                      */
+                }
+            }
+        }
+
+        private void btn_save_report_details_Click(object sender, ImageClickEventArgs e)
+        {
+            ImageButton b = (ImageButton)sender;
+
+            string weld_test_id = (b.Attributes[ID]);
+            string spool_id = (b.Attributes[SPOOL_ID]);
+
+            string r1, r2;
+            r1 = r2 = string.Empty;
+
+            foreach (TableRow r in tblResults.Rows)
+            {
+                if (r.Attributes[ID] == weld_test_id)
+                {
+                    foreach (TableCell c in r.Cells)
+                    {
+                        foreach (Control ctrl in c.Controls)
+                        {
+                            if (ctrl.GetType() == typeof(TextBox))
+                            {
+                                TextBox tb = (TextBox)ctrl;
+
+                                if (tb.ID.StartsWith(TXT_R1))
+                                {
+                                    if (tb.Attributes[ID] == weld_test_id)
+                                    {
+                                        r1 = tb.Text;
+                                    }
+                                }
+                                else if (tb.ID.StartsWith(TXT_R2))
+                                {
+                                    if (tb.Attributes[ID] == weld_test_id)
+                                    {
+                                        r2 = tb.Text;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    break;
+                }
+            }
+
+            int iweld_test_id = 0;
+
+            try { iweld_test_id = Convert.ToInt32(weld_test_id); } catch { }
+
+            if (iweld_test_id > 0)
+            {
+                using (cdb_connection db = new cdb_connection())
+                {
+                    using (weld_tests wt = new weld_tests())
+                    {
+                        wt.update_reports(r1, r2, iweld_test_id);
+                    }
+                }
+
+                int ispool_id = 0;
+
+                try { ispool_id = Convert.ToInt32(spool_id); } catch { }
+
+                if (m_weld_tests.ContainsKey(ispool_id))
+                {
+                    weld_test_data wtd = (weld_test_data)m_weld_tests[ispool_id];
+                    wtd.report_number = r1;
+                    wtd.report2_number = r2;
+
+                    m_weld_tests = (SortedList)ViewState["weld_tests"];
                 }
             }
         }
