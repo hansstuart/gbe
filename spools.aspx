@@ -160,6 +160,19 @@
             }
             document.forms[0].appendChild(confirm_value);
         }
+
+        function ConfirmChecked() {
+            var confirm_value = document.createElement("INPUT");
+            confirm_value.type = "hidden";
+            confirm_value.name = "confirm_checked_value";
+
+            if (confirm("Confirm that the spool has been checked.")) {
+                confirm_value.value = "Yes";
+            } else {
+                confirm_value.value = "No";
+            }
+            document.forms[0].appendChild(confirm_value);
+        }
         
         function isNumberKey(evt)
         {

@@ -280,7 +280,7 @@ namespace gbe
                 bool badmin = is_admin(ud);
                 bool bsupervisor = is_supervisor(ud);
 
-                string[] hdr = new string[] { "WM", "Spool", "Revision", "Batch", "Created", "Fitter", "Start", "Finish", /*"Fit Time", "Weld Time",*/ "Installed By", "Status", "On Hold" };
+                string[] hdr = new string[] { "WM", "Spool", "Revision", "Batch", "Created", "Fitter", "Start", "Finish", /*"Fit Time", "Weld Time",*/ "Installed By", "Status", "Hold", "Checked" };
 
                 SortedList sl_barcode_order = new SortedList();
 
@@ -542,6 +542,7 @@ namespace gbe
                     // status end
 
                     c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Center;
                     CheckBox chk_onhold = new CheckBox();
                     chk_onhold.AutoPostBack = true;
                     chk_onhold.CheckedChanged += new EventHandler(chk_onhold_CheckedChanged);
@@ -554,6 +555,28 @@ namespace gbe
                     c.Controls.Add(chk_onhold);
 
                     r.Cells.Add(c);
+
+                    if (sd.checked_by.Trim().Length == 0)
+                    {
+                        ImageButton btn_checked = new ImageButton();
+                        btn_checked.OnClientClick = "ConfirmChecked()";
+                        btn_checked.Click += btn_checked_Click;
+                        btn_checked.ImageUrl = "~/checked.png";
+                        btn_checked.ToolTip = "Click to confirm spool has been checked";
+                        btn_checked.ID = "btn_checked_" + sd.id.ToString();
+                        btn_checked.Attributes["uid"] = sd.id.ToString();
+
+                        c = new TableCell();
+                        c.HorizontalAlign = HorizontalAlign.Center;
+                        c.Controls.Add(btn_checked);
+                        r.Cells.Add(c);
+                    }
+                    else
+                    {
+                        c = new TableCell();
+                        c.Controls.Add(new LiteralControl(sd.checked_by));
+                        r.Cells.Add(c);
+                    }
 
                     if (sd.drawing_id > 0)
                     {
@@ -689,6 +712,43 @@ namespace gbe
                     r.Cells.Add(c);
                     tblResults.Rows.Add(r);
                 }
+            }
+        }
+
+        private void btn_checked_Click(object sender, ImageClickEventArgs e)
+        {
+            string confirmValue = Request.Form["confirm_checked_value"];
+
+            if (confirmValue == "Yes")
+            {
+                ImageButton b = (ImageButton)sender;
+
+                string uid = (b.Attributes["uid"]);
+
+                string login_id = System.Web.HttpContext.Current.User.Identity.Name;
+
+                string checked_by = login_id + "\x20" + DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+
+                SortedList sl = new SortedList();
+
+                int id = 0;
+
+                try { id = Convert.ToInt32(uid); } catch { }
+
+                sl.Add("id", id);
+                sl.Add("checked_by", checked_by);
+
+                using (spools spls = new spools())
+                {
+                    spls.save_spool_details(sl, "Checked", System.Web.HttpContext.Current.User.Identity.Name);
+
+                    spool_data sd = ((spool_data_ex)m_spools[id]).sd;
+
+                    sd.checked_by = checked_by;
+                }
+
+                ViewState[VS_SPOOLS] = m_spools;
+                display();
             }
         }
 

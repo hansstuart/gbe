@@ -137,6 +137,9 @@ namespace gbe
                 try { sd.drawing_id = (int)dr["drawing_id"]; }
                 catch { }
 
+                try { sd.checked_by = dr["checked_by"].ToString(); }
+                catch { }
+
                 a.Add(sd);
             }
 
@@ -461,6 +464,8 @@ namespace gbe
         public string cut_size4 = string.Empty;
 
         public int drawing_id = 0;
+
+        public string checked_by = string.Empty;
 
         public user_data welder_data = null;
         public user_data fitter_data = null;
