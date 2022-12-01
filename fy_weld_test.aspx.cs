@@ -156,7 +156,7 @@ namespace gbe
                         {
                             string user_name = System.Web.HttpContext.Current.User.Identity.Name;
 
-                            int user_id = fy.ws().is_weld_tester(fy.PASSKEY, user_name);
+                            int user_id = fy.ws().get_user_id(fy.PASSKEY, user_name);
                             fy.ws().save_weld_test(fy.PASSKEY, spool_data.id, user_id, txtReport1.Text.Trim(), txtReport2.Text.Trim(), fw, bw);
                         }
                     }

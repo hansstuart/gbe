@@ -102,7 +102,7 @@ namespace gbe
                 select += " where barcode like '" + txtSearch.Text.Trim() + "%' ";
                 select += " and spools.include_in_weld_map=1";
                 select += " and spool_parts.include_in_weld_map=1";
-                select += " order by spools.id";
+                select += " order by spools.id asc, weld_tests.id desc ";
 
                 try
                 {
@@ -309,6 +309,7 @@ namespace gbe
                         TextBox txt_r1 = new TextBox();
                         txt_r1.ID = TXT_R1 + wtd.id;
                         txt_r1.Text = r1;
+                        txt_r1.MaxLength = 50;
                         txt_r1.Attributes[ID] = wtd.id.ToString();
                         c.Controls.Add(txt_r1);
                         r.Cells.Add(c);
@@ -316,6 +317,7 @@ namespace gbe
                         c = new TableCell();
                         TextBox txt_r2 = new TextBox();
                         txt_r2.ID = TXT_R2 + wtd.id;
+                        txt_r2.MaxLength = 50;
                         txt_r2.Text = r2;
                         txt_r2.Attributes[ID] = wtd.id.ToString();
                         c.Controls.Add(txt_r2);
@@ -934,7 +936,12 @@ namespace gbe
                         if (c.HorizontalAlign != HorizontalAlign.Right)
                             line += DC;
 
-                        line += ((LiteralControl)(c.Controls[0])).Text;
+                        Control cntrl = c.Controls[0];
+
+                        if (cntrl.GetType() == typeof(LiteralControl))
+                            line += ((LiteralControl)(cntrl)).Text;
+                        else if (cntrl.GetType() == typeof(TextBox))
+                            line += ((TextBox)(cntrl)).Text;
 
                         if (c.HorizontalAlign != HorizontalAlign.Right)
                             line += DC;
