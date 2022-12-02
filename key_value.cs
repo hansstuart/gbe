@@ -8,6 +8,10 @@ namespace gbe
     [Serializable]
     public class key_value
     {
+        key_value() { }
+
+        public key_value(string k, object v) { key = k; value = v; }
+
         public string key = string.Empty;
         public object value = null;
     }

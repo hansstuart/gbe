@@ -144,7 +144,7 @@ namespace gbe
                 return;
             }
             else
-                Response.Redirect("fy_weld_test.aspx");
+                Response.Redirect("fy_weld_test_ext.aspx");
         }
 
         protected void btnDelivery_Click(object sender, EventArgs e)

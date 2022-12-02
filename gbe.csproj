@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Web References\imsl_ws\imsl_ws.disco" />
+    <Content Include="fy_weld_test_ext.aspx" />
     <Content Include="Web.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -231,6 +232,13 @@
     </Compile>
     <Compile Include="fy_weld_test.aspx.designer.cs">
       <DependentUpon>fy_weld_test.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="fy_weld_test_ext.aspx.cs">
+      <DependentUpon>fy_weld_test_ext.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="fy_weld_test_ext.aspx.designer.cs">
+      <DependentUpon>fy_weld_test_ext.aspx</DependentUpon>
     </Compile>
     <Compile Include="gbe_fy.Master.cs">
       <DependentUpon>gbe_fy.Master</DependentUpon>
@@ -419,6 +427,7 @@
       <DependentUpon>weld_tests.aspx</DependentUpon>
     </Compile>
     <Compile Include="weld_tests.cs" />
+    <Compile Include="weld_test_ext.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="add_to_schedule.aspx" />

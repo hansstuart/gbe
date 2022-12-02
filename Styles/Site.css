@@ -28,6 +28,12 @@ body
         font-size: 1.5em;
 }
 
+.FY_TableTextBox {
+    color: Black;
+    font-family: Verdana;
+    font-size: 1.0em;
+}
+
 .GBE_Link {
     text-decoration: none;
     background-color: #9dd0e1;
