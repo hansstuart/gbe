@@ -10,69 +10,87 @@
 </div>
 
 <div style="clear:both">&nbsp;</div>
-
 <div>
-    <asp:Label id="lblReport1" runat="server" Text="Report 1:" CssClass="FY_Label"></asp:Label>
-</div>
+    <table style="width: 1096px">
+        <tr>
+            <td style="width: 247px">
+                <asp:Label ID="lblReport1" runat="server" CssClass="FY_Label" Text="Report MPI FW:"></asp:Label>
+            </td>
+            <td style="width: 309px">
+                <asp:TextBox ID="txtReport1MPI_FW" runat="server" CssClass="FY_TextBox" Width="284px"></asp:TextBox>
+            </td>
+            <td style="width: 289px">
+                <asp:Label ID="lblReport2" runat="server" CssClass="FY_Label" Text="Report MPI BW:"></asp:Label>
+            </td>
+            <td>
+                <asp:TextBox ID="txtReport2MPI_BW" runat="server" CssClass="FY_TextBox" Width="284px"></asp:TextBox>
+            </td>
+        </tr>
 
+        <tr>
+            <td style="width: 247px">
+                <asp:Label ID="lblReport3" runat="server" CssClass="FY_Label" Text="Report UT BW:"></asp:Label>
+            </td>
+            <td style="width: 309px">
+                <asp:TextBox ID="txtReport3UT_BW" runat="server" CssClass="FY_TextBox" Width="284px"></asp:TextBox>
+            </td>
+            <td style="width: 289px">
+                <asp:Label ID="lblReport4" runat="server" CssClass="FY_Label" Text="Report XRAY BW:"></asp:Label>
+            </td>
+            <td>
+                <asp:TextBox ID="txtReport4XRAY_BW" runat="server" CssClass="FY_TextBox" Width="284px"></asp:TextBox>
+            </td>
+        </tr>
+
+        <tr>
+            <td style="width: 247px">
+                <asp:Label ID="lblReport5" runat="server" CssClass="FY_Label" Text="Report DP FW:"></asp:Label>
+            </td>
+            <td style="width: 309px">
+                <asp:TextBox ID="txtReport5DP_FW" runat="server" CssClass="FY_TextBox" Width="284px"></asp:TextBox>
+            </td>
+            <td style="width: 289px">
+                <asp:Label ID="lblReport6" runat="server" CssClass="FY_Label" Text="Report DP BW:"></asp:Label>
+            </td>
+            <td>
+                <asp:TextBox ID="txtReport6DP_BW" runat="server" CssClass="FY_TextBox" Width="284px"></asp:TextBox>
+            </td>
+        </tr>
+
+        <tr>
+            <td style="width: 247px">
+                <asp:Label ID="lblReport7" runat="server" CssClass="FY_Label" Text="Report VI FW:"></asp:Label>
+            </td>
+            <td style="width: 309px">
+                <asp:TextBox ID="txtReport7VI_FW" runat="server" CssClass="FY_TextBox" Width="284px"></asp:TextBox>
+            </td>
+            <td style="width: 289px">
+                <asp:Label ID="lblReport8" runat="server" CssClass="FY_Label" Text="Report VI BW:"></asp:Label>
+            </td>
+            <td>
+                <asp:TextBox ID="txtReport8VI_BW" runat="server" CssClass="FY_TextBox" Width="284px"></asp:TextBox>
+            </td>
+        </tr>
+
+    </table>
+</div>
 <div style="clear:both">
     <div style="float:left">
-        <asp:TextBox ID="txtReport1" runat="server" Width="600px" CssClass="FY_TextBox"></asp:TextBox>
     </div>
-</div>
-
-<div style="clear:both">&nbsp;</div>
-
-<div>
-    <asp:Label id="lblReport2" runat="server" Text="Report 2:" CssClass="FY_Label"></asp:Label>
-</div>
-
-<div style="clear:both">
-    <div style="float:left">
-        <asp:TextBox ID="txtReport2" runat="server" Width="600px" CssClass="FY_TextBox"></asp:TextBox>
+    &nbsp;<div style="float:left">
     </div>
-</div>
-
-<div style="clear:both">&nbsp;</div>
-
-<div>
-    
     <div style="float:left">
     </div>
-    
-    <div style="float:left; width:10px">&nbsp;</div>
-    
-    <div style="float:left">
-    </div>
-    
-    <div style="float:left; width:10px">&nbsp;</div>
-    
-    <div style="float:left">
-    </div>
-    
-    <div style="float:left; width:10px">&nbsp;</div>
-    
-    <div style="float:left">
-    </div>
-    
-</div>
-
-<div style="clear:both">&nbsp;</div>
-
-<div style="clear:both">
-    
     <div>
-        <asp:Label id="lblBarcode" runat="server" Text="Barcode:" CssClass="FY_Label"></asp:Label>
+        <asp:Label ID="lblBarcode" runat="server" CssClass="FY_Label" Text="Barcode:"></asp:Label>
     </div>
-
     <div style="float:left">
-        <asp:TextBox ID="txtBarcode" runat="server" Width="600px" CssClass="FY_TextBox"></asp:TextBox>
+        <asp:TextBox ID="txtBarcode" runat="server" CssClass="FY_Label" Width="528px"></asp:TextBox>
     </div>
-    
-    <div style="float:left; width:10px">&nbsp;</div>
-    
+    <div style="float:left; width:10px">
+        &nbsp;</div>
     <div style="float:left">
-        <asp:ImageButton ID="btnGetSpool" runat="server" ImageUrl="~/search32.png" ToolTip="Get spool" OnClick="btnGetSpool_Click" />
+        <asp:ImageButton ID="btnGetSpool" runat="server" ImageUrl="~/search32.png" OnClick="btnGetSpool_Click" ToolTip="Get spool" />
     </div>
 </div>
 

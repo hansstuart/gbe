@@ -1001,5 +1001,10 @@ namespace gbe
         {
             return base.b_gf(m_dr, fld);
         }
+
+        public DateTime dt_gf(string fld)
+        {
+            return base.dt_gf(m_dr, fld);
+        }
     }
 }

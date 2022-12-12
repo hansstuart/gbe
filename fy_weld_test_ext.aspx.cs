@@ -79,28 +79,18 @@ namespace gbe
         {
             try
             {
-                if (txtReport1.Text.Trim().Length == 0)
-                {
-                    lblMsg.Text = "Report 1 missing";
-                    txtReport1.Focus();
-                    return;
-                }
-
-                if (txtReport2.Text.Trim().Length == 0)
-                {
-                    lblMsg.Text = "Report 2 missing";
-                    txtReport2.Focus();
-                    return;
-                }
-
                 ArrayList a_welder_tests = new ArrayList();
 
                 foreach (TableRow r in tblWeldTest.Rows)
                 {
                     SortedList sl = null;
 
+                    string welder_id = string.Empty;
+
                     foreach (TableCell c in r.Cells)
                     {
+                        welder_id = r.Attributes[WELDER_ID];
+
                         foreach (Control cntrl in c.Controls)
                         {
                             if (cntrl.GetType() == typeof(TextBox))
@@ -127,6 +117,7 @@ namespace gbe
 
                     if (sl != null)
                     {
+                        sl.Add(WELDER_ID, welder_id);
                         sl.Add(SPOOL_ID, m_spool_id);
                         a_welder_tests.Add(sl);
                     }
@@ -142,8 +133,14 @@ namespace gbe
                     sl_weldtest.Add("weld_tester_id", weld_tester_id);
                     sl_weldtest.Add(SPOOL_ID, m_spool_id);
                     sl_weldtest.Add("datetime_stamp", DateTime.Now);
-                    sl_weldtest.Add("report1", txtReport1.Text.Trim());
-                    sl_weldtest.Add("report2", txtReport1.Text.Trim());
+                    sl_weldtest.Add("report1MPI_FW", txtReport1MPI_FW.Text.Trim());
+                    sl_weldtest.Add("report2MPI_BW", txtReport2MPI_BW.Text.Trim());
+                    sl_weldtest.Add("report3UT_BW", txtReport3UT_BW.Text.Trim());
+                    sl_weldtest.Add("report4XRAY_BW", txtReport4XRAY_BW.Text.Trim());
+                    sl_weldtest.Add("report5DP_FW", txtReport5DP_FW.Text.Trim());
+                    sl_weldtest.Add("report6DP_BW", txtReport6DP_BW.Text.Trim());
+                    sl_weldtest.Add("report7VI_FW", txtReport7VI_FW.Text.Trim());
+                    sl_weldtest.Add("report8VI_BW", txtReport8VI_BW.Text.Trim());
 
                     weld_test_ext wte = new weld_test_ext();
                     wte.save_weld_test_ext_data(sl_weldtest, a_welder_tests);
@@ -264,7 +261,7 @@ namespace gbe
 
                 tblWeldTest.Rows.Clear();
 
-                ArrayList a_hdr_fld_names = new ArrayList()
+            ArrayList a_hdr_fld_names = new ArrayList()
             {
                 new key_value("Welder", "welder_id"),
                 new key_value("MPI FW", "mpi_fw"),

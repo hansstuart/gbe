@@ -419,6 +419,13 @@
     <Compile Include="weld_mapping.aspx.designer.cs">
       <DependentUpon>weld_mapping.aspx</DependentUpon>
     </Compile>
+    <Compile Include="weld_mapping_ext.aspx.cs">
+      <DependentUpon>weld_mapping_ext.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="weld_mapping_ext.aspx.designer.cs">
+      <DependentUpon>weld_mapping_ext.aspx</DependentUpon>
+    </Compile>
     <Compile Include="weld_tests.aspx.cs">
       <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>weld_tests.aspx</DependentUpon>
@@ -459,6 +466,7 @@
     <Content Include="view_schedule.aspx" />
     <Content Include="welder_activity.aspx" />
     <Content Include="weld_mapping.aspx" />
+    <Content Include="weld_mapping_ext.aspx" />
     <Content Include="weld_tests.aspx" />
   </ItemGroup>
   <ItemGroup>

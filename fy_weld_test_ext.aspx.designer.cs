@@ -42,13 +42,13 @@ namespace gbe
         protected global::System.Web.UI.WebControls.Label lblReport1;
 
         /// <summary>
-        /// txtReport1 control.
+        /// txtReport1MPI_FW control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtReport1;
+        protected global::System.Web.UI.WebControls.TextBox txtReport1MPI_FW;
 
         /// <summary>
         /// lblReport2 control.
@@ -60,13 +60,121 @@ namespace gbe
         protected global::System.Web.UI.WebControls.Label lblReport2;
 
         /// <summary>
-        /// txtReport2 control.
+        /// txtReport2MPI_BW control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtReport2;
+        protected global::System.Web.UI.WebControls.TextBox txtReport2MPI_BW;
+
+        /// <summary>
+        /// lblReport3 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblReport3;
+
+        /// <summary>
+        /// txtReport3UT_BW control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtReport3UT_BW;
+
+        /// <summary>
+        /// lblReport4 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblReport4;
+
+        /// <summary>
+        /// txtReport4XRAY_BW control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtReport4XRAY_BW;
+
+        /// <summary>
+        /// lblReport5 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblReport5;
+
+        /// <summary>
+        /// txtReport5DP_FW control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtReport5DP_FW;
+
+        /// <summary>
+        /// lblReport6 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblReport6;
+
+        /// <summary>
+        /// txtReport6DP_BW control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtReport6DP_BW;
+
+        /// <summary>
+        /// lblReport7 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblReport7;
+
+        /// <summary>
+        /// txtReport7VI_FW control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtReport7VI_FW;
+
+        /// <summary>
+        /// lblReport8 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblReport8;
+
+        /// <summary>
+        /// txtReport8VI_BW control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtReport8VI_BW;
 
         /// <summary>
         /// lblBarcode control.

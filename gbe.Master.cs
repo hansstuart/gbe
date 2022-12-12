@@ -37,6 +37,7 @@ namespace gbe
             const string CUSTOMERS = "Customers";
             const string WELDER_FITTER_ACTIVITY = "Welder/Fitter Activity";
             const string WELD_MAPPING = "Weld Mapping";
+            const string WELD_MAPPING_EXT = "Weld Mapping Ext.";
             const string QA = "QA";
             const string WELD_TESTS = "Weld Tests";
             const string DELIVERIES = "Deliveries";
@@ -81,6 +82,7 @@ namespace gbe
             m_sl_menu_items.Add(CUSTOMERS, "maint1.aspx?t=customers");
             m_sl_menu_items.Add(WELDER_FITTER_ACTIVITY, "welder_activity.aspx");
             m_sl_menu_items.Add(WELD_MAPPING, "weld_mapping.aspx");
+            m_sl_menu_items.Add(WELD_MAPPING_EXT, "weld_mapping_ext.aspx");
             m_sl_menu_items.Add(QA, "qa.aspx");
             m_sl_menu_items.Add(WELD_TESTS, "weld_tests.aspx");
             m_sl_menu_items.Add(DELIVERIES, "deliveries.aspx");
@@ -124,6 +126,7 @@ namespace gbe
                 CUSTOMERS,
                 WELDER_FITTER_ACTIVITY,
                 WELD_MAPPING,
+                WELD_MAPPING_EXT,
                 QA,
                 WELD_TESTS,
                 DELIVERIES,
@@ -167,6 +170,7 @@ namespace gbe
                 SPOOLS,
                 VEHICLES,
                 WELD_MAPPING,
+                WELD_MAPPING_EXT,
                 WELD_TESTS,
                 WELDER_FITTER_ACTIVITY
 
@@ -188,6 +192,7 @@ namespace gbe
                 SPOOLS,
                 VEHICLES,
                 WELD_MAPPING,
+                WELD_MAPPING_EXT,
                 WELD_TESTS,
                 ADD_TO_FAB_HOLDING_AREA,
                 ADD_TO_DELIVERY_SCHEDULE,
