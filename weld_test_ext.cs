@@ -76,8 +76,6 @@ namespace gbe
         public string report8VI_BW = string.Empty;
         public DateTime datetime_stamp = DateTime.MinValue;
         public ArrayList a_weld_test_ext_welder = new ArrayList();
-        public int fw = 0; // total fw for spool
-        public int bw = 0; // total bw for spool
 
         public int total_mpi_bw()
         {
@@ -251,4 +249,15 @@ namespace gbe
             return total;
         }
     }
+
+    [Serializable]
+    public class spool_data_weld_mapping_ext
+    {
+        public string spool_part = string.Empty;
+        public string spool_welder = string.Empty; // from spools record (old mapping method) 
+        public string spool_part_welder = string.Empty; // from spool_parts record (new method)
+        public int fw = 0;
+        public int bw = 0;
+    }
+
 }
