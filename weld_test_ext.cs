@@ -76,8 +76,8 @@ namespace gbe
         public string report8VI_BW = string.Empty;
         public DateTime datetime_stamp = DateTime.MinValue;
         public ArrayList a_weld_test_ext_welder = new ArrayList();
-        public int fw = 0;
-        public int bw = 0;
+        public int fw = 0; // total fw for spool
+        public int bw = 0; // total bw for spool
 
         public int total_mpi_bw()
         {
@@ -162,6 +162,36 @@ namespace gbe
     }
 
     [Serializable]
+    public class weld_test_ext_fw_bw
+    {
+        public int fw = 0;
+        public int bw = 0;
+
+        public int fw_tested = 0;
+        public int bw_tested = 0;
+
+        public decimal pc_fw_tested() 
+        {
+            decimal fw_tested_pc = 0;
+
+            if (fw > 0)
+                fw_tested_pc = (Convert.ToDecimal(fw_tested) / Convert.ToDecimal(fw)) * 100;
+
+            return fw_tested_pc;
+        }
+
+        public decimal pc_bw_tested()
+        {
+            decimal bw_tested_pc = 0;
+
+            if (bw > 0)
+                bw_tested_pc = (Convert.ToDecimal(bw_tested) / Convert.ToDecimal(bw)) * 100;
+
+            return bw_tested_pc;
+        }
+    }
+
+    [Serializable]
     public class weld_test_ext_welder_data
     {
         public int id = 0;
@@ -176,10 +206,49 @@ namespace gbe
         public int vi_bw = 0;
         public int vi_fw = 0;
 
+        public int welder_fw = 0; // total fw for welder for spool
+        public int welder_bw = 0; // total bw for welder for spool
+
         public string welder = string.Empty;
 
         public int total() { return mpi_bw + mpi_fw + ut_bw + xray_bw + dp_bw + dp_fw + vi_bw + vi_fw; }
+
+        public int total_tested_fw() 
+        {
+            int total = 0;
+
+            if (mpi_fw > 0)
+                total = mpi_fw;
+
+            if (dp_fw > 0)
+                total = dp_fw;
+
+            if (vi_fw > 0)
+                total = vi_fw;
+
+            return total;
+        }
+
+        public int total_tested_bw()
+        {
+            int total = 0;
+
+            if (mpi_bw > 0)
+                total = mpi_bw;
+
+            if (ut_bw > 0)
+                total = ut_bw;
+
+            if (xray_bw > 0)
+                total = xray_bw;
+
+            if (dp_bw > 0)
+                total = dp_bw;
+
+            if (vi_bw > 0)
+                total = vi_bw;
+
+            return total;
+        }
     }
-
-
 }
