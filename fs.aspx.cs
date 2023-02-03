@@ -356,13 +356,14 @@ namespace gbe
 
                         r.BackColor = System.Drawing.Color.FromName("LightGray");
 
-                        string part_no, part_desc;
-                        part_no = part_desc = string.Empty;
+                        string part_no, part_desc, part_type;
+                        part_no = part_desc = part_type = string.Empty;
 
                         if (spd.part_data != null)
                         {
                             part_no = spd.part_data.part_number;
                             part_desc = spd.part_data.description;
+                            part_type = spd.part_data.part_type;
                         }
 
                         c = new TableCell();
@@ -383,7 +384,7 @@ namespace gbe
 
                         c = new TableCell();
 
-                        if (part_desc.ToUpper().Contains("PIPE"))
+                        if (part_desc.ToUpper().Contains("PIPE")|| part_type.ToUpper().Contains("PIPE"))
                             c.Controls.Add(new LiteralControl("Len:" + spd.qty.ToString("0.00")));
                         else
                             c.Controls.Add(new LiteralControl("Qty:" + spd.qty.ToString("0")));

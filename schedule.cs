@@ -219,7 +219,7 @@ namespace gbe
         {
             int slots = 0;
 
-            if (pd.description.ToUpper().Contains("PIPE"))
+            if (pd.description.ToUpper().Contains("PIPE")|| pd.part_type.ToUpper().Contains("PIPE"))
             {
                 int size = 0;
                 char[] trim_chars = { '\x20', 'm' };

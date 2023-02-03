@@ -333,7 +333,7 @@ namespace gbe
 
                             string qty_len = qty.ToString("0.00");
 
-                            if (pd.description.ToUpper().Contains("PIPE"))
+                            if (pd.description.ToUpper().Contains("PIPE")|| pd.part_type.ToUpper().Contains("PIPE"))
                                 qty_len += "m";
 
                             S.Append(qty_len.PadLeft(10));
@@ -721,7 +721,7 @@ namespace gbe
 
                 string qty_len = spd.qty.ToString("0.00");
 
-                if (spd.part_data.description.ToUpper().Contains("PIPE"))
+                if (spd.part_data.description.ToUpper().Contains("PIPE")|| spd.part_data.part_type.ToUpper().Contains("PIPE"))
                     qty_len += "m";
 
                 S.Append(qty_len.PadLeft(10));

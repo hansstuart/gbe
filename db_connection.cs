@@ -375,6 +375,9 @@ namespace gbe
             cmd.CommandText = select;
 
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
+
+            ad.SelectCommand.CommandTimeout = 120;
+
             DataSet ds = new DataSet();
 
             const string R_LIST = "r_list";

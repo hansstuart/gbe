@@ -1271,10 +1271,10 @@ namespace gbe
             r.Cells.Add(c);
 
             c = new TableCell();
-            c.Controls.Add(new LiteralControl(pd.description.ToUpper().Contains("PIPE")?"Len (m):":"Qty:"));
+            c.Controls.Add(new LiteralControl((pd.description.ToUpper().Contains("PIPE")|| pd.part_type.ToUpper().Contains("PIPE")) ?"Len (m):":"Qty:"));
             TextBox qtb = null;
 
-            if (pd.description.ToUpper().Contains("PIPE"))
+            if (pd.description.ToUpper().Contains("PIPE")|| pd.part_type.ToUpper().Contains("PIPE"))
                 qtb = create_decimal_textbox("qty_" + pd.attributes[UID].ToString());
             else
             {

@@ -60,6 +60,18 @@ namespace gbe
             else
                 m_sl_welder_totals = new SortedList();
 
+            string weld_map_part_type_excludes = string.Empty;
+
+            try { weld_map_part_type_excludes = System.Web.Configuration.WebConfigurationManager.AppSettings["weld_map_part_type_excludes"].ToString().Trim(); }
+            catch { weld_map_part_type_excludes = string.Empty; }
+
+            string sql_weld_map_part_type_excludes = string.Empty;
+
+            if (weld_map_part_type_excludes.Length > 0)
+            {
+                sql_weld_map_part_type_excludes = " and parts.part_type not in " + weld_map_part_type_excludes;
+            }
+
             string select = " select barcode "
                 + " , users_spool_welder.login_id as spool_welder "
                 + " , parts.description as spool_part "
@@ -75,6 +87,7 @@ namespace gbe
                 + " where "
                 + ""
                 + " spools.barcode like '" + project + "%' "
+                + sql_weld_map_part_type_excludes
                 + " and "
                 + " spools.checked_by is not null "
                 + " and "
@@ -91,6 +104,7 @@ namespace gbe
             {
                 using (cdb_connection dbc = new cdb_connection())
                 {
+                    
                     DataTable dtab = dbc.get_data(select);
 
                     if (dtab.Rows.Count > 0)
