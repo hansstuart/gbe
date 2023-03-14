@@ -1163,8 +1163,13 @@ namespace gbe
 
                             pnlResults.Controls.Add(tblParts);
 
+                            string weld_map_part_type_excludes = string.Empty;
+
+                            try { weld_map_part_type_excludes = System.Web.Configuration.WebConfigurationManager.AppSettings["weld_map_part_type_excludes"].ToString().Trim(); }
+                            catch { weld_map_part_type_excludes = string.Empty; }
+
                             //foreach (DictionaryEntry e1 in sl_parts_data)
-                            foreach(spool_part_data spd in sd.spool_part_data)
+                            foreach (spool_part_data spd in sd.spool_part_data)
                             {
                                 //spool_part_data spd = (spool_part_data)e1.Value;
 
@@ -1191,13 +1196,14 @@ namespace gbe
                                 c.Controls.Add(chk_include_spool_part_in_weld_map);
                                 r.Cells.Add(c);
 
-                                string part_no, part_desc;
-                                part_no = part_desc = string.Empty;
+                                string part_no, part_desc, part_type;
+                                part_no = part_desc = part_type = string.Empty;
 
                                 if (spd.part_data != null)
                                 {
                                     part_no = spd.part_data.part_number;
                                     part_desc = spd.part_data.description;
+                                    part_type = spd.part_data.part_type;
                                 }
 
                                 c = new TableCell();
@@ -1219,14 +1225,14 @@ namespace gbe
 
                                 c = new TableCell();
 
-                                if (part_desc.ToUpper().Contains("PIPE"))
+                                if (part_desc.ToUpper().Contains("PIPE") || part_type.ToUpper().Contains("PIPE"))
                                     c.Controls.Add(new LiteralControl("Len:"));
                                 else
                                     c.Controls.Add(new LiteralControl("Qty:"));
 
                                 TextBox qtb = null;
 
-                                if (part_desc.ToUpper().Contains("PIPE"))
+                                if (part_desc.ToUpper().Contains("PIPE") || part_type.ToUpper().Contains("PIPE"))
                                 {
                                     qtb = create_decimal_textbox("qty_" + spd.id.ToString());
                                     qtb.Text = spd.qty.ToString("0.00");
@@ -1312,35 +1318,43 @@ namespace gbe
                                 if (!m_welders.ContainsKey(spd.welder))
                                     dl_welder.Items.Add(spd.welder);
 
-                                if (spd.welder.Trim().Length > 0)
-                                    dl_welder.Text = spd.welder;
+                                if (weld_map_part_type_excludes.Contains(part_type))
+                                {
+                                    dl_welder.Text = "N/A";
+                                    dl_welder.Enabled = false;
+                                }
                                 else
                                 {
-                                    string welder = string.Empty;
-
-                                    if (sd.welder_data != null)
-                                        welder = sd.welder_data.login_id;
-
-                                    string sfw = string.Empty;
-                                    
-                                    if (sd.weld_job_data != null)
+                                    if (spd.welder.Trim().Length > 0)
+                                        dl_welder.Text = spd.welder;
+                                    else
                                     {
-                                        if (sd.weld_job_data.robot > 0)
-                                            sfw = "Robot";
-                                    }
+                                        string welder = string.Empty;
 
-                                    if (welder.Trim().Length > 0)
-                                    {
+                                        if (sd.welder_data != null)
+                                            welder = sd.welder_data.login_id;
+
+                                        string sfw = string.Empty;
+
+                                        if (sd.weld_job_data != null)
+                                        {
+                                            if (sd.weld_job_data.robot > 0)
+                                                sfw = "Robot";
+                                        }
+
+                                        if (welder.Trim().Length > 0)
+                                        {
+                                            if (sfw.Trim().Length > 0)
+                                                sfw += "/";
+
+                                            sfw += welder;
+                                        }
+
                                         if (sfw.Trim().Length > 0)
-                                            sfw += "/";
-
-                                        sfw += welder;
-                                    }
-
-                                    if (sfw.Trim().Length > 0)
-                                    {
-                                        dl_welder.Items.Add(sfw);
-                                        dl_welder.Text = sfw;
+                                        {
+                                            dl_welder.Items.Add(sfw);
+                                            dl_welder.Text = sfw;
+                                        }
                                     }
                                 }
 
@@ -2012,6 +2026,10 @@ namespace gbe
                     string DC = "\"";
                     string CM = ",";
 
+                    string weld_map_part_type_excludes = string.Empty;
+
+                    try { weld_map_part_type_excludes = System.Web.Configuration.WebConfigurationManager.AppSettings["weld_map_part_type_excludes"].ToString().Trim(); }
+                    catch { weld_map_part_type_excludes = string.Empty; }
 
                     string[] hdr = new string[12] { "spool", "revision", "start", "finish", "status", "on_hold", "part_number", "description", "welder", "qty", "fw", "bw" };
 
@@ -2095,34 +2113,41 @@ namespace gbe
 
                                     string swelder = string.Empty;
 
-                                    if (spd.welder.Trim().Length > 0)
-                                        swelder = spd.welder;
+                                    if (weld_map_part_type_excludes.Contains(spd.part_data.part_type))
+                                    {
+                                        swelder = "N/A";
+                                    }
                                     else
                                     {
-                                        string welder = string.Empty;
-
-                                        if (sd.welder_data != null)
-                                            welder = sd.welder_data.login_id;
-
-                                        string sfw = string.Empty;
-
-                                        if (sd.weld_job_data != null)
+                                        if (spd.welder.Trim().Length > 0)
+                                            swelder = spd.welder;
+                                        else
                                         {
-                                            if (sd.weld_job_data.robot > 0)
-                                                sfw = "Robot";
-                                        }
+                                            string welder = string.Empty;
 
-                                        if (welder.Trim().Length > 0)
-                                        {
+                                            if (sd.welder_data != null)
+                                                welder = sd.welder_data.login_id;
+
+                                            string sfw = string.Empty;
+
+                                            if (sd.weld_job_data != null)
+                                            {
+                                                if (sd.weld_job_data.robot > 0)
+                                                    sfw = "Robot";
+                                            }
+
+                                            if (welder.Trim().Length > 0)
+                                            {
+                                                if (sfw.Trim().Length > 0)
+                                                    sfw += "/";
+
+                                                sfw += welder;
+                                            }
+
                                             if (sfw.Trim().Length > 0)
-                                                sfw += "/";
-
-                                            sfw += welder;
-                                        }
-
-                                        if (sfw.Trim().Length > 0)
-                                        {
-                                            swelder = sfw;
+                                            {
+                                                swelder = sfw;
+                                            }
                                         }
                                     }
 

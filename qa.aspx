@@ -68,7 +68,7 @@
         </tr>
     </table>
     <br />
-    <table style="width: 1095px">
+    <table style="width: 1243px">
         <tr>
             <td style="width: 141px">
             </td>
@@ -84,7 +84,7 @@
             <td colspan="3">
                 <br />
                 <asp:Table ID="tblResults" runat="server" EnableViewState="False" Font-Names="Verdana"
-                    Width="885px">
+                    Width="1078px">
                 </asp:Table>
             </td>
         </tr>

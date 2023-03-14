@@ -376,7 +376,7 @@ namespace gbe
 
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
 
-            ad.SelectCommand.CommandTimeout = 120;
+            ad.SelectCommand.CommandTimeout = 600;
 
             DataSet ds = new DataSet();
 

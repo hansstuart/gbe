@@ -88,8 +88,8 @@ namespace gbe
                 + ""
                 + " spools.barcode like '" + project + "%' "
                 + sql_weld_map_part_type_excludes
-                + " and "
-                + " spools.checked_by is not null "
+                //+ " and "
+                //+ " spools.checked_by is not null "
                 + " and "
                 + " spools.include_in_weld_map=1 "
                 + " and "

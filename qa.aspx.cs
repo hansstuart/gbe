@@ -187,8 +187,8 @@ namespace gbe
 
                         if (sd != null)
                         {
-                            weld_info = sd.weld_job_data.finish.ToString("dd/MM/yy HH:mm:ss") + " by " + sd.welder_data.login_id;
-                            fit_info = sd.weld_job_data.finish_fit.ToString("dd/MM/yy HH:mm:ss") + " by " + sd.fitter_data.login_id;
+                            try { weld_info = sd.weld_job_data.finish.ToString("dd/MM/yy HH:mm:ss") + " by " + sd.welder_data.login_id; } catch { }
+                            try { fit_info = sd.weld_job_data.finish_fit.ToString("dd/MM/yy HH:mm:ss") + " by " + sd.fitter_data.login_id;} catch { }
                         }
                         else
                         {

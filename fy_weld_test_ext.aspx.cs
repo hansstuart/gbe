@@ -297,6 +297,10 @@ namespace gbe
                 foreach (DictionaryEntry e0 in m_sl_wedlers)
                 {
                     string welder = e0.Key.ToString();
+
+                    if (welder == "N/A")
+                        continue;
+
                     int welder_id = (int)e0.Value;
                     r = new TableRow();
                     r.BackColor = System.Drawing.Color.FromName("LightGray");
