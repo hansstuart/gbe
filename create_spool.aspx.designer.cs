@@ -375,6 +375,42 @@ namespace gbe
         protected global::System.Web.UI.WebControls.Label lblMsg2;
 
         /// <summary>
+        /// lblFabNumber control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblFabNumber;
+
+        /// <summary>
+        /// txtFabNumber control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtFabNumber;
+
+        /// <summary>
+        /// btnFabNumberLookup control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnFabNumberLookup;
+
+        /// <summary>
+        /// lblFabDetails control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblFabDetails;
+
+        /// <summary>
         /// txtSpoolNumber control.
         /// </summary>
         /// <remarks>

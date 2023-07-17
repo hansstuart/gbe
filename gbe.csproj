@@ -73,6 +73,9 @@
     <Reference Include="System.Web.Mobile" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Web References\imsl_ws\fab_order_details.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
     <None Include="Web References\imsl_ws\imsl_ws.disco" />
     <Content Include="fy_weld_test_ext.aspx" />
     <Content Include="Web.config">
@@ -82,10 +85,10 @@
     <Content Include="Web References\imsl_ws\print_data.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </Content>
-    <Content Include="Web References\imsl_ws\Reference.map">
+    <None Include="Web References\imsl_ws\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
-    </Content>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="add_to_schedule.aspx.cs">

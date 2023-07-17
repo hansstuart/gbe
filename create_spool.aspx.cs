@@ -103,6 +103,9 @@ namespace gbe
             m_parts_controls.Add(txtCutSize4);
             m_parts_controls.Add(txtDrawing);
 
+            m_parts_controls.Add(lblFabNumber);
+            m_parts_controls.Add(txtFabNumber);
+
             if (IsPostBack)
             {
                 m_state = (int)ViewState["state"];
@@ -162,7 +165,8 @@ namespace gbe
                     {
                         customer_fab_mat dr_cfm = new customer_fab_mat(dr);
 
-                        m_sl_imsl_cost_centres.Add(dr_cfm.name, dr_cfm.id);
+                        if(!m_sl_imsl_cost_centres.ContainsKey(dr_cfm.name))
+                            m_sl_imsl_cost_centres.Add(dr_cfm.name, dr_cfm.id);
                     }
 
                     dlIMSLCostCentre.Items.Add(string.Empty);
@@ -302,6 +306,9 @@ namespace gbe
                             txtCutSize2.Text = sd.cut_size2;
                             txtCutSize3.Text = sd.cut_size3;
                             txtCutSize4.Text = sd.cut_size4;
+
+                            if(sd.fab_number > 0)
+                                txtFabNumber.Text = sd.fab_number.ToString();
 
                             foreach (spool_part_data spd in sd.spool_part_data)
                             {
@@ -518,7 +525,6 @@ namespace gbe
             return bret;
         }
 
-
         bool is_valid_spool_number()
         {
             bool bret = false;
@@ -647,7 +653,7 @@ namespace gbe
 
                 m_state = STATE_ENTER_PARTS;
                 display_parts_controls(true);
-                txtSpoolNumber.Focus();
+                txtFabNumber.Focus();
             }
 
             ViewState["state"] = m_state;
@@ -711,6 +717,29 @@ namespace gbe
                 lblMsg2.Text = "Select Weld Mapping Yes/No";
                 dlWeldMapping.Focus();
                 return;
+            }
+
+            if (txtFabNumber.Text.Trim().Length > 0)
+            {
+                try
+                {
+                    int fab_number = Convert.ToInt32(txtFabNumber.Text.Trim());
+
+                    imsl_ws.fab_order_details fod = ws().get_fab_order_details("eye_emm_ess_ell", txtFabNumber.Text.Trim());
+
+                    if (fod == null)
+                    {
+                        lblMsg.Text = "Fab. number not found";
+                        txtFabNumber.Focus();
+                        return;
+                    }
+                }
+                catch
+                {
+                    lblMsg.Text = "Invalid Fab. number. Numeric only";
+                    txtFabNumber.Focus();
+                    return;
+                }
             }
 
             if (!is_valid_spool_number())
@@ -917,6 +946,18 @@ namespace gbe
             sl.Add("cut_size2", txtCutSize2.Text.Trim());
             sl.Add("cut_size3", txtCutSize3.Text.Trim());
             sl.Add("cut_size4", txtCutSize4.Text.Trim());
+
+            if (txtFabNumber.Text.Trim().Length > 0)
+            {
+                try
+                {
+                    int fab_number = Convert.ToInt32(txtFabNumber.Text.Trim());
+                    sl.Add("fab_number", fab_number);
+                }
+                catch
+                {
+                }
+            }
 
             int schedule_id = 0;
 
@@ -1535,6 +1576,36 @@ namespace gbe
             ws.Timeout = 1 * 60 * 1000;
 
             return ws;
+        }
+
+        protected void btnFabNumberLookup_Click(object sender, EventArgs e)
+        {
+            if (txtFabNumber.Text.Trim().Length > 0)
+            {
+                try
+                {
+                    int ifn = Convert.ToInt32(txtFabNumber.Text.Trim());
+                }
+                catch
+                {
+                    lblMsg.Text = "Invalid Fab. number. Numeric only";
+                    txtFabNumber.Focus();
+                    return;
+                }
+
+                imsl_ws.fab_order_details fod = ws().get_fab_order_details("eye_emm_ess_ell", txtFabNumber.Text.Trim());
+
+                if (fod != null)
+                {
+                    lblFabDetails.Text = "Customer: " + fod.customer + "<br />";
+                    lblFabDetails.Text += "Project: " + fod.customer_project + "<br />";
+                    lblFabDetails.Text += "Contact: " + fod.site_contact_name + " " + fod.site_contact_phone;
+                }
+                else
+                {
+                    lblFabDetails.Text = "Not found";
+                }
+            }
         }
     }
 }

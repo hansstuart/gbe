@@ -187,7 +187,9 @@
             </td>
         </tr>
     </table>
+    
     <br />
+
     <table id="tbl_spl_and_parts"  runat="server" style="width: 751px">
         <tr>
             <td style="width: 195px; height: 26px">
@@ -196,6 +198,24 @@
                 <asp:Label ID="lblMsg2" runat="server" Font-Names="Verdana" ForeColor="Red"></asp:Label></td>
             <td style="width: 106px; height: 26px">
             </td>
+        </tr>
+        <tr>
+            <td style="width: 195px; height: 26px">
+                <asp:Label ID="lblFabNumber" runat="server" Font-Names="Verdana" Text="Fab. Number:"></asp:Label>
+            </td>
+            <td style="width: 438px; height: 26px">
+                <asp:TextBox ID="txtFabNumber" runat="server" MaxLength="150" Width="175px"></asp:TextBox></td>
+            <td style="width: 106px; height: 26px">
+                <asp:Button ID="btnFabNumberLookup" runat="server" Text="Look-up" Width="91px" OnClick="btnFabNumberLookup_Click" />
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 195px; height: 26px">
+                &nbsp;</td>
+            <td style="width: 438px; height: 26px">
+                <asp:Label ID="lblFabDetails" runat="server" Font-Names="Verdana" ></asp:Label></td>
+            <td style="width: 106px; height: 26px">
+                &nbsp;</td>
         </tr>
         <tr>
             <td style="width: 195px; height: 26px">

@@ -203,6 +203,7 @@ namespace gbe
         public int dp_fw = 0;
         public int vi_bw = 0;
         public int vi_fw = 0;
+        public DateTime datetime_stamp = DateTime.MinValue;
 
         public int welder_fw = 0; // total fw for welder for spool
         public int welder_bw = 0; // total bw for welder for spool

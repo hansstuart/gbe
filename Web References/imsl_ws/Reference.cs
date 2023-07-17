@@ -96,6 +96,8 @@ namespace gbe.imsl_ws {
         
         private System.Threading.SendOrPostCallback where_is_stockOperationCompleted;
         
+        private System.Threading.SendOrPostCallback get_fab_order_detailsOperationCompleted;
+        
         private bool useDefaultCredentialsSetExplicitly;
         
         /// <remarks/>
@@ -214,6 +216,9 @@ namespace gbe.imsl_ws {
         
         /// <remarks/>
         public event where_is_stockCompletedEventHandler where_is_stockCompleted;
+        
+        /// <remarks/>
+        public event get_fab_order_detailsCompletedEventHandler get_fab_order_detailsCompleted;
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://www.pcf.co.uk/is_alive", RequestNamespace="http://www.pcf.co.uk/", ResponseNamespace="http://www.pcf.co.uk/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -1089,6 +1094,37 @@ namespace gbe.imsl_ws {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://www.pcf.co.uk/get_fab_order_details", RequestNamespace="http://www.pcf.co.uk/", ResponseNamespace="http://www.pcf.co.uk/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public fab_order_details get_fab_order_details(string pk, string fab_number) {
+            object[] results = this.Invoke("get_fab_order_details", new object[] {
+                        pk,
+                        fab_number});
+            return ((fab_order_details)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void get_fab_order_detailsAsync(string pk, string fab_number) {
+            this.get_fab_order_detailsAsync(pk, fab_number, null);
+        }
+        
+        /// <remarks/>
+        public void get_fab_order_detailsAsync(string pk, string fab_number, object userState) {
+            if ((this.get_fab_order_detailsOperationCompleted == null)) {
+                this.get_fab_order_detailsOperationCompleted = new System.Threading.SendOrPostCallback(this.Onget_fab_order_detailsOperationCompleted);
+            }
+            this.InvokeAsync("get_fab_order_details", new object[] {
+                        pk,
+                        fab_number}, this.get_fab_order_detailsOperationCompleted, userState);
+        }
+        
+        private void Onget_fab_order_detailsOperationCompleted(object arg) {
+            if ((this.get_fab_order_detailsCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.get_fab_order_detailsCompleted(this, new get_fab_order_detailsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         public new void CancelAsync(object userState) {
             base.CancelAsync(userState);
         }
@@ -1777,6 +1813,75 @@ namespace gbe.imsl_ws {
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
     [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.pcf.co.uk/")]
+    public partial class fab_order_details {
+        
+        private string customerField;
+        
+        private string site_contact_nameField;
+        
+        private string site_contact_phoneField;
+        
+        private string customer_projectField;
+        
+        private string fab_numberField;
+        
+        /// <remarks/>
+        public string customer {
+            get {
+                return this.customerField;
+            }
+            set {
+                this.customerField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string site_contact_name {
+            get {
+                return this.site_contact_nameField;
+            }
+            set {
+                this.site_contact_nameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string site_contact_phone {
+            get {
+                return this.site_contact_phoneField;
+            }
+            set {
+                this.site_contact_phoneField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string customer_project {
+            get {
+                return this.customer_projectField;
+            }
+            set {
+                this.customer_projectField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string fab_number {
+            get {
+                return this.fab_numberField;
+            }
+            set {
+                this.fab_numberField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://www.pcf.co.uk/")]
     public enum e_fab_process {
         
@@ -2434,6 +2539,32 @@ namespace gbe.imsl_ws {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((object[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void get_fab_order_detailsCompletedEventHandler(object sender, get_fab_order_detailsCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class get_fab_order_detailsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal get_fab_order_detailsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public fab_order_details Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((fab_order_details)(this.results[0]));
             }
         }
     }

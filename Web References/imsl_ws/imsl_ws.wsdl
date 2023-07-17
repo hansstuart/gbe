@@ -30,6 +30,15 @@
           <s:element minOccurs="0" maxOccurs="unbounded" name="anyType" nillable="true" />
         </s:sequence>
       </s:complexType>
+      <s:complexType name="fab_order_details">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="customer" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="site_contact_name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="site_contact_phone" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="customer_project" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="fab_number" type="s:string" />
+        </s:sequence>
+      </s:complexType>
       <s:complexType name="location_enquiry">
         <s:sequence>
           <s:element minOccurs="0" maxOccurs="1" name="part_description" type="s:string" />
@@ -554,6 +563,21 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="get_fab_order_details">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pk" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="fab_number" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="get_fab_order_detailsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="get_fab_order_detailsResult" type="tns:fab_order_details" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
     </s:schema>
   </wsdl:types>
   <wsdl:message name="is_aliveSoapIn">
@@ -718,6 +742,12 @@
   <wsdl:message name="where_is_stockSoapOut">
     <wsdl:part name="parameters" element="tns:where_is_stockResponse" />
   </wsdl:message>
+  <wsdl:message name="get_fab_order_detailsSoapIn">
+    <wsdl:part name="parameters" element="tns:get_fab_order_details" />
+  </wsdl:message>
+  <wsdl:message name="get_fab_order_detailsSoapOut">
+    <wsdl:part name="parameters" element="tns:get_fab_order_detailsResponse" />
+  </wsdl:message>
   <wsdl:portType name="imsl_wsSoap">
     <wsdl:operation name="is_alive">
       <wsdl:input message="tns:is_aliveSoapIn" />
@@ -826,6 +856,10 @@
     <wsdl:operation name="where_is_stock">
       <wsdl:input message="tns:where_is_stockSoapIn" />
       <wsdl:output message="tns:where_is_stockSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="get_fab_order_details">
+      <wsdl:input message="tns:get_fab_order_detailsSoapIn" />
+      <wsdl:output message="tns:get_fab_order_detailsSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="imsl_wsSoap" type="tns:imsl_wsSoap">
@@ -1073,6 +1107,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="get_fab_order_details">
+      <soap:operation soapAction="http://www.pcf.co.uk/get_fab_order_details" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="imsl_wsSoap12" type="tns:imsl_wsSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
@@ -1312,6 +1355,15 @@
     </wsdl:operation>
     <wsdl:operation name="where_is_stock">
       <soap12:operation soapAction="http://www.pcf.co.uk/where_is_stock" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="get_fab_order_details">
+      <soap12:operation soapAction="http://www.pcf.co.uk/get_fab_order_details" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

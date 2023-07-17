@@ -255,6 +255,7 @@ namespace gbe
                             wtewd.vi_bw = dr_wm.i_gf("vi_bw");
                             wtewd.vi_fw = dr_wm.i_gf("vi_fw");
                             wtewd.welder = dr_wm.s_gf("welder");
+                            wtewd.datetime_stamp = dr_wm.dt_gf("datetime_stamp");
                                
                             if (wtewd.welder.ToLower() == "n/a")  // rolls eyes
                                 continue;
@@ -637,8 +638,8 @@ namespace gbe
                         r.BackColor = System.Drawing.Color.FromName("White");
 
                         c = new TableCell();
-                        c.BackColor = System.Drawing.ColorTranslator.FromHtml(GBEBLUE);
-                        c.Controls.Add(new LiteralControl(string.Empty));
+                        c.HorizontalAlign = HorizontalAlign.Center;
+                        c.Controls.Add(new LiteralControl("Test date: " + wted.datetime_stamp.ToString("dd/MM/yyyy")));
                         r.Cells.Add(c);
 
                         c = new TableCell();
@@ -704,6 +705,8 @@ namespace gbe
                         txt_r8_vi_bw.Attributes[ID] = wted.id.ToString();
                         c.Controls.Add(txt_r8_vi_bw);
                         r.Cells.Add(c);
+
+                        
 
                         c = new TableCell();
                         c.HorizontalAlign = HorizontalAlign.Left;
@@ -791,13 +794,6 @@ namespace gbe
                             c.HorizontalAlign = HorizontalAlign.Right;
                             c.Controls.Add(new LiteralControl(wtewd.vi_bw.ToString()));
                             r.Cells.Add(c);
-
-                            /*
-                            c = new TableCell();
-                            c.HorizontalAlign = HorizontalAlign.Right;
-                            c.Controls.Add(new LiteralControl(wtewd.total().ToString()));
-                            r.Cells.Add(c);
-                            */
 
                             tblResults.Rows.Add(r);
 
