@@ -95,6 +95,7 @@ namespace gbe
                             }
 
                             ArrayList aspl_data = new ArrayList();
+                            SortedList sl_imsl_fab_order = new SortedList();
 
                             using (spools spls = new spools())
                             {
@@ -112,6 +113,22 @@ namespace gbe
                                             foreach (spool_data sd in asd)
                                             {
                                                 aspl_data.Add(sd.barcode);
+
+                                                if (is_fab(sd.barcode))
+                                                {
+                                                    if (sd.fab_number > 0)
+                                                    {
+                                                        imsl_ws.fab_order_details fod = ws().get_fab_order_details("eye_emm_ess_ell", sd.fab_number.ToString());
+
+                                                        if (fod.customer_po_number.Trim().Length > 0)
+                                                        {
+                                                            if (!sl_imsl_fab_order.ContainsKey(sd.barcode))
+                                                            {
+                                                                sl_imsl_fab_order.Add(sd.barcode, fod.customer_po_number.Trim());
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                         else if (sdd.assembly_type == spool_delivery_data.MODULE)
@@ -179,6 +196,13 @@ namespace gbe
 
                                     S.Append(hdr);
 
+                                    int lpp = 80;
+
+                                    if (is_fab(contract_number))
+                                    {
+                                        lpp = 40;
+                                    }
+
                                     foreach (string bc0 in aspl_data)
                                     {
                                         string bc1 = bc0;
@@ -196,7 +220,7 @@ namespace gbe
                                             }
                                         }
 
-                                        if (line_cnt++ > 80)
+                                        if (line_cnt++ > lpp)
                                         {
                                             if (S.Length > 0)
                                                 S.Append(FF);
@@ -206,7 +230,17 @@ namespace gbe
                                             line_cnt = 1;
                                         }
 
-                                        S.Append(bc1 + " "  + ENDL);
+                                        string imsl_customer_po = string.Empty;
+
+                                        if (is_fab(bc0))
+                                        {
+                                            if (sl_imsl_fab_order.ContainsKey(bc0))
+                                            {
+                                                imsl_customer_po = "(PO: " + sl_imsl_fab_order[bc0].ToString().Trim() + ")"; 
+                                            }
+                                        }
+
+                                        S.Append(bc1 + " " + imsl_customer_po + ENDL);
                                     }
 
                                     string psFile = Server.MapPath("temp");
@@ -277,6 +311,11 @@ namespace gbe
             }
         }
 
+        bool is_fab(string spool)
+        {
+            return spool.ToUpper().StartsWith("FAB");
+        }
+
         ArrayList get_address(string address_table, int address_id, customer_data cd0)
         {
             ArrayList a = new ArrayList();
@@ -334,6 +373,18 @@ namespace gbe
             }
 
             return a;
+        }
+
+        static imsl_ws.imsl_ws ws()
+        {
+            string imsl_ws_url = System.Web.Configuration.WebConfigurationManager.AppSettings["imsl_ws_url"].ToString();
+
+            imsl_ws.imsl_ws ws = new imsl_ws.imsl_ws();
+
+            ws.Url = imsl_ws_url;
+            ws.Timeout = 1 * 60 * 1000;
+
+            return ws;
         }
     }
 }

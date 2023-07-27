@@ -1828,6 +1828,8 @@ namespace gbe.imsl_ws {
         
         private string fab_numberField;
         
+        private string customer_po_numberField;
+        
         /// <remarks/>
         public string customer {
             get {
@@ -1875,6 +1877,16 @@ namespace gbe.imsl_ws {
             }
             set {
                 this.fab_numberField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string customer_po_number {
+            get {
+                return this.customer_po_numberField;
+            }
+            set {
+                this.customer_po_numberField = value;
             }
         }
     }

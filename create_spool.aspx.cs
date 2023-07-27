@@ -1178,11 +1178,24 @@ namespace gbe
                                 slp.Add("picked", b_picked);
                                 slp.Add("seq", iseq);
 
-                                if (r.Attributes["include_in_weld_map"] != null)
-                                    slp.Add("include_in_weld_map", r.Attributes["include_in_weld_map"]);
+                                const string INCLUDE_IN_WELD_MAP = "include_in_weld_map";
+                                if (r.Attributes[INCLUDE_IN_WELD_MAP] != null)
+                                {
+                                    if(slp.ContainsKey(INCLUDE_IN_WELD_MAP))
+                                        slp[INCLUDE_IN_WELD_MAP] = r.Attributes[INCLUDE_IN_WELD_MAP];
+                                    else
+                                        slp.Add(INCLUDE_IN_WELD_MAP, r.Attributes[INCLUDE_IN_WELD_MAP]);
 
-                                if(r.Attributes["welder"] != null)
-                                    slp.Add("welder", r.Attributes["welder"]);
+                                }
+
+                                const string WELDER = "welder";
+                                if (r.Attributes[WELDER] != null)
+                                {
+                                    if(slp.ContainsKey(WELDER))
+                                        slp[WELDER] = r.Attributes[WELDER];
+                                    else
+                                        slp.Add(WELDER, r.Attributes[WELDER]);
+                                }
 
                                 sp.save_spool_parts_data(slp);
                             }
@@ -1599,6 +1612,7 @@ namespace gbe
                 {
                     lblFabDetails.Text = "Customer: " + fod.customer + "<br />";
                     lblFabDetails.Text += "Project: " + fod.customer_project + "<br />";
+                    lblFabDetails.Text += "PO: " + fod.customer_po_number + "<br />";
                     lblFabDetails.Text += "Contact: " + fod.site_contact_name + " " + fod.site_contact_phone;
                 }
                 else
