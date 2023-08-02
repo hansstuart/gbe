@@ -402,6 +402,24 @@ namespace gbe
         protected global::System.Web.UI.WebControls.Button btnFabNumberLookup;
 
         /// <summary>
+        /// lblFabPO control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblFabPO;
+
+        /// <summary>
+        /// dlFabPO control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList dlFabPO;
+
+        /// <summary>
         /// lblFabDetails control.
         /// </summary>
         /// <remarks>

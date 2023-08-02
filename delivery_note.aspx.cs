@@ -116,9 +116,9 @@ namespace gbe
 
                                                 if (is_fab(sd.barcode))
                                                 {
-                                                    if (sd.fab_number > 0)
+                                                    if (sd.fab_order_id > 0)
                                                     {
-                                                        imsl_ws.fab_order_details fod = ws().get_fab_order_details("eye_emm_ess_ell", sd.fab_number.ToString());
+                                                        imsl_ws.fab_order_details fod = ws().get_fab_order("eye_emm_ess_ell", sd.fab_order_id);
 
                                                         if (fod.customer_po_number.Trim().Length > 0)
                                                         {

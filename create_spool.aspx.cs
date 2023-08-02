@@ -23,6 +23,7 @@ namespace gbe
         const string NEW_DELIVERY_ADDR = "Enter new address";
         const string GBE_MEDWAY = "GBE, Whitewall Rd, Medway City Estate";
         const string VS_IMSL_COST_CENTRES = "vs_imsl_cost_centres";
+        const string VS_IMSL_FAB_ORDERS = "vs_imsl_fab_orders";
 
         const string MAT_NA = "";
         const string MAT_CARBON_STEEL = "Carbon Steel";
@@ -307,8 +308,27 @@ namespace gbe
                             txtCutSize3.Text = sd.cut_size3;
                             txtCutSize4.Text = sd.cut_size4;
 
-                            if(sd.fab_number > 0)
-                                txtFabNumber.Text = sd.fab_number.ToString();
+                            if (sd.fab_order_id > 0)
+                            {
+                                imsl_ws.fab_order_details fod0 = ws().get_fab_order("eye_emm_ess_ell", sd.fab_order_id);
+
+                                txtFabNumber.Text = fod0.fab_number.ToString();
+
+                                get_fab_details(fod0.fab_number.ToString());
+
+                                object[] a_fod = (object[])ViewState[VS_IMSL_FAB_ORDERS];
+
+                                int i = 0;
+                                foreach (imsl_ws.fab_order_details fod in a_fod)
+                                {
+                                    if (fod.fab_order_id == fod0.fab_order_id)
+                                    {
+                                        dlFabPO.SelectedIndex = i;
+                                    }
+
+                                    i++;
+                                }
+                            }
 
                             foreach (spool_part_data spd in sd.spool_part_data)
                             {
@@ -376,6 +396,8 @@ namespace gbe
             dlIMSLCostCentre.Text = string.Empty;
             dlWeldMapping.Text = string.Empty;
             dlMaterial.Text = MAT_NA;
+            dlFabPO.Items.Clear();
+            lblFabDetails.Text = string.Empty;
 
             txtSpoolNumber.Text = string.Empty;
             txtRevision.Text = string.Empty;
@@ -719,29 +741,6 @@ namespace gbe
                 return;
             }
 
-            if (txtFabNumber.Text.Trim().Length > 0)
-            {
-                try
-                {
-                    int fab_number = Convert.ToInt32(txtFabNumber.Text.Trim());
-
-                    imsl_ws.fab_order_details fod = ws().get_fab_order_details("eye_emm_ess_ell", txtFabNumber.Text.Trim());
-
-                    if (fod == null)
-                    {
-                        lblMsg.Text = "Fab. number not found";
-                        txtFabNumber.Focus();
-                        return;
-                    }
-                }
-                catch
-                {
-                    lblMsg.Text = "Invalid Fab. number. Numeric only";
-                    txtFabNumber.Focus();
-                    return;
-                }
-            }
-
             if (!is_valid_spool_number())
             {
                 lblMsg2.Text = "Invalid spool number. Must end in a number";
@@ -947,17 +946,16 @@ namespace gbe
             sl.Add("cut_size3", txtCutSize3.Text.Trim());
             sl.Add("cut_size4", txtCutSize4.Text.Trim());
 
-            if (txtFabNumber.Text.Trim().Length > 0)
+            if (dlFabPO.Items.Count > 0)
             {
-                try
-                {
-                    int fab_number = Convert.ToInt32(txtFabNumber.Text.Trim());
-                    sl.Add("fab_number", fab_number);
-                }
-                catch
-                {
-                }
+                object[] a_fod = (object[])ViewState[VS_IMSL_FAB_ORDERS];
+
+                imsl_ws.fab_order_details fod = (imsl_ws.fab_order_details)a_fod[dlFabPO.SelectedIndex];
+
+                sl.Add("fab_order_id", fod.fab_order_id);
             }
+            else
+                sl.Add("fab_order_id", 0);
 
             int schedule_id = 0;
 
@@ -1593,6 +1591,9 @@ namespace gbe
 
         protected void btnFabNumberLookup_Click(object sender, EventArgs e)
         {
+            dlFabPO.Items.Clear();
+            lblFabDetails.Text = string.Empty;
+
             if (txtFabNumber.Text.Trim().Length > 0)
             {
                 try
@@ -1606,19 +1607,34 @@ namespace gbe
                     return;
                 }
 
-                imsl_ws.fab_order_details fod = ws().get_fab_order_details("eye_emm_ess_ell", txtFabNumber.Text.Trim());
+                get_fab_details(txtFabNumber.Text.Trim());
+            }
+        }
 
-                if (fod != null)
+        void get_fab_details(string fab_number)
+        {
+            object[] a_fod = ws().get_fab_orders("eye_emm_ess_ell", txtFabNumber.Text.Trim());
+
+            if (a_fod != null && a_fod.Length > 0)
+            {
+                ViewState[VS_IMSL_FAB_ORDERS] = a_fod;
+
+                imsl_ws.fab_order_details fod0 = (imsl_ws.fab_order_details)a_fod[0];
+                    
+                lblFabDetails.Text = "Customer: " + fod0.customer + "<br />";
+                lblFabDetails.Text += "Project: " + fod0.customer_project + "<br />";
+
+                foreach (imsl_ws.fab_order_details fod in a_fod)
                 {
-                    lblFabDetails.Text = "Customer: " + fod.customer + "<br />";
-                    lblFabDetails.Text += "Project: " + fod.customer_project + "<br />";
-                    lblFabDetails.Text += "PO: " + fod.customer_po_number + "<br />";
-                    lblFabDetails.Text += "Contact: " + fod.site_contact_name + " " + fod.site_contact_phone;
+                    if(fod.customer_po_number.Length > 0)
+                        dlFabPO.Items.Add(fod.customer_po_number);
+                    else
+                        dlFabPO.Items.Add("-");
                 }
-                else
-                {
-                    lblFabDetails.Text = "Not found";
-                }
+            }
+            else
+            {
+                lblFabDetails.Text = "Not found";
             }
         }
     }

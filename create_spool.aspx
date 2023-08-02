@@ -131,7 +131,7 @@
                 <asp:Label ID="lblDelAddr" runat="server" Font-Names="Verdana" Text="Delivery Address:"></asp:Label></td>
             <td style="width: 100px; height: 21px">
                 <asp:DropDownList ID="dlDelAddr" runat="server" AutoPostBack="True" OnSelectedIndexChanged="dlDelAddr_SelectedIndexChanged"
-                    Width="383px">
+                    Width="385px">
                 </asp:DropDownList></td>
             <td style="width: 99px; height: 21px">
             </td>
@@ -208,6 +208,17 @@
             <td style="width: 106px; height: 26px">
                 <asp:Button ID="btnFabNumberLookup" runat="server" Text="Look-up" Width="91px" OnClick="btnFabNumberLookup_Click" />
             </td>
+        </tr>
+        <tr>
+            <td style="width: 195px; height: 35px">
+                <asp:Label ID="lblFabPO" runat="server" Font-Names="Verdana" Text="Fab. PO:"></asp:Label>
+            </td>
+            <td style="width: 438px; height: 35px">
+                <asp:DropDownList ID="dlFabPO" runat="server" Height="22px" Width="385px">
+                </asp:DropDownList>
+            </td>
+            <td style="width: 106px; height: 35px">
+                </td>
         </tr>
         <tr>
             <td style="width: 195px; height: 26px">

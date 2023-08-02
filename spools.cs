@@ -140,7 +140,7 @@ namespace gbe
                 try { sd.checked_by = dr["checked_by"].ToString(); }
                 catch { }
 
-                try { sd.fab_number = (int)dr["fab_number"]; }
+                try { sd.fab_order_id = (int)dr["fab_order_id"]; }
                 catch { }
 
                 a.Add(sd);
@@ -460,7 +460,7 @@ namespace gbe
         public int site_fitter = 0;
         public string material = string.Empty;
 
-        public int fab_number = 0;
+        public int fab_order_id = 0;
 
         public string pipe_size = string.Empty;
         public string cut_size1 = string.Empty;
