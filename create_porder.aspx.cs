@@ -350,7 +350,7 @@ namespace gbe
                                 part_no = "TBC";
 
                             part_desc = pd.description;
-                            price = pd.material_cost; //pd.gbe_sale_cost;
+                            price = pd.gbe_sale_cost; // pd.material_cost;
 
                             S.Append(part_no.PadRight(50));
                             S.Append(string.Empty.PadRight(55));
@@ -736,7 +736,7 @@ namespace gbe
                 {
                     part_no = spd.part_data.part_number;
                     part_desc = spd.part_data.description;
-                    price = spd.part_data.material_cost; //spd.part_data.gbe_sale_cost;
+                    price = spd.part_data.gbe_sale_cost; //spd.part_data.material_cost; //
                 }
 
                 SortedList sl_pol = new SortedList();
