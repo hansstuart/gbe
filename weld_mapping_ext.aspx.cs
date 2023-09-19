@@ -88,8 +88,8 @@ namespace gbe
                 + ""
                 + " spools.barcode like '" + project + "%' "
                 + sql_weld_map_part_type_excludes
-                //+ " and "
-                //+ " spools.checked_by is not null "
+                + " and "
+                + " spools.checked_by is not null "
                 + " and "
                 + " spools.include_in_weld_map=1 "
                 + " and "
@@ -121,6 +121,16 @@ namespace gbe
                             sd.fw = dr_wm.i_gf("fw");
                             sd.bw = dr_wm.i_gf("bw");
 
+                            string welder = string.Empty;
+
+                            if (sd.spool_part_welder.Trim().Length > 0)
+                                welder = sd.spool_part_welder.Trim();
+                            else
+                                welder = sd.spool_welder.Trim();
+
+                            if (welder.Length == 0 || welder.ToLower() == "n/a" || welder.ToLower() == "wip")
+                                continue;
+
                             string barcode = dr_wm.s_gf("barcode");
 
                             ArrayList a_sd = null;
@@ -136,31 +146,22 @@ namespace gbe
                             }
 
                             a_sd.Add(sd);
+                           
+                            weld_test_ext_fw_bw fw_bw = null;
 
-                            string welder = string.Empty;
-
-                            if (sd.spool_part_welder.Trim().Length > 0)
-                                welder = sd.spool_part_welder.Trim();
-                            else
-                                welder = sd.spool_welder.Trim();
-
-                            if (welder.Length > 0)
+                            if (m_sl_welder_totals.ContainsKey(welder))
                             {
-                                weld_test_ext_fw_bw fw_bw = null;
-
-                                if (m_sl_welder_totals.ContainsKey(welder))
-                                {
-                                    fw_bw = (weld_test_ext_fw_bw)m_sl_welder_totals[welder];
-                                }
-                                else
-                                {
-                                    fw_bw = new weld_test_ext_fw_bw();
-                                    m_sl_welder_totals.Add(welder, fw_bw);
-                                }
-
-                                fw_bw.fw += sd.fw;
-                                fw_bw.bw += sd.bw;
+                                fw_bw = (weld_test_ext_fw_bw)m_sl_welder_totals[welder];
                             }
+                            else
+                            {
+                                fw_bw = new weld_test_ext_fw_bw();
+                                m_sl_welder_totals.Add(welder, fw_bw);
+                            }
+
+                            fw_bw.fw += sd.fw;
+                            fw_bw.bw += sd.bw;
+                            
                         }
                     }
                 }
@@ -257,7 +258,7 @@ namespace gbe
                             wtewd.welder = dr_wm.s_gf("welder");
                             wtewd.datetime_stamp = dr_wm.dt_gf("datetime_stamp");
                                
-                            if (wtewd.welder.ToLower() == "n/a")  // rolls eyes
+                            if (wtewd.welder.ToLower() == "n/a" || wtewd.welder.ToLower() == "wip")  // rolls eyes
                                 continue;
 
                             wted.a_weld_test_ext_welder.Add(wtewd);
