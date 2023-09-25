@@ -20,11 +20,26 @@ namespace gbe
         const string TXT_R6_DP_BW = "txt_r6_dp_bw";
         const string TXT_R7_VI_FW = "txt_r7_vi_fw";
         const string TXT_R8_VI_BW = "txt_r8_vi_bw";
+
+        const string TXT_MPI_FW = "txt_mpi_fw";
+        const string TXT_MPI_BW = "txt_mpi_bw";
+        const string TXT_UT_BW = "txt_ut_bw";
+        const string TXT_XRAY_BW = "txt_xray_bw";
+        const string TXT_DP_FW = "txt_dp_fw";
+        const string TXT_DP_BW = "txt_dp_bw";
+        const string TXT_VI_FW = "txt_vi_fw";
+        const string TXT_VI_BW = "txt_vi_bw";
+
         const string WELD_TESTS = "weld_tests";
         const string WELDER_TOTALS = "welder_totals";
         const string SPOOL_DATA = "spool_data";
         const string GBEBLUE = "#c4e2ed";
         const int COL1WIDTH = 330;
+        const string ROW_TYPE = "row_type";
+        const string ROW_TYPE_REPORT_DETAILS = "row_type_report_details";
+        const string ROW_TYPE_WELDER_TESTS = "row_type_welder_tests";
+        const string BARCODE = "barcode";
+        const string WELDER = "welder";
 
         SortedList m_sl_weld_tests = new SortedList();
         SortedList m_sl_welder_totals = new SortedList();
@@ -87,6 +102,8 @@ namespace gbe
                 + " where "
                 + ""
                 + " spools.barcode like '" + project + "%' "
+                + " and "
+                + " spools.barcode like '%-sp-%' "
                 + sql_weld_map_part_type_excludes
                 + " and "
                 + " spools.checked_by is not null "
@@ -247,6 +264,7 @@ namespace gbe
 
                             weld_test_ext_welder_data wtewd = new weld_test_ext_welder_data();
 
+                            wtewd.id = dr_wm.i_gf("weld_test_ext_welder_id");
                             wtewd.mpi_fw = dr_wm.i_gf("mpi_fw");
                             wtewd.ut_bw = dr_wm.i_gf("ut_bw");
                             wtewd.mpi_bw = dr_wm.i_gf("mpi_bw");
@@ -357,9 +375,16 @@ namespace gbe
                 r = new TableRow();
                 r.BackColor = System.Drawing.Color.FromName("LightGreen");
 
+                int n = 0;
+
                 foreach (string sh in hdr_welder)
-                {
+                { 
+                    
                     c = new TableCell();
+
+                    if(n++ > 0)
+                        c.HorizontalAlign = HorizontalAlign.Right;
+
                     c.Controls.Add(new LiteralControl(sh));
                     r.Cells.Add(c);
                 }
@@ -522,11 +547,13 @@ namespace gbe
 
                     c = new TableCell();
                     c.BackColor = System.Drawing.Color.FromName("LightGreen");
+                    c.HorizontalAlign = HorizontalAlign.Right;
                     c.Controls.Add(new LiteralControl("FW"));
                     r.Cells.Add(c);
 
                     c = new TableCell();
                     c.BackColor = System.Drawing.Color.FromName("LightGreen");
+                    c.HorizontalAlign = HorizontalAlign.Right;
                     c.Controls.Add(new LiteralControl("BW"));
                     r.Cells.Add(c);
 
@@ -569,8 +596,6 @@ namespace gbe
 
                         total_fw_spool += sd.fw;
                         total_bw_spool += sd.bw;
-
-                        
 
                         grand_total_fw += sd.fw;
                         grand_total_bw += sd.bw;
@@ -707,8 +732,6 @@ namespace gbe
                         c.Controls.Add(txt_r8_vi_bw);
                         r.Cells.Add(c);
 
-                        
-
                         c = new TableCell();
                         c.HorizontalAlign = HorizontalAlign.Left;
                         c.BackColor = System.Drawing.ColorTranslator.FromHtml(GBEBLUE);
@@ -718,12 +741,14 @@ namespace gbe
                         btn_save_report_details.Click += btn_save_report_details_Click;
                         btn_save_report_details.ID = "btn_save_report_details" + wted.id.ToString();
                         btn_save_report_details.Attributes[ID] = wted.id.ToString();
+                        
                         c.Controls.Add(btn_save_report_details);
 
                         r.Cells.Add(c);
 
+                        r.Attributes[ROW_TYPE] = ROW_TYPE_REPORT_DETAILS;
                         r.Attributes[ID] = wted.id.ToString();
-
+                        
                         tblResults.Rows.Add(r);
 
                         r = new TableRow();
@@ -742,6 +767,7 @@ namespace gbe
                             else
                             {
                                 c.Width = 120;
+                                c.HorizontalAlign = HorizontalAlign.Right;
                             }
                         }
 
@@ -757,45 +783,81 @@ namespace gbe
                             r.Cells.Add(c);
 
                             c = new TableCell();
-                            c.HorizontalAlign = HorizontalAlign.Right;
-                            c.Controls.Add(new LiteralControl(wtewd.mpi_fw.ToString()));
+                            //c.HorizontalAlign = HorizontalAlign.Right;
+                            //c.Controls.Add(new LiteralControl(wtewd.mpi_fw.ToString()));
+
+                            c.Controls.Add(create_numeric_textbox(TXT_MPI_FW + wtewd.id, wtewd.mpi_fw.ToString(),wtewd.id.ToString() ));
+
                             r.Cells.Add(c);
 
                             c = new TableCell();
-                            c.HorizontalAlign = HorizontalAlign.Right;
-                            c.Controls.Add(new LiteralControl(wtewd.mpi_bw.ToString()));
+                            //c.HorizontalAlign = HorizontalAlign.Right;
+                            //c.Controls.Add(new LiteralControl(wtewd.mpi_bw.ToString()));
+                            c.Controls.Add(create_numeric_textbox(TXT_MPI_BW + wtewd.id, wtewd.mpi_bw.ToString(),wtewd.id.ToString() ));
+
                             r.Cells.Add(c);
 
                             c = new TableCell();
-                            c.HorizontalAlign = HorizontalAlign.Right;
-                            c.Controls.Add(new LiteralControl(wtewd.ut_bw.ToString()));
+                            //c.HorizontalAlign = HorizontalAlign.Right;
+                            //c.Controls.Add(new LiteralControl(wtewd.ut_bw.ToString()));
+                            c.Controls.Add(create_numeric_textbox(TXT_UT_BW + wtewd.id, wtewd.ut_bw.ToString(),wtewd.id.ToString() ));
+
                             r.Cells.Add(c);
 
                             c = new TableCell();
-                            c.HorizontalAlign = HorizontalAlign.Right;
-                            c.Controls.Add(new LiteralControl(wtewd.xray_bw.ToString()));
+                            //c.HorizontalAlign = HorizontalAlign.Right;
+                            //c.Controls.Add(new LiteralControl(wtewd.xray_bw.ToString()));
+                            c.Controls.Add(create_numeric_textbox(TXT_XRAY_BW + wtewd.id, wtewd.xray_bw.ToString(),wtewd.id.ToString() ));
+
                             r.Cells.Add(c);
 
                             c = new TableCell();
-                            c.HorizontalAlign = HorizontalAlign.Right;
-                            c.Controls.Add(new LiteralControl(wtewd.dp_fw.ToString()));
+                            //c.HorizontalAlign = HorizontalAlign.Right;
+                            //c.Controls.Add(new LiteralControl(wtewd.dp_fw.ToString()));
+                            c.Controls.Add(create_numeric_textbox(TXT_DP_FW + wtewd.id, wtewd.dp_fw.ToString(),wtewd.id.ToString() ));
+
                             r.Cells.Add(c);
 
                             c = new TableCell();
-                            c.HorizontalAlign = HorizontalAlign.Right;
-                            c.Controls.Add(new LiteralControl(wtewd.dp_bw.ToString()));
+                            //c.HorizontalAlign = HorizontalAlign.Right;
+                            //c.Controls.Add(new LiteralControl(wtewd.dp_bw.ToString()));
+                            c.Controls.Add(create_numeric_textbox(TXT_DP_BW + wtewd.id, wtewd.dp_bw.ToString(),wtewd.id.ToString() ));
+
                             r.Cells.Add(c);
 
                             c = new TableCell();
-                            c.HorizontalAlign = HorizontalAlign.Right;
-                            c.Controls.Add(new LiteralControl(wtewd.vi_fw.ToString()));
+                            //c.HorizontalAlign = HorizontalAlign.Right;
+                            //c.Controls.Add(new LiteralControl(wtewd.vi_fw.ToString()));
+                            c.Controls.Add(create_numeric_textbox(TXT_VI_FW + wtewd.id, wtewd.vi_fw.ToString(),wtewd.id.ToString() ));
+
                             r.Cells.Add(c);
 
                             c = new TableCell();
-                            c.HorizontalAlign = HorizontalAlign.Right;
-                            c.Controls.Add(new LiteralControl(wtewd.vi_bw.ToString()));
+                            //c.HorizontalAlign = HorizontalAlign.Right;
+                            //c.Controls.Add(new LiteralControl(wtewd.vi_bw.ToString()));
+                            c.Controls.Add(create_numeric_textbox(TXT_VI_BW + wtewd.id, wtewd.vi_bw.ToString(),wtewd.id.ToString() ));
+
                             r.Cells.Add(c);
 
+                            c = new TableCell();
+                            c.HorizontalAlign = HorizontalAlign.Left;
+                            c.BackColor = System.Drawing.ColorTranslator.FromHtml(GBEBLUE);
+                            ImageButton btn_save_test_details = new ImageButton();
+                            btn_save_test_details.ToolTip = "Save test for " + wtewd.welder;
+                            btn_save_test_details.ImageUrl = "~/disk.png";
+                            btn_save_test_details.Click += btn_save_test_details_Click;
+                            btn_save_test_details.ID = "btn_save_test_details" + wtewd.id.ToString();
+                            btn_save_test_details.Attributes[ID] = wtewd.id.ToString();
+                            btn_save_test_details.Attributes[BARCODE] = barcode;
+                            btn_save_test_details.Attributes[WELDER] = wtewd.welder;
+                            c.Controls.Add(btn_save_test_details);
+
+                            r.Cells.Add(c);
+
+                            r.Attributes[ROW_TYPE] = ROW_TYPE_WELDER_TESTS;
+                            r.Attributes[ID] = wtewd.id.ToString();
+                            r.Attributes[BARCODE] = barcode;
+                            
                             tblResults.Rows.Add(r);
 
                             spool_total_mpi_fw += wtewd.mpi_fw;
@@ -918,6 +980,7 @@ namespace gbe
                     {
                         shdr_vale = kv.key;
                         c.Width = 120;
+                        c.HorizontalAlign = HorizontalAlign.Right;
                     }
 
                     
@@ -1037,10 +1100,137 @@ namespace gbe
 
                     tblResults.Rows.Add(r);
                 }
-
-                
-              
             }
+        }
+
+        private void btn_save_test_details_Click(object sender, ImageClickEventArgs e)
+        {
+            ImageButton b = (ImageButton)sender;
+
+            string weld_test_ext_welder_data_id =  (b.Attributes[ID]);
+            string barcode =  (b.Attributes[BARCODE]);
+            string welder =  (b.Attributes[WELDER]);
+
+            string mpi_fw, mpi_bw, ut_bw, xray_bw, dp_fw, dp_bw, vi_fw, vi_bw;
+            mpi_fw = mpi_bw = ut_bw = xray_bw = dp_fw = dp_bw = vi_fw = vi_bw = string.Empty;
+
+            foreach (TableRow r in tblResults.Rows)
+            {
+                if (r.Attributes[ROW_TYPE] == ROW_TYPE_WELDER_TESTS && r.Attributes[ID] == weld_test_ext_welder_data_id)
+                {
+
+                    foreach (TableCell c in r.Cells)
+                    {
+                        foreach (Control ctrl in c.Controls)
+                        {
+                            if (ctrl.GetType() == typeof(TextBox))
+                            {
+                                TextBox tb = (TextBox)ctrl;
+
+                                if (tb.ID.StartsWith(TXT_MPI_FW))
+                                {
+                                     mpi_fw = tb.Text;
+                                }
+                                else if (tb.ID.StartsWith(TXT_MPI_BW))
+                                {
+                                    mpi_bw = tb.Text;
+                                }
+                                else if (tb.ID.StartsWith(TXT_UT_BW))
+                                {
+                                    ut_bw = tb.Text;
+                                }
+                                else if (tb.ID.StartsWith(TXT_XRAY_BW))
+                                {
+                                    xray_bw = tb.Text;
+                                }
+                                else if (tb.ID.StartsWith(TXT_DP_FW))
+                                {
+                                    dp_fw = tb.Text;
+                                }
+                                else if (tb.ID.StartsWith(TXT_DP_BW))
+                                {
+                                    dp_bw = tb.Text;
+                                }
+                                else if (tb.ID.StartsWith(TXT_VI_FW))
+                                {
+                                    vi_fw = tb.Text;
+                                }
+                                else if (tb.ID.StartsWith(TXT_VI_BW))
+                                {
+                                    vi_bw = tb.Text;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+
+            int iweld_test_ext_welder_data_id = 0;
+
+            try { iweld_test_ext_welder_data_id = Convert.ToInt32(weld_test_ext_welder_data_id); } catch { }
+
+            if (iweld_test_ext_welder_data_id > 0)
+            {
+                using (cdb_connection db = new cdb_connection())
+                {
+                    using (weld_test_ext wt = new weld_test_ext())
+                    {
+                        wt.update_weld_test_ext_welder( mpi_fw,  mpi_bw,  ut_bw,  xray_bw,  dp_fw,  dp_bw,  vi_fw,  vi_bw,  iweld_test_ext_welder_data_id);
+                    }
+                }
+
+                weld_test_ext_data wted = (weld_test_ext_data)m_sl_weld_tests[barcode];
+
+                foreach (weld_test_ext_welder_data wtewd in wted.a_weld_test_ext_welder)
+                {
+                    if (wtewd.id == iweld_test_ext_welder_data_id)
+                    {
+                        wtewd.mpi_fw = s2i(mpi_fw);
+                        wtewd.mpi_bw = s2i(mpi_bw);
+                        wtewd.ut_bw = s2i(ut_bw);
+                        wtewd.xray_bw = s2i(xray_bw);
+                        wtewd.dp_fw = s2i(dp_fw);
+                        wtewd.dp_bw = s2i(dp_bw);
+                        wtewd.vi_fw = s2i(vi_fw);
+                        wtewd.vi_bw = s2i(vi_bw);
+
+                        ViewState[WELD_TESTS] = m_sl_weld_tests;
+
+                        weld_test_ext_fw_bw fw_bw = (weld_test_ext_fw_bw)m_sl_welder_totals[welder];
+                        fw_bw.fw_tested = 0;
+                        fw_bw.bw_tested = 0;
+
+                        foreach (DictionaryEntry e0 in m_sl_weld_tests)
+                        {
+                            weld_test_ext_data wted0 = (weld_test_ext_data)e0.Value;
+
+                            foreach (weld_test_ext_welder_data wtewd0 in wted0.a_weld_test_ext_welder)
+                            {
+                                if (wtewd0.welder == welder)
+                                {
+                                    fw_bw.fw_tested += wtewd0.total_tested_fw();
+                                    fw_bw.bw_tested += wtewd0.total_tested_bw();
+                                }
+                            }
+                        }
+
+                        ViewState[WELDER_TOTALS] = m_sl_welder_totals;
+
+                        display();
+                        break;
+                    }
+                }
+            }
+        }
+
+        int s2i(string s)
+        {
+             int i = 0;
+
+            try {i = Convert.ToInt32(s); } catch { }
+
+            return i;
         }
 
         private void btn_save_report_details_Click(object sender, ImageClickEventArgs e)
@@ -1054,7 +1244,7 @@ namespace gbe
 
             foreach (TableRow r in tblResults.Rows)
             {
-                if (r.Attributes[ID] == weld_test_id)
+                if (r.Attributes[ROW_TYPE] == ROW_TYPE_REPORT_DETAILS && r.Attributes[ID] == weld_test_id)
                 {
                     foreach (TableCell c in r.Cells)
                     {
@@ -1199,6 +1389,17 @@ namespace gbe
             }
         }
 
+        TextBox create_numeric_textbox(string id, string val, string attrib_id)
+        {
+            TextBox tb = new TextBox();
+            tb.Style["text-align"] = "right";
+            tb.MaxLength = 3;
+            tb.Text = val;
+            tb.Attributes[ID] = attrib_id;
+            tb.Attributes.Add("onkeypress", "return isNumberKey(event)");
+            tb.ID = id;
 
+            return tb;
+        }
     }
 }

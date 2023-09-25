@@ -57,6 +57,21 @@ namespace gbe
 
             update(sl, m_tbl_weld_test_ext, id);
         }
+
+        public void update_weld_test_ext_welder(string mpi_fw, string mpi_bw, string ut_bw, string xray_bw, string dp_fw, string dp_bw, string vi_fw, string vi_bw, int id)
+        {
+            SortedList sl = new SortedList();
+            sl.Add("mpi_fw", mpi_fw);
+            sl.Add("mpi_bw", mpi_bw);
+            sl.Add("ut_bw", ut_bw);
+            sl.Add("xray_bw", xray_bw);
+            sl.Add("dp_fw", dp_fw);
+            sl.Add("dp_bw", dp_bw);
+            sl.Add("vi_fw", vi_fw);
+            sl.Add("vi_bw", vi_bw);
+
+            update(sl, m_tbl_weld_test_ext_welder, id); 
+        }
     }
 
     [Serializable]
