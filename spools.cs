@@ -61,6 +61,91 @@ namespace gbe
             return a;
         }
 
+        void populate_spool_data(spool_data sd, DataRow dr)
+        {
+            try {sd.id = (int)dr["id"];}
+            catch { }
+
+            if (sd.id == 0)
+            {
+                try {sd.id = (int)dr["spools_id"];}
+                catch { }
+            }
+
+            sd.spool = dr["spool"].ToString();
+            sd.revision = dr["revision"].ToString();
+            sd.barcode = dr["barcode"].ToString();
+
+            try { sd.welder = (int)dr["welder"]; }
+            catch { }
+
+            try { sd.fitter = (int)dr["fitter"]; }
+            catch { }
+
+            try { sd.delivery_address = (int)dr["delivery_address"]; }
+            catch { }
+
+            try { sd.cad_user_id = (int)dr["cad_user_id"]; }
+            catch { }
+
+            if (dr["porder_created"].GetType() == typeof(bool))
+                sd.porder_created = (bool)dr["porder_created"];
+
+            if (dr["on_hold"].GetType() == typeof(bool))
+                sd.on_hold = (bool)dr["on_hold"];
+
+            try { sd.status = dr["status"].ToString(); }
+            catch { }
+
+            try { sd.cost_centre = (int)dr["cost_centre"]; }
+            catch { }
+
+            try { sd.imsl_cost_centre = (int)dr["imsl_cost_centre"]; }
+            catch { }
+
+            try { sd.picked = (bool)dr["picked"]; }
+            catch { }
+
+            try { sd.include_in_weld_map = (bool)dr["include_in_weld_map"]; }
+            catch { }
+
+            try { sd.site_fitter = (int)dr["site_fitter"]; }
+            catch { }
+
+            try { sd.date_created = (DateTime)dr["date_created"]; }
+            catch { }
+
+            try { sd.delivery_date = (DateTime)dr["delivery_date"]; }
+            catch { }
+
+            try { sd.material = dr["material"].ToString(); }
+            catch { }
+
+            try { sd.pipe_size = dr["pipe_size"].ToString(); }
+            catch { }
+
+            try { sd.cut_size1 = dr["cut_size1"].ToString(); }
+            catch { }
+
+            try { sd.cut_size2 = dr["cut_size2"].ToString(); }
+            catch { }
+
+            try { sd.cut_size3 = dr["cut_size3"].ToString(); }
+            catch { }
+
+            try { sd.cut_size4 = dr["cut_size4"].ToString(); }
+            catch { }
+
+            try { sd.drawing_id = (int)dr["drawing_id"]; }
+            catch { }
+
+            try { sd.checked_by = dr["checked_by"].ToString(); }
+            catch { }
+
+            try { sd.fab_order_id = (int)dr["fab_order_id"]; }
+            catch { }
+        }
+
         public ArrayList get_spool_data_short(SortedList search_params)
         {
             ArrayList a = new ArrayList();
@@ -69,79 +154,7 @@ namespace gbe
             {
                 spool_data sd = new spool_data();
 
-                sd.id = (int)dr["id"];
-                sd.spool = dr["spool"].ToString();
-                sd.revision = dr["revision"].ToString();
-                sd.barcode = dr["barcode"].ToString();
-
-                try { sd.welder = (int)dr["welder"]; }
-                catch { }
-
-                try { sd.fitter = (int)dr["fitter"]; }
-                catch { }
-
-                try { sd.delivery_address = (int)dr["delivery_address"]; }
-                catch { }
-
-                try { sd.cad_user_id = (int)dr["cad_user_id"]; }
-                catch { }
-
-                if (dr["porder_created"].GetType() == typeof(bool))
-                    sd.porder_created = (bool)dr["porder_created"];
-
-                if (dr["on_hold"].GetType() == typeof(bool))
-                    sd.on_hold = (bool)dr["on_hold"];
-
-                try { sd.status = dr["status"].ToString(); }
-                catch { }
-
-                try { sd.cost_centre = (int)dr["cost_centre"]; }
-                catch { }
-
-                try { sd.imsl_cost_centre = (int)dr["imsl_cost_centre"]; }
-                catch { }
-
-                try { sd.picked = (bool)dr["picked"]; }
-                catch { }
-
-                try { sd.include_in_weld_map = (bool)dr["include_in_weld_map"]; }
-                catch { }
-
-                try { sd.site_fitter = (int)dr["site_fitter"]; }
-                catch { }
-
-                try { sd.date_created = (DateTime)dr["date_created"]; }
-                catch { }
-
-                try { sd.delivery_date = (DateTime)dr["delivery_date"]; }
-                catch { }
-
-                try { sd.material = dr["material"].ToString(); }
-                catch { }
-
-                try { sd.pipe_size = dr["pipe_size"].ToString(); }
-                catch { }
-
-                try { sd.cut_size1 = dr["cut_size1"].ToString(); }
-                catch { }
-
-                try { sd.cut_size2 = dr["cut_size2"].ToString(); }
-                catch { }
-
-                try { sd.cut_size3 = dr["cut_size3"].ToString(); }
-                catch { }
-
-                try { sd.cut_size4 = dr["cut_size4"].ToString(); }
-                catch { }
-
-                try { sd.drawing_id = (int)dr["drawing_id"]; }
-                catch { }
-
-                try { sd.checked_by = dr["checked_by"].ToString(); }
-                catch { }
-
-                try { sd.fab_order_id = (int)dr["fab_order_id"]; }
-                catch { }
+                populate_spool_data(sd, dr);
 
                 a.Add(sd);
             }
@@ -160,7 +173,7 @@ namespace gbe
                 try
                 {
                     a = get_spool_data_short(search_params);
-                    DataTable dta = get_data(m_tbl, search_params);
+                    //DataTable dta = get_data(m_tbl, search_params);
 
                     using (spool_parts sp = new spool_parts(m_sql_connection))
                     {
@@ -250,6 +263,100 @@ namespace gbe
                     EventLog.WriteEntry("PCF gbe", "get_spool_data() \n" + ex.ToString(), EventLogEntryType.Error);
                 }
 
+            }
+
+            return a;
+        }
+
+        public ArrayList get_spool_data(string spool_ids)
+        {
+            ArrayList a = new ArrayList();
+            
+            try
+            {
+                string sql_select = @"
+                        
+                    select 
+
+                    spools.[id] as spools_id
+                            ,[spool]
+                            ,[revision]
+                            ,[barcode]
+                            ,spools.[welder] as spools_welder
+                            ,[delivery_address]
+                            ,[cad_user_id]
+                            ,[porder_created]
+                            ,[status]
+                            ,[on_hold]
+                            ,[fitter]
+                            ,[cost_centre]
+                            ,spools.[picked] as spools_picked
+                            ,[site_fitter]
+                            ,spools.[include_in_weld_map] as spools_include_in_weld_map
+                            ,[date_created]
+                            ,[delivery_date]
+                            ,[imsl_cost_centre]
+                            ,[material]
+                            ,[pipe_size]
+                            ,[cut_size1]
+                            ,[cut_size2]
+                            ,[cut_size3]
+                            ,[cut_size4]
+                            ,[drawing_id]
+                            ,[checked_by]
+                            ,[fab_order_id]
+
+	                        ,spool_parts.[id] as spool_parts_id
+                            ,[part_id]
+                            ,[spool_id]
+                            ,[qty]
+                            ,[fw]
+                            ,[bw]
+                            ,[porder]
+                            ,spool_parts.[picked] as spool_parts_picked
+                            ,spool_parts.[include_in_weld_map] as spool_parts_include_in_weld_map
+                            ,spool_parts.[welder] as spool_parts_welder
+                            ,[seq]
+
+                    from spools
+
+                    join spool_parts on spools.id = spool_parts.spool_id
+
+                    where spools.id in (
+                        
+                    " + spool_ids + ")  ";
+                    
+                DataTable dta = get_data(sql_select);
+
+                spool_data sd = null;
+                int current_spool_id = int.MinValue;
+                    
+                foreach (DataRow dr in dta.Rows)
+                {
+                    int next_spool_id = (int)dr["spools_id"];
+
+                    if (next_spool_id != current_spool_id)
+                    {
+                        current_spool_id = next_spool_id;
+
+                        sd = new spool_data();
+                        sd.spool_part_data = new ArrayList();
+
+                        populate_spool_data(sd, dr);
+
+                        a.Add(sd);
+                    }
+
+                    spool_part_data spd = new spool_part_data();
+
+                    spool_parts.populate_spool_part_data(spd, dr);
+
+                    sd.spool_part_data.Add(spd);
+                }
+            }
+            catch (Exception ex)
+            {
+                EventLog.WriteEntry("PCF gbe", "get_spool_data(spool_ids) \n" + ex.ToString(), EventLogEntryType.Error);
             }
 
             return a;

@@ -183,6 +183,8 @@ namespace gbe
         public int fw_tested = 0;
         public int bw_tested = 0;
 
+
+
         public decimal pc_fw_tested() 
         {
             decimal fw_tested_pc = 0;
@@ -274,6 +276,8 @@ namespace gbe
         public string spool_part_welder = string.Empty; // from spool_parts record (new method)
         public int fw = 0;
         public int bw = 0;
+        public string spool_welder_name = string.Empty;
+        public string spool_part_welder_name = string.Empty;
     }
 
 }

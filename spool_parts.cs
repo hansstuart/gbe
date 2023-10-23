@@ -86,6 +86,43 @@ namespace gbe
             return a;
 
         }
+
+        public static void populate_spool_part_data(spool_part_data sd, DataRow dr)
+        {
+            try {sd.id = (int)dr["id"];}
+            catch { }
+
+            if (sd.id == 0)
+            {
+                try {sd.id = (int)dr["spool_parts_id"];}
+                catch { }
+            }
+
+            try {sd.spool_id = (int)dr["spool_id"];}
+            catch { }
+            try { sd.part_id = (int)dr["part_id"]; }
+            catch { }
+            try {sd.qty = (decimal)dr["qty"];}
+            catch { }
+            try {sd.fw = (int)dr["fw"];}
+            catch { }
+            try {sd.bw = (int)dr["bw"];}
+            catch { }
+            try { sd.porder = (int)dr["porder"]; }
+            catch { }
+
+            try { sd.picked = (bool)dr["picked"]; }
+            catch { }
+
+            try { sd.include_in_weld_map = (bool)dr["include_in_weld_map"]; }
+            catch { }
+
+            try { sd.welder = dr["welder"].ToString(); } catch { }
+
+            try { sd.seq = (int)dr["seq"]; }
+            catch { }
+        }
+
         public ArrayList get_spool_parts_data(SortedList search_params)
         {
             ArrayList a = new ArrayList();
@@ -102,36 +139,7 @@ namespace gbe
                 {
                     spool_part_data sd = new spool_part_data();
 
-                    try
-                    {
-                        try {sd.id = (int)dr["id"];}
-                        catch { }
-                        try {sd.spool_id = (int)dr["spool_id"];}
-                        catch { }
-                        try { sd.part_id = (int)dr["part_id"]; }
-                        catch { }
-                        try {sd.qty = (decimal)dr["qty"];}
-                        catch { }
-                        try {sd.fw = (int)dr["fw"];}
-                        catch { }
-                        try {sd.bw = (int)dr["bw"];}
-                        catch { }
-                        try { sd.porder = (int)dr["porder"]; }
-                        catch { }
-
-                        try { sd.picked = (bool)dr["picked"]; }
-                        catch { }
-
-                        try { sd.include_in_weld_map = (bool)dr["include_in_weld_map"]; }
-                        catch { }
-
-                        try { sd.welder = dr["welder"].ToString(); } catch { }
-
-                        try { sd.seq = (int)dr["seq"]; }
-                        catch { }
-
-                    }
-                    catch { }
+                    populate_spool_part_data(sd, dr);
 
                     a.Add(sd);
                 }

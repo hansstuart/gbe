@@ -177,6 +177,15 @@ namespace gbe
         protected global::System.Web.UI.WebControls.TextBox txtReport8VI_BW;
 
         /// <summary>
+        /// btnResetReports control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnResetReports;
+
+        /// <summary>
         /// lblBarcode control.
         /// </summary>
         /// <remarks>

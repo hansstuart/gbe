@@ -1138,26 +1138,6 @@ namespace gbe
                                 c.ForeColor = (HDR_ROW_FC);
                                 r.Cells.Add(c);
 
-                                /*
-                                if (is_fab_schedule())
-                                {
-                                    ArrayList a_slots_available = get_available_slots(dt_date.ToString("dd/MM/yyyy"));
-
-                                    c = new TableCell();
-                                    c.HorizontalAlign = HorizontalAlign.Right;
-
-                                    c.Controls.Add(new LiteralControl("[" + a_slots_available[0].ToString() + "]"));
-                                    c.BackColor = (HDR_ROW_BC);
-                                    c.ForeColor = (HDR_ROW_FC);
-                                    r.Cells.Add(c);
-
-                                    c.Controls.Add(new LiteralControl("[" + a_slots_available[1].ToString() + "]"));
-                                    c.BackColor = (HDR_ROW_BC);
-                                    c.ForeColor = (HDR_ROW_FC);
-                                    r.Cells.Add(c);
-                                }
-                                */
-
                                 tblSchedule.Rows.Add(r);
 
                                 if (is_delivery_schedule())
@@ -1421,7 +1401,17 @@ namespace gbe
                                         c.ForeColor = System.Drawing.Color.FromName("Purple");
                                     }
 
-                                    c.Controls.Add(new LiteralControl(sr.barcode));
+                                    Table tblSpool = new Table();
+                                    tblSpool.Width = 500;
+                                    TableCell cellSpool = new TableCell();
+                                    TableRow rowSpool = new TableRow();
+                                    cellSpool.Controls.Add(new LiteralControl(sr.barcode));
+                                    rowSpool.Cells.Add(cellSpool);
+
+                                    tblSpool.Rows.Add(rowSpool);
+                                    c.Controls.Add(tblSpool);
+
+                                    //c.Controls.Add(new LiteralControl(sr.barcode));  
                                     r.Cells.Add(c);
 
                                     c = new TableCell();
@@ -3450,6 +3440,63 @@ namespace gbe
         {
             btnView.Visible = is_delivery_schedule() && MultiView1.ActiveViewIndex<3;
             set_view_btn_text();
+        }
+
+        SortedList get_invoice_amounts()
+        {
+            SortedList sl_invoice_ammouts = new SortedList();
+
+            SortedList sl_schedule_rec = m_sl_schedule_rec;
+            string spool_ids = string.Empty;
+
+            foreach (DictionaryEntry e0 in sl_schedule_rec)
+            {
+                SortedList sl0 = (SortedList)e0.Value;
+                            
+                if (sl0.Count > 0)
+                {
+                    SortedList sl_batches = (SortedList)e0.Value;
+
+                    foreach (DictionaryEntry e in sl_batches)
+                    {
+                        string[] sa = e.Key.ToString().Split('|');
+
+                        SortedList sl_batch = (SortedList)e.Value;
+
+                        foreach (DictionaryEntry e1 in sl_batch)
+                        {
+                            c_schedule_rec sr = (c_schedule_rec)e1.Value;
+
+                            if(spool_ids.Length > 0)
+                                spool_ids += ",";
+
+                            spool_ids += sr.schd.spool_id;
+                        }
+                    }
+                }
+            }
+
+            if (spool_ids.Length > 0)
+            {
+                spools sp = new spools();
+
+                ArrayList a = sp.get_spool_data(spool_ids);
+
+                if (a.Count > 0)
+                {
+                    foreach (spool_data sd in a)
+                    {
+                        if (!sl_invoice_ammouts.ContainsKey(sd.id))
+                        {
+                            decimal material_amount, fab_amount;
+                            material_amount = fab_amount = 0;
+                            sl_invoice_ammouts.Add(sd.id, CSpoolInvoiceAmount.get_invoice_amount(sd, ref material_amount, ref fab_amount));
+                        }
+                    }
+                }
+            }
+
+            return sl_invoice_ammouts;
         }
     }
 }

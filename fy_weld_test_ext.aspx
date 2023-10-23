@@ -72,6 +72,15 @@
             </td>
         </tr>
 
+        <tr>
+            <td style="width: 247px">&nbsp;</td>
+            <td style="width: 309px">&nbsp;</td>
+            <td style="width: 289px">&nbsp;</td>
+            <td align="center">
+                <asp:Button ID="btnResetReports" runat="server" CssClass="FY_Button" OnClick="btnResetReports_Click" Text="Reset Reports" />
+            </td>
+        </tr>
+
     </table>
 </div>
 <div style="clear:both">

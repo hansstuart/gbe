@@ -146,12 +146,18 @@ namespace gbe
                     wte.save_weld_test_ext_data(sl_weldtest, a_welder_tests);
                 }
 
+                /*
                 string msg = "Weld test complete";
                 string return_url = "fy_weld_test_ext.aspx";
 
                 fy.show_msg(msg, return_url, this);
+                */
 
-                
+                lblMsg.Text = "Weld test saved for " + txtBarcode.Text;
+
+                tblWeldTest.Rows.Clear();
+                txtBarcode.Text = string.Empty;
+                btnSave.Visible = false;
             }
             catch (Exception ex)
             {
@@ -207,36 +213,7 @@ namespace gbe
                     {
                         ret = 1;
 
-                        /*
-                        // if no welders from spool_parts, user welder from spools
-                        select = "select spools.id as spool_id, users.id as welder_id, users.login_id as welder "
-                            + " from spools "
-                            + "  join users on users.id = spools.welder "
-                            + " where barcode = '" + barcode + "' ";
-
-                        dtab = dbc.get_data(select);
-
-                        if (dtab.Rows.Count > 0)
-                        {
-                            foreach (DataRow dr in dtab.Rows)
-                            {
-                                data_row_spool dr_s = new data_row_spool(dr);
-
-                                if (m_spool_id == 0)
-                                    m_spool_id = dr_s.i_gf("spool_id");
-
-                                int welder_id = dr_s.i_gf("welder_id");
-                                string welder = dr_s.s_gf("welder");
-
-                                if (!m_sl_wedlers.ContainsKey(welder_id))
-                                    m_sl_wedlers.Add(welder, welder_id);
-                            }
-
-                            bret = true;
-                        }
-                        else
-                            bret = false;
-                        */
+                        
                     }
                 }
             }
@@ -358,6 +335,12 @@ namespace gbe
                 return base.s_gf(m_dr, fld);
             }
 
+        }
+
+        protected void btnResetReports_Click(object sender, EventArgs e)
+        {
+            txtReport1MPI_FW.Text = txtReport2MPI_BW.Text = txtReport3UT_BW.Text = txtReport4XRAY_BW.Text = txtReport5DP_FW.Text = 
+                txtReport6DP_BW.Text =  txtReport7VI_FW.Text = txtReport8VI_BW.Text = string.Empty;
         }
     }
 }

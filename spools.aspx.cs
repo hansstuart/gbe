@@ -8,6 +8,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
+using System.Data.SqlClient;
 
 namespace gbe
 {
@@ -354,7 +355,33 @@ namespace gbe
                     r.Cells.Add(c);
 
                     c = new TableCell();
-                    c.Controls.Add(new LiteralControl(sd.spool));
+                    
+                    Table tblSpool = new Table();
+                    tblSpool.Width = 500;
+                    TableCell cellSpool = new TableCell();
+                    TableRow rowSpool = new TableRow();
+                    cellSpool.Controls.Add(new LiteralControl(sd.spool));
+                    rowSpool.Cells.Add(cellSpool);
+
+                    if (System.Web.HttpContext.Current.User.Identity.Name.ToUpper() == "xxxxPCF")
+                    {
+                        decimal material_amount; decimal fab_amount;
+                        material_amount = fab_amount = 0;
+
+                        decimal invoice_amount = CSpoolInvoiceAmount.get_invoice_amount(sd, ref  material_amount, ref  fab_amount);
+
+                        cellSpool = new TableCell();
+                        cellSpool.HorizontalAlign = HorizontalAlign.Right;
+                        cellSpool.BackColor = System.Drawing.Color.LightSalmon;
+
+                        cellSpool.Controls.Add(new LiteralControl("£"+invoice_amount.ToString("0.00")));
+                        rowSpool.Cells.Add(cellSpool);
+                    }
+
+                    tblSpool.Rows.Add(rowSpool);
+                    c.Controls.Add(tblSpool);
+
+                    //c.Controls.Add(new LiteralControl(sd.spool));
                     r.Cells.Add(c);
 
                     c = new TableCell();
@@ -2031,7 +2058,7 @@ namespace gbe
                     try { weld_map_part_type_excludes = System.Web.Configuration.WebConfigurationManager.AppSettings["weld_map_part_type_excludes"].ToString().Trim(); }
                     catch { weld_map_part_type_excludes = string.Empty; }
 
-                    string[] hdr = new string[12] { "spool", "revision", "start", "finish", "status", "on_hold", "part_number", "description", "welder", "qty", "fw", "bw" };
+                    string[] hdr = new string[] { "sequence", "spool", "revision", "start", "finish", "status", "on_hold", "part_number", "description", "welder", "qty", "fw", "bw" };
 
                     Response.ContentType = "text/csv";
                     Response.AppendHeader("Content-Disposition", "attachment; filename=spool_data_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".csv");
@@ -2103,6 +2130,8 @@ namespace gbe
                             if (sd.spool_part_data.Count > 0)
                             {
                                 string line_part = string.Empty;
+                                int iseq = 0;
+
                                 foreach (spool_part_data spd in sd.spool_part_data)
                                 {
                                     line_part = DC + spd.part_data.part_number + DC;
@@ -2160,7 +2189,7 @@ namespace gbe
                                     line_part += CM;
                                     line_part += spd.bw.ToString();
 
-                                    Response.Write(line_spool + CM + line_part);
+                                    Response.Write((++iseq).ToString()+ CM + line_spool + CM + line_part);
                                     Response.Write(CRLF);
                                 }
                             }
@@ -2256,6 +2285,8 @@ namespace gbe
             }
             return last_page;
         }
+
+        
     }
 
     [Serializable]
@@ -2263,5 +2294,265 @@ namespace gbe
     {
         public spool_data sd;
         public bool bshowing_parts = false;
+    }
+
+    public class CSpoolInvoiceAmount
+    {
+        public static decimal get_invoice_amount(spool_data spool_data, ref decimal material_amount, ref decimal fab_amount)
+        {
+            decimal amt = 0;
+
+            decimal base_material_cost = 0;
+            decimal cust_material_cost = decimal.MinValue;
+            decimal cust_fab_cost = 0;
+
+            foreach (spool_part_data spd in spool_data.spool_part_data)
+            {
+                if (spool_data.imsl_cost_centre > 0)
+                {
+                    // imsl
+                    get_imsl_sale_cost(spool_data.imsl_cost_centre, spd.part_id, spool_data.date_created, ref base_material_cost, ref cust_material_cost, ref cust_fab_cost);
+                }
+
+                if (cust_material_cost == decimal.MinValue)
+                {
+                    cust_material_cost = 0;
+
+                    if (spool_data.cost_centre == 0)
+                        cust_material_cost = spd.part_data.gbe_sale_cost;
+                    else if (spool_data.cost_centre == 1)
+                        cust_material_cost = spd.part_data.gbe_sale_cost;
+                    else if (spool_data.cost_centre == 2)
+                        cust_material_cost = spd.part_data.pipecenter_sale_cost;
+                    else if (spool_data.cost_centre == 3)
+                        cust_material_cost = spd.part_data.olmat_group_sale_cost;
+                    else if (spool_data.cost_centre == 4)
+                        cust_material_cost = spd.part_data.dgr_fab_and_mat;
+                    else if (spool_data.cost_centre == 5)
+                        cust_material_cost = spd.part_data.dgr_fab_only;
+                    else if (spool_data.cost_centre == 6)
+                        cust_material_cost = spd.part_data.buxton_mcnulty_sale_cost;
+                    else if (spool_data.cost_centre == 7)
+                        cust_material_cost = spd.part_data.associated_pipework_fab_only;
+                    else if (spool_data.cost_centre == 8)
+                        cust_material_cost = spd.part_data.generic_sale_cost;
+                    else if (spool_data.cost_centre == 9)
+                        cust_material_cost = spd.part_data.watkins;
+                    else if (spool_data.cost_centre == 10)
+                        cust_material_cost = spd.part_data.apollo;
+                    else if (spool_data.cost_centre == 11)
+                        cust_material_cost = spd.part_data.watkins;
+                    else if (spool_data.cost_centre == 12)
+                        cust_material_cost = spd.part_data.cps;
+                    else if (spool_data.cost_centre == 13)
+                        cust_material_cost = spd.part_data.excel;
+                    else if (spool_data.cost_centre == 14)
+                        cust_material_cost = spd.part_data.shawston;
+                    else
+                        cust_material_cost = spd.part_data.generic_sale_cost;
+                }
+
+                decimal line_total_material_cost = (spd.qty * cust_material_cost);
+                material_amount += line_total_material_cost;
+
+
+                decimal line_total_fab_cost = (spd.qty * cust_fab_cost);
+                fab_amount += line_total_fab_cost;
+
+
+                decimal line_total_sale_cost = line_total_material_cost + line_total_fab_cost;
+                amt += line_total_sale_cost;
+            }
+
+            return amt;
+        }
+
+        static decimal get_imsl_sale_cost(int imsl_cost_centre, int part_id, DateTime dt_spool, ref decimal base_material_cost, ref decimal cust_material_cost, ref decimal cust_fab_cost)
+        {
+            decimal sale_cost = decimal.MinValue;
+
+            using (cdb_connection dbc = new cdb_connection())
+            {
+                dbc.connect();
+
+                SqlCommand cmd = new SqlCommand();
+
+                cmd.Connection = dbc.m_sql_connection;
+
+                string select = "select id ";
+                select += " ,bmat ";
+                select += " ,bfab ";
+                select += " from customer_fab_mat";
+                select += " where customer_fab_mat.id = @imsl_cost_centre";
+                
+                cmd.Parameters.AddWithValue("@imsl_cost_centre", imsl_cost_centre);
+
+                cmd.CommandText = select;
+
+                const string R_LIST = "r_list";
+
+                SqlDataAdapter ad = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                ad.Fill(ds, R_LIST);
+
+                DataTable dta = ds.Tables[R_LIST];
+
+                if (dta.Rows.Count > 0)
+                {
+                    bool bmat = false;
+                    bool bfab = false;
+
+                    DataRow dr = dta.Rows[0];
+
+                    try { bmat = (bool)dr["bmat"]; }
+                    catch { }
+
+                    try { bfab = (bool)dr["bfab"]; }
+                    catch { }
+                    
+                    select = "select dt, base_mat_sale_cost as dval from part_base_mat_prices where part_id = @part_id order by dt desc";
+
+                    cmd.Parameters.Clear();
+                    cmd.Parameters.AddWithValue("@part_id", part_id);
+
+                    cmd.CommandText = select;
+
+                    ad = new SqlDataAdapter(cmd);
+                    ds = new DataSet();
+                    ad.Fill(ds, R_LIST);
+
+                    dta = ds.Tables[R_LIST];
+
+                    decimal base_mat_sale_cost = 0;
+
+                    if (dta.Rows.Count > 0)
+                    {
+                        base_mat_sale_cost = get_value_by_date(dt_spool, dta);
+                        base_material_cost = base_mat_sale_cost;
+                    }
+
+                    select = "select dt, base_fab_sale_cost as dval from part_base_fab_prices where part_id = @part_id order by dt desc";
+
+                    cmd.Parameters.Clear();
+                    cmd.Parameters.AddWithValue("@part_id", part_id);
+
+                    cmd.CommandText = select;
+
+                    ad = new SqlDataAdapter(cmd);
+                    ds = new DataSet();
+                    ad.Fill(ds, R_LIST);
+
+                    dta = ds.Tables[R_LIST];
+                    decimal base_fab_sale_cost = 0;
+
+                    if (dta.Rows.Count > 0)
+                    {
+                        base_fab_sale_cost = get_value_by_date(dt_spool, dta);
+                    }
+
+                    decimal cust_mat_rate = 0;
+
+                    select = "select dt, material as dval from customer_mat_rates where part_id = @part_id and customer_fab_mat_id=@imsl_cost_centre order by dt desc";
+
+                    cmd.Parameters.Clear();
+                    cmd.Parameters.AddWithValue("@part_id", part_id);
+                    cmd.Parameters.AddWithValue("@imsl_cost_centre", imsl_cost_centre);
+
+                    cmd.CommandText = select;
+
+                    ad = new SqlDataAdapter(cmd);
+                    ds = new DataSet();
+                    ad.Fill(ds, R_LIST);
+
+                    dta = ds.Tables[R_LIST];
+                    
+                    if (dta.Rows.Count > 0)
+                    {
+                        cust_mat_rate = get_value_by_date(dt_spool, dta);
+                    }
+
+                    decimal cust_fab_rate = 0;
+
+                    select = "select dt, fab as dval from customer_fab_rates where part_id = @part_id and customer_fab_mat_id=@imsl_cost_centre order by dt desc";
+
+                    cmd.Parameters.Clear();
+                    cmd.Parameters.AddWithValue("@part_id", part_id);
+                    cmd.Parameters.AddWithValue("@imsl_cost_centre", imsl_cost_centre);
+
+                    cmd.CommandText = select;
+
+                    ad = new SqlDataAdapter(cmd);
+                    ds = new DataSet();
+                    ad.Fill(ds, R_LIST);
+
+                    dta = ds.Tables[R_LIST];
+                    
+                    if (dta.Rows.Count > 0)
+                    {
+                        cust_fab_rate = get_value_by_date(dt_spool, dta);
+                    }
+
+                    decimal mat_cost = 0;
+                    decimal fab_cost = 0;
+
+                    if (bmat)
+                    {
+                        mat_cost = Math.Round(base_mat_sale_cost + ((base_mat_sale_cost * cust_mat_rate) / 100), 2);
+                        cust_material_cost = mat_cost;
+                    }
+                    else
+                        cust_material_cost = 0;
+
+                    if (bfab)
+                    {
+                        fab_cost = Math.Round(base_fab_sale_cost + ((base_fab_sale_cost * cust_fab_rate) / 100), 2);
+                        cust_fab_cost = fab_cost;
+                    }
+                    else
+                        cust_fab_cost = 0;
+
+                    if (bmat && bfab)
+                    {
+                        sale_cost = mat_cost + fab_cost;
+                    }
+                    else if (bmat)
+                    {
+                        sale_cost = mat_cost;
+
+                    }
+                    else if (bfab)
+                    {
+                        sale_cost = fab_cost;
+                    }
+                }
+
+                dbc.disconnect();
+            }
+
+            return sale_cost;
+        }
+
+        static decimal get_value_by_date(DateTime dt_spool, DataTable dtab)
+        {
+            decimal dval = 0;
+            decimal current_price = 0;
+
+            if (dtab.Rows.Count > 0)
+                current_price = (decimal)dtab.Rows[0]["dval"];
+
+            foreach (DataRow dr in dtab.Rows)
+            {
+                dval = (decimal)dr["dval"];
+                DateTime dt = (DateTime)dr["dt"];
+
+                if (dt_spool > dt)
+                    break;
+            }
+
+            if (dval == 0)
+                dval = current_price;
+
+            return dval;
+        }
     }
 }

@@ -34,12 +34,19 @@ namespace gbe
         const string WELDER_TOTALS = "welder_totals";
         const string SPOOL_DATA = "spool_data";
         const string GBEBLUE = "#c4e2ed";
+        const string PURPLE = "#FF90EE90";
+        const string WHITE = "White";
+        const string LIGHTGRAY = "LightGray";
+        const string LIGHTGREEN = "LightGreen";
         const int COL1WIDTH = 330;
+        const int COLWIDTH = 120;
         const string ROW_TYPE = "row_type";
         const string ROW_TYPE_REPORT_DETAILS = "row_type_report_details";
         const string ROW_TYPE_WELDER_TESTS = "row_type_welder_tests";
         const string BARCODE = "barcode";
         const string WELDER = "welder";
+        const string DSB = "deepskyblue";
+       
 
         SortedList m_sl_weld_tests = new SortedList();
         SortedList m_sl_welder_totals = new SortedList();
@@ -89,15 +96,18 @@ namespace gbe
 
             string select = " select barcode "
                 + " , users_spool_welder.login_id as spool_welder "
+                + " , users_spool_welder.name as spool_welder_name "
                 + " , parts.description as spool_part "
                 + " , spool_parts.welder as spool_part_welder "
                 + " , spool_parts.fw "
                 + " , spool_parts.bw "
+                + " , users_spool_parts_welder.name as spool_part_welder_name "
                 + ""
                 + " from spools "
                 + " left join users as users_spool_welder on users_spool_welder.id = spools.welder "
                 + " left join spool_parts on spool_parts.spool_id = spools.id "
                 + " left join parts on parts.id = spool_parts.part_id "
+                + " left join users as users_spool_parts_welder on users_spool_parts_welder.login_id = spool_parts.welder "
                 + ""
                 + " where "
                 + ""
@@ -121,7 +131,6 @@ namespace gbe
             {
                 using (cdb_connection dbc = new cdb_connection())
                 {
-                    
                     DataTable dtab = dbc.get_data(select);
 
                     if (dtab.Rows.Count > 0)
@@ -137,6 +146,8 @@ namespace gbe
                             sd.spool_part_welder = dr_wm.s_gf("spool_part_welder");
                             sd.fw = dr_wm.i_gf("fw");
                             sd.bw = dr_wm.i_gf("bw");
+                            sd.spool_welder_name = dr_wm.s_gf("spool_welder_name");
+                            sd.spool_part_welder_name = dr_wm.s_gf("spool_part_welder_name");
 
                             string welder = string.Empty;
 
@@ -145,7 +156,7 @@ namespace gbe
                             else
                                 welder = sd.spool_welder.Trim();
 
-                            if (welder.Length == 0 || welder.ToLower() == "n/a" || welder.ToLower() == "wip")
+                            if (welder.Length == 0 || welder.ToLower().StartsWith("n/a") || welder.ToLower().StartsWith("wip"))
                                 continue;
 
                             string barcode = dr_wm.s_gf("barcode");
@@ -276,7 +287,7 @@ namespace gbe
                             wtewd.welder = dr_wm.s_gf("welder");
                             wtewd.datetime_stamp = dr_wm.dt_gf("datetime_stamp");
                                
-                            if (wtewd.welder.ToLower() == "n/a" || wtewd.welder.ToLower() == "wip")  // rolls eyes
+                            if (wtewd.welder.ToLower().StartsWith("n/a") || wtewd.welder.ToLower().StartsWith("wip"))  // rolls eyes
                                 continue;
 
                             wted.a_weld_test_ext_welder.Add(wtewd);
@@ -360,20 +371,47 @@ namespace gbe
                 new key_value("DP BW", "dp_bw"),
                 new key_value("VI FW", "vi_fw"),
                 new key_value("VI BW", "vi_bw")
-                /*new key_value("TOTAL", "total")*/
             };
 
             tblResults.Rows.Clear();
 
             if (m_sl_weld_tests != null)
             {
+                SortedList sl_loginid_name_map = new SortedList();
+
+                foreach (DictionaryEntry e0 in m_sl_spool_data)
+                {
+                    ArrayList a_sd = (ArrayList) e0.Value;
+
+                    foreach (spool_data_weld_mapping_ext sd in a_sd)
+                    {
+                        if (!sl_loginid_name_map.ContainsKey(sd.spool_welder))
+                        {
+                            if (sd.spool_welder_name.Length > 0)
+                            {
+                                if(sd.spool_welder.ToLower() != sd.spool_welder_name.ToLower())
+                                    sl_loginid_name_map.Add(sd.spool_welder, sd.spool_welder_name);
+                            }
+                        }
+
+                        if (!sl_loginid_name_map.ContainsKey(sd.spool_part_welder))
+                        {
+                            if (sd.spool_part_welder_name.Length > 0)
+                            {
+                                if(sd.spool_part_welder.ToLower() != sd.spool_part_welder_name.ToLower())
+                                    sl_loginid_name_map.Add(sd.spool_part_welder, sd.spool_part_welder_name);
+                            }
+                        }
+                    }
+                }
+
                 TableRow r;
                 TableCell c;
 
                 string[] hdr_welder = new string[] { "Welder", "FW", "BW", "FW tested", "BW tested", "% FW tested", "% BW tested" };
 
                 r = new TableRow();
-                r.BackColor = System.Drawing.Color.FromName("LightGreen");
+                r.BackColor = System.Drawing.Color.FromName(PURPLE);
 
                 int n = 0;
 
@@ -397,6 +435,10 @@ namespace gbe
                 foreach (DictionaryEntry e0 in m_sl_welder_totals)
                 {
                     string welder = e0.Key.ToString();
+
+                    if(sl_loginid_name_map.ContainsKey(welder))
+                        welder = welder + " (" + sl_loginid_name_map[welder] + ")";
+
                     weld_test_ext_fw_bw fw_bw = (weld_test_ext_fw_bw)e0.Value;
 
                     fw_total += fw_bw.fw;
@@ -405,7 +447,7 @@ namespace gbe
                     bw_total_tested += fw_bw.bw_tested;
 
                     r = new TableRow();
-                    r.BackColor = System.Drawing.Color.FromName("White");
+                    r.BackColor = System.Drawing.Color.FromName(WHITE);
 
                     c = new TableCell();
                     c.Controls.Add(new LiteralControl(welder));
@@ -445,7 +487,7 @@ namespace gbe
                 }
 
                 r = new TableRow();
-                r.BackColor = System.Drawing.Color.FromName("LightGray");
+                r.BackColor = System.Drawing.Color.FromName(LIGHTGRAY);
                 r.Font.Bold = true;
 
                 c = new TableCell();
@@ -504,6 +546,319 @@ namespace gbe
                     tblResults.Rows.Add(r);
                 }
 
+                SortedList sl_report_test_totals_by_welder = get_report_test_totals_by_welder();
+
+                foreach (DictionaryEntry e0 in sl_report_test_totals_by_welder)
+                {
+                    string welder = e0.Key.ToString();
+
+                    weld_test_ext_welder_data wtewd =  (weld_test_ext_welder_data) e0.Value;
+
+                    grand_total_mpi_fw += wtewd.mpi_fw;
+                    grand_total_mpi_bw += wtewd.mpi_bw;
+                    grand_total_ut_bw += wtewd.ut_bw;
+                    grand_total_xray_bw += wtewd.xray_bw;
+                    grand_total_dp_fw += wtewd.dp_fw;
+                    grand_total_dp_bw += wtewd.dp_bw;
+                    grand_total_vi_fw += wtewd.vi_fw;
+                    grand_total_vi_bw += wtewd.vi_bw;
+                }
+
+                r = new TableRow();
+                r.BackColor = System.Drawing.Color.FromName(PURPLE);
+
+                foreach (key_value kv in a_hdr_fld_names)
+                {
+                    c = new TableCell();
+                    c.Controls.Add(new LiteralControl(kv.key));
+                    r.Cells.Add(c);
+
+                    if (kv.key == "Welder")
+                    {
+                        c.Width = COL1WIDTH;
+                    }
+                    else
+                    {
+                        c.Width = COLWIDTH;
+                        c.HorizontalAlign = HorizontalAlign.Right;
+                    }
+                }
+
+                tblResults.Rows.Add(r);
+
+                foreach (DictionaryEntry e0 in sl_report_test_totals_by_welder)
+                {
+                    string welder = e0.Key.ToString();
+
+                    if(sl_loginid_name_map.ContainsKey(welder))
+                        welder = welder + " (" + sl_loginid_name_map[welder] + ")";
+
+                    weld_test_ext_welder_data wtewd = (weld_test_ext_welder_data)e0.Value;
+
+                    r = new TableRow();
+                    r.BackColor = System.Drawing.Color.FromName(WHITE);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Left;
+                    c.Controls.Add(new LiteralControl(welder));
+                    r.Cells.Add(c);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(wtewd.mpi_fw.ToString()));
+                    r.Cells.Add(c);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(wtewd.mpi_bw.ToString()));
+                    r.Cells.Add(c);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(wtewd.ut_bw.ToString()));
+                    r.Cells.Add(c);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(wtewd.xray_bw.ToString()));
+                    r.Cells.Add(c);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(wtewd.dp_fw.ToString()));
+                    r.Cells.Add(c);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(wtewd.dp_bw.ToString()));
+                    r.Cells.Add(c);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(wtewd.vi_fw.ToString()));
+                    r.Cells.Add(c);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(wtewd.vi_bw.ToString()));
+                    r.Cells.Add(c);
+
+                    tblResults.Rows.Add(r);
+                }
+
+                // grand total
+                r = new TableRow();
+                r.BackColor = System.Drawing.Color.FromName(LIGHTGRAY);
+                r.Font.Bold = true;
+
+                c = new TableCell();
+                c.HorizontalAlign = HorizontalAlign.Left;
+                c.Controls.Add(new LiteralControl("Total"));
+                r.Cells.Add(c);
+
+                c = new TableCell();
+                c.HorizontalAlign = HorizontalAlign.Right;
+                c.Controls.Add(new LiteralControl(grand_total_mpi_fw.ToString()));
+                r.Cells.Add(c);
+
+                c = new TableCell();
+                c.HorizontalAlign = HorizontalAlign.Right;
+                c.Controls.Add(new LiteralControl(grand_total_mpi_bw.ToString()));
+                r.Cells.Add(c);
+
+                c = new TableCell();
+                c.HorizontalAlign = HorizontalAlign.Right;
+                c.Controls.Add(new LiteralControl(grand_total_ut_bw.ToString()));
+                r.Cells.Add(c);
+
+                c = new TableCell();
+                c.HorizontalAlign = HorizontalAlign.Right;
+                c.Controls.Add(new LiteralControl(grand_total_xray_bw.ToString()));
+                r.Cells.Add(c);
+
+                c = new TableCell();
+                c.HorizontalAlign = HorizontalAlign.Right;
+                c.Controls.Add(new LiteralControl(grand_total_dp_fw.ToString()));
+                r.Cells.Add(c);
+
+                c = new TableCell();
+                c.HorizontalAlign = HorizontalAlign.Right;
+                c.Controls.Add(new LiteralControl(grand_total_dp_bw.ToString()));
+                r.Cells.Add(c);
+
+                c = new TableCell();
+                c.HorizontalAlign = HorizontalAlign.Right;
+                c.Controls.Add(new LiteralControl(grand_total_vi_fw.ToString()));
+                r.Cells.Add(c);
+
+                c = new TableCell();
+                c.HorizontalAlign = HorizontalAlign.Right;
+                c.Controls.Add(new LiteralControl(grand_total_vi_bw.ToString()));
+                r.Cells.Add(c);
+
+                tblResults.Rows.Add(r);
+
+                for (int i = 0; i < 3; i++)
+                {
+                    r = new TableRow();
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(string.Empty));
+                    r.Cells.Add(c);
+
+                    tblResults.Rows.Add(r);
+                }
+
+                r = new TableRow();
+                r.BackColor = System.Drawing.Color.FromName(PURPLE);
+
+                foreach (key_value kv in a_hdr_fld_names)
+                {
+                    c = new TableCell();
+                    r.Cells.Add(c);
+
+                    string s = kv.key;
+
+                    if (kv.key == "Welder")
+                    {
+                        c.Width = COL1WIDTH;
+                    }
+                    else
+                    {
+                        c.Width = COLWIDTH;
+                        c.HorizontalAlign = HorizontalAlign.Right;
+
+                        s = "% " + s;
+                    }
+
+                    c.Controls.Add(new LiteralControl(s));
+                }
+
+                tblResults.Rows.Add(r);
+                
+                foreach (DictionaryEntry e0 in sl_report_test_totals_by_welder)
+                {
+                    string welder = e0.Key.ToString();
+
+                    if(sl_loginid_name_map.ContainsKey(welder))
+                        welder = welder + " (" + sl_loginid_name_map[welder] + ")";
+
+                    weld_test_ext_welder_data wtewd = (weld_test_ext_welder_data)e0.Value;
+
+                    r = new TableRow();
+                    r.BackColor = System.Drawing.Color.FromName(WHITE);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Left;
+                    c.Controls.Add(new LiteralControl(welder));
+                    r.Cells.Add(c);
+
+                    decimal pc = 0;
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+
+                    pc = 0;
+                    if(grand_total_mpi_fw > 0)
+                        pc = (Convert.ToDecimal(wtewd.mpi_fw) / Convert.ToDecimal(grand_total_mpi_fw)) * 100;
+
+                    c.Controls.Add(new LiteralControl(pc.ToString("0.00")));
+                    r.Cells.Add(c);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+
+                    pc = 0;
+                    if(grand_total_mpi_bw > 0)
+                        pc = (Convert.ToDecimal(wtewd.mpi_bw) / Convert.ToDecimal(grand_total_mpi_bw)) * 100;
+
+                    c.Controls.Add(new LiteralControl(pc.ToString("0.00")));
+                    r.Cells.Add(c);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+
+                    pc = 0;
+                    if(grand_total_ut_bw > 0)
+	                    pc = (Convert.ToDecimal(wtewd.ut_bw) / Convert.ToDecimal(grand_total_ut_bw)) * 100;
+                    
+                    c.Controls.Add(new LiteralControl(pc.ToString("0.00")));
+                    
+                    r.Cells.Add(c);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+
+                    pc = 0;
+                    if(grand_total_xray_bw > 0)
+	                    pc = (Convert.ToDecimal(wtewd.xray_bw) / Convert.ToDecimal(grand_total_xray_bw)) * 100;
+                    
+                    c.Controls.Add(new LiteralControl(pc.ToString("0.00")));
+                    
+                    r.Cells.Add(c);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+
+                    pc = 0;
+                    if(grand_total_dp_fw > 0)
+	                    pc = (Convert.ToDecimal(wtewd.dp_fw) / Convert.ToDecimal(grand_total_dp_fw)) * 100;
+                    
+                    c.Controls.Add(new LiteralControl(pc.ToString("0.00")));
+
+                    r.Cells.Add(c);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(wtewd.dp_bw.ToString("0.00")));
+                    r.Cells.Add(c);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+
+                    pc = 0;
+                    if(grand_total_vi_fw > 0)
+	                    pc = (Convert.ToDecimal(wtewd.vi_fw) / Convert.ToDecimal(grand_total_vi_fw)) * 100;
+                    
+                    c.Controls.Add(new LiteralControl(pc.ToString("0.00")));
+                    
+                    r.Cells.Add(c);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+
+                    pc = 0;
+                    if(grand_total_vi_bw > 0)
+	                    pc = (Convert.ToDecimal(wtewd.vi_bw) / Convert.ToDecimal(grand_total_vi_bw)) * 100;
+                    
+                    c.Controls.Add(new LiteralControl(pc.ToString("0.00")));
+                   
+                    r.Cells.Add(c);
+
+                    tblResults.Rows.Add(r);
+                }
+                //
+
+                grand_total_mpi_fw = 0;
+                grand_total_mpi_bw = 0;
+                grand_total_ut_bw = 0;
+                grand_total_xray_bw = 0;
+                grand_total_dp_fw = 0;
+                grand_total_dp_bw = 0;
+                grand_total_vi_fw = 0;
+                grand_total_vi_bw = 0;
+
+                for (int i = 0; i < 3; i++)
+                {
+                    r = new TableRow();
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(string.Empty));
+                    r.Cells.Add(c);
+
+                    tblResults.Rows.Add(r);
+                }
+
                 foreach (DictionaryEntry e0 in m_sl_spool_data)
                 {
                     string barcode = e0.Key.ToString();
@@ -522,7 +877,7 @@ namespace gbe
                     string[] hdr2 = new string[] { string.Empty, "Report MPI FW", "Report MPI BW", "Report UT BW", "Report XRAY BW", "Report DP FW", "Report DP BW", "Report VI FW", "Report VI BW" };
 
                     r = new TableRow();
-                    r.BackColor = System.Drawing.Color.FromName("LightGreen");
+                    r.BackColor = System.Drawing.Color.FromName(LIGHTGREEN);
 
                     foreach (string sh in hdr1)
                     {
@@ -534,25 +889,25 @@ namespace gbe
                     tblResults.Rows.Add(r);
 
                     r = new TableRow();
-                    r.BackColor = System.Drawing.Color.FromName("White");
+                    r.BackColor = System.Drawing.Color.FromName(WHITE);
 
                     c = new TableCell();
                     c.Controls.Add(new LiteralControl(barcode));
                     r.Cells.Add(c);
 
                     c = new TableCell();
-                    c.BackColor = System.Drawing.Color.FromName("LightGreen");
+                    c.BackColor = System.Drawing.Color.FromName(LIGHTGREEN);
                     c.Controls.Add(new LiteralControl("Welder"));
                     r.Cells.Add(c);
 
                     c = new TableCell();
-                    c.BackColor = System.Drawing.Color.FromName("LightGreen");
+                    c.BackColor = System.Drawing.Color.FromName(LIGHTGREEN);
                     c.HorizontalAlign = HorizontalAlign.Right;
                     c.Controls.Add(new LiteralControl("FW"));
                     r.Cells.Add(c);
 
                     c = new TableCell();
-                    c.BackColor = System.Drawing.Color.FromName("LightGreen");
+                    c.BackColor = System.Drawing.Color.FromName(LIGHTGREEN);
                     c.HorizontalAlign = HorizontalAlign.Right;
                     c.Controls.Add(new LiteralControl("BW"));
                     r.Cells.Add(c);
@@ -565,7 +920,7 @@ namespace gbe
                     foreach (spool_data_weld_mapping_ext sd in a_sd)
                     {
                         r = new TableRow();
-                        r.BackColor = System.Drawing.Color.FromName("White");
+                        r.BackColor = System.Drawing.Color.FromName(WHITE);
 
                         c = new TableCell();
                         c.Controls.Add(new LiteralControl(sd.spool_part));
@@ -602,7 +957,7 @@ namespace gbe
                     }
 
                     r = new TableRow();
-                    r.BackColor = System.Drawing.Color.FromName("LightGray");
+                    r.BackColor = System.Drawing.Color.FromName(LIGHTGRAY);
 
                     c = new TableCell();
                     c.BackColor = System.Drawing.Color.FromName(GBEBLUE);
@@ -627,7 +982,7 @@ namespace gbe
                     tblResults.Rows.Add(r);
 
                     r = new TableRow();
-                    r.BackColor = System.Drawing.Color.FromName("White");
+                    r.BackColor = System.Drawing.Color.FromName(WHITE);
 
                     //
                     if (m_sl_weld_tests.ContainsKey(barcode))
@@ -645,7 +1000,7 @@ namespace gbe
 
                         weld_test_ext_data wted = (weld_test_ext_data)m_sl_weld_tests[barcode];
                         r = new TableRow();
-                        r.BackColor = System.Drawing.Color.FromName("deepskyblue");
+                        r.BackColor = System.Drawing.Color.FromName(DSB);
 
                         foreach (string sh in hdr2)
                         {
@@ -661,7 +1016,7 @@ namespace gbe
                         tblResults.Rows.Add(r);
 
                         r = new TableRow();
-                        r.BackColor = System.Drawing.Color.FromName("White");
+                        r.BackColor = System.Drawing.Color.FromName(WHITE);
 
                         c = new TableCell();
                         c.HorizontalAlign = HorizontalAlign.Center;
@@ -752,7 +1107,7 @@ namespace gbe
                         tblResults.Rows.Add(r);
 
                         r = new TableRow();
-                        r.BackColor = System.Drawing.Color.FromName("deepskyblue");
+                        r.BackColor = System.Drawing.Color.FromName(DSB);
 
                         foreach (key_value kv in a_hdr_fld_names)
                         {
@@ -766,7 +1121,7 @@ namespace gbe
                             }
                             else
                             {
-                                c.Width = 120;
+                                c.Width = COLWIDTH;
                                 c.HorizontalAlign = HorizontalAlign.Right;
                             }
                         }
@@ -776,7 +1131,7 @@ namespace gbe
                         foreach (weld_test_ext_welder_data wtewd in wted.a_weld_test_ext_welder)
                         {
                             r = new TableRow();
-                            r.BackColor = System.Drawing.Color.FromName("White");
+                            r.BackColor = System.Drawing.Color.FromName(WHITE);
 
                             c = new TableCell();
                             c.Controls.Add(new LiteralControl(wtewd.welder));
@@ -881,7 +1236,7 @@ namespace gbe
 
                         // spool totals
                         r = new TableRow();
-                        r.BackColor = System.Drawing.Color.FromName("LightGray");
+                        r.BackColor = System.Drawing.Color.FromName(LIGHTGRAY);
                         r.Font.Bold = true;
 
                         c = new TableCell();
@@ -962,7 +1317,7 @@ namespace gbe
                 }
 
                 r = new TableRow();
-                r.BackColor = System.Drawing.Color.FromName("LightGreen");
+                r.BackColor = System.Drawing.Color.FromName(PURPLE);
                 r.Font.Bold = true;
 
                 foreach (key_value kv in a_hdr_fld_names)
@@ -973,13 +1328,13 @@ namespace gbe
 
                     if (kv.key == "Welder")
                     {
-                        shdr_vale = "Total tests for " + txtSearch.Text.Trim();
+                        shdr_vale = "Total tests for " + txtSearch.Text.Trim().ToUpper();
                         c.Width = COL1WIDTH;
                     }
                     else
                     {
                         shdr_vale = kv.key;
-                        c.Width = 120;
+                        c.Width = COLWIDTH;
                         c.HorizontalAlign = HorizontalAlign.Right;
                     }
 
@@ -991,12 +1346,12 @@ namespace gbe
 
                 // grand total
                 r = new TableRow();
-                r.BackColor = System.Drawing.Color.FromName("PaleVioletRed");
+                r.BackColor = System.Drawing.Color.FromName(LIGHTGRAY);
                 r.Font.Bold = true;
 
                 c = new TableCell();
-                c.HorizontalAlign = HorizontalAlign.Right;
-                c.Controls.Add(new LiteralControl(string.Empty));
+                c.HorizontalAlign = HorizontalAlign.Left;
+                c.Controls.Add(new LiteralControl("Total"));
                 r.Cells.Add(c);
 
                 c = new TableCell();
@@ -1118,7 +1473,6 @@ namespace gbe
             {
                 if (r.Attributes[ROW_TYPE] == ROW_TYPE_WELDER_TESTS && r.Attributes[ID] == weld_test_ext_welder_data_id)
                 {
-
                     foreach (TableCell c in r.Cells)
                     {
                         foreach (Control ctrl in c.Controls)
@@ -1400,6 +1754,42 @@ namespace gbe
             tb.ID = id;
 
             return tb;
+        }
+
+        SortedList get_report_test_totals_by_welder()
+        {
+            SortedList sl = new SortedList();
+
+            foreach (DictionaryEntry e0 in m_sl_weld_tests)
+            {
+                weld_test_ext_data wted = (weld_test_ext_data)e0.Value;
+
+                foreach (weld_test_ext_welder_data wtewd in wted.a_weld_test_ext_welder)
+                {
+                    weld_test_ext_welder_data wtewd_total_for_welder = null;
+
+                    if (sl.ContainsKey(wtewd.welder))
+                    {
+                        wtewd_total_for_welder = (weld_test_ext_welder_data)sl[wtewd.welder];
+                    }
+                    else
+                    {
+                        wtewd_total_for_welder = new weld_test_ext_welder_data();
+                        sl.Add(wtewd.welder, wtewd_total_for_welder);
+                    }
+
+                    wtewd_total_for_welder.mpi_bw += wtewd.mpi_bw;
+                    wtewd_total_for_welder.mpi_fw += wtewd.mpi_fw;
+                    wtewd_total_for_welder.ut_bw += wtewd.ut_bw;
+                    wtewd_total_for_welder.xray_bw += wtewd.xray_bw;
+                    wtewd_total_for_welder.dp_bw += wtewd.dp_bw;
+                    wtewd_total_for_welder.dp_fw += wtewd.dp_fw;
+                    wtewd_total_for_welder.vi_bw += wtewd.vi_bw;
+                    wtewd_total_for_welder.vi_fw += wtewd.vi_fw;
+                }
+            }
+
+            return sl;
         }
     }
 }
