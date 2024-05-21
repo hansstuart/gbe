@@ -103,6 +103,81 @@ namespace gbe
             return id;
         }
 
+        public int save(SortedList sl, string tbl, string identity_field)
+        {
+            int id = 0;
+
+            try
+            {
+               if(sl.ContainsKey(identity_field))
+                    id = Convert.ToInt32(sl[identity_field].ToString());
+
+                if (id > 0)
+                {
+                    update(sl, tbl, id, identity_field);
+                }
+                else
+                {
+                    id = insert(tbl, sl);
+                }
+            }
+            catch (Exception ex)
+            {
+                id = 0;
+                EventLog.WriteEntry("PCF gbe", "cdb_connection()::save (2) \ntable=" + tbl + "\n" +  ex.ToString(), EventLogEntryType.Error);
+            }
+
+            return id;
+        }
+
+        public bool update(SortedList sl, string tbl, int id, string identity_field)
+        {
+            bool bret = true;
+
+            try
+            {
+                if (!connect())
+                    return false;
+
+                if (sl.ContainsKey(identity_field))
+                    sl.Remove(identity_field);
+
+                SqlCommand cmd = new SqlCommand();
+
+                cmd.Connection = m_sql_connection;
+
+                string update = "update " + tbl + " set ";
+                string flds = string.Empty;
+
+                foreach (DictionaryEntry e in sl)
+                {
+                    if (flds.Length > 0)
+                        flds += ",";
+
+                    string f = "@" + e.Key;
+
+                    flds +=  e.Key + "=" + f;
+
+                    cmd.Parameters.AddWithValue(f, e.Value);
+                }
+
+                update += flds;
+                update += $" where {identity_field} = " + id.ToString();
+
+                cmd.CommandText = update;
+
+                cmd.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+                bret = false;
+                EventLog.WriteEntry("PCF gbe", "cdb_connection()::update (2) \ntable=" + tbl + "\n" + ex.ToString(), EventLogEntryType.Error);
+            }
+
+            return bret;
+        }
+
         public bool update(SortedList sl, string tbl, int id)
         {
             bool bret = true;

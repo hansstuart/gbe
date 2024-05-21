@@ -17,11 +17,12 @@ namespace gbe
         const int REC_PER_PG = 15;
         const string SHOW_PARTS_INSERTION_POINT = "SHOW_PARTS_INSERTION_POINT";
         const string PART_DATA_ROW = "PART_DATA_ROW";
-        
         const string VS_SPOOLS = "VS_SPOOLS";
         const string VS_SEARCH_PARAMS = "VS_SEARCH_PARAMS";
         const string VS_CURRENT_PAGE = "VS_CURRENT_PAGE";
         const string VS_RECORD_COUNT = "VS_RECORD_COUNT";
+        const string IS_PIPE = "is_pipe";
+        const string SPOOL_PIPE_FITTINGS_ID = "spool_pipe_fittings_id";
 
         SortedList m_spools = null;
         SortedList m_welders = null;
@@ -159,6 +160,10 @@ namespace gbe
 
                 val = txtSearch.Text.Trim();
 
+                fld = "barcode";
+                val += "%";
+
+                /*
                 if (dlSearchFlds.Text == "Spool")
                     fld = "spool";
                 else if (dlSearchFlds.Text == "Barcode")
@@ -168,6 +173,9 @@ namespace gbe
                     fld = "spool";
                     val += "%";
                 }
+                */
+
+
 
                 sl.Add(fld, val);
             }
@@ -1132,16 +1140,6 @@ namespace gbe
                     {
                         if (sd.spool_part_data.Count > 0)
                         {
-                            /*
-                            SortedList sl_parts_data = new SortedList();
-
-                            foreach (spool_part_data spd in sd.spool_part_data)
-                            {
-                                if (spd.part_data != null)
-                                    sl_parts_data.Add(spd.seq.ToString("000000") + "_" + spd.id.ToString(new string('0', 64)), spd);
-                            }
-                            */
-
                             TableRow r;
                             TableCell c;
 
@@ -1195,15 +1193,13 @@ namespace gbe
                             try { weld_map_part_type_excludes = System.Web.Configuration.WebConfigurationManager.AppSettings["weld_map_part_type_excludes"].ToString().Trim(); }
                             catch { weld_map_part_type_excludes = string.Empty; }
 
-                            //foreach (DictionaryEntry e1 in sl_parts_data)
                             foreach (spool_part_data spd in sd.spool_part_data)
                             {
-                                //spool_part_data spd = (spool_part_data)e1.Value;
-
                                 r = new TableRow();
                                 r.Attributes["uid"] = sd.id.ToString();
                                 r.Attributes["PART_DATA_ROW"] = sd.id.ToString();
                                 r.Attributes["spool_part_id"] = spd.id.ToString();
+                                r.Attributes["part_id"] = spd.part_id.ToString();
 
                                 r.BackColor = System.Drawing.Color.FromName("LightGray");
 
@@ -1235,7 +1231,11 @@ namespace gbe
 
                                 c = new TableCell();
                                 c.HorizontalAlign = HorizontalAlign.Right;
-                                c.Controls.Add(new LiteralControl((tblParts.Rows.Count + 1).ToString()));
+                                string guid = Guid.NewGuid().ToString("N");
+                                LiteralControl lc = new LiteralControl();
+                                lc.ID = "seq_" + guid;
+                                lc.Text = (tblParts.Rows.Count + 1).ToString("00");
+                                c.Controls.Add(lc);
                                 r.Cells.Add(c);
 
                                 c = new TableCell();
@@ -1243,26 +1243,24 @@ namespace gbe
                                 c.Controls.Add(new LiteralControl(part_desc));
                                 r.Cells.Add(c);
 
-                                /*
-                                c = new TableCell();
-                                c.Controls.Add(new LiteralControl(part_no));
-                                c.Width = 150;
-                                r.Cells.Add(c);
-                                */
-
                                 c = new TableCell();
 
-                                if (part_desc.ToUpper().Contains("PIPE") || part_type.ToUpper().Contains("PIPE"))
+                                bool is_pipe = (part_desc.ToUpper().Contains("PIPE") || part_type.ToUpper().Contains("PIPE"));
+
+                                if (is_pipe)
+                                {
+                                    r.Attributes[IS_PIPE] = "1";
                                     c.Controls.Add(new LiteralControl("Len:"));
+                                }
                                 else
                                     c.Controls.Add(new LiteralControl("Qty:"));
 
                                 TextBox qtb = null;
 
-                                if (part_desc.ToUpper().Contains("PIPE") || part_type.ToUpper().Contains("PIPE"))
+                                if (is_pipe)
                                 {
                                     qtb = create_decimal_textbox("qty_" + spd.id.ToString());
-                                    qtb.Text = spd.qty.ToString("0.00");
+                                    qtb.Text = spd.qty.ToString("0.000");
                                 }
                                 else
                                 {
@@ -1298,23 +1296,6 @@ namespace gbe
                                 c.Controls.Add(tb);
 
                                 r.Cells.Add(c);
-
-                                /*
-                                c = new TableCell();
-                                c.HorizontalAlign = HorizontalAlign.Center;
-                                ImageButton btn_save_part = new ImageButton();
-                                btn_save_part.ToolTip = "Save changes to part";
-                                btn_save_part.ImageUrl = "~/disk.png";
-                                btn_save_part.Click += new ImageClickEventHandler(btn_save_part_Click);
-                                btn_save_part.ID = "btn_save_part_" + spd.id.ToString();
-                                btn_save_part.Attributes["uid"] = spd.id.ToString();
-                                btn_save_part.Attributes["spool_id"] = sd.id.ToString();
-                                if (!badmin)
-                                    btn_save_part.Visible = false;
-
-                                c.Controls.Add(btn_save_part);
-                                r.Cells.Add(c);
-                                */
 
                                 if (spd.porder > 0)
                                 {
@@ -1388,6 +1369,31 @@ namespace gbe
                                 c.Controls.Add(dl_welder);
                                 r.Cells.Add(c);
 
+                                if (is_pipe && spd.spool_pipe_fittings_data != null)
+                                {
+                                    r.Attributes[SPOOL_PIPE_FITTINGS_ID] = spd.spool_pipe_fittings_data.spool_pipe_fittings_id.ToString();
+
+                                    c = new TableCell();
+                                    c.Controls.Add(new LiteralControl("F1:"));
+                                    tb = create_numeric_textbox("f1_" + spd.id.ToString());
+                                    tb.MaxLength = 2;
+                                    tb.Text = spd.spool_pipe_fittings_data.fitting_1_seq_no.ToString();
+                                    if (!badmin)
+                                        tb.ReadOnly = true;
+                                    c.Controls.Add(tb);
+                                    r.Cells.Add(c);
+
+                                    c = new TableCell();
+                                    c.Controls.Add(new LiteralControl("F2:"));
+                                    tb = create_numeric_textbox("f2_" + spd.id.ToString());
+                                    tb.MaxLength = 2;
+                                    tb.Text = spd.spool_pipe_fittings_data.fitting_2_seq_no.ToString();
+                                    if (!badmin)
+                                        tb.ReadOnly = true;
+                                    c.Controls.Add(tb);
+                                    r.Cells.Add(c);
+                                }
+
                                 tblParts.Rows.Add(r);
                             }
                         }
@@ -1402,7 +1408,7 @@ namespace gbe
 
             ImageButton b = (ImageButton)sender;
             
-            int id, fw, bw;
+            int id, fw, bw, f1, f2;
             decimal qty = 0;
             int nfound = 0;
             string welder = string.Empty;
@@ -1411,12 +1417,45 @@ namespace gbe
 
             Table tblParts = get_tblParts(Convert.ToInt32(spool_id));
 
+            SortedList sl_seq_partid = new SortedList();
+
             foreach (TableRow r in tblParts.Rows)
             {
-                id = fw = bw = 0;
+                if (r.Attributes["part_id"] != null)
+                {
+                    foreach (TableCell cell in r.Cells)
+                    {
+                        foreach (Control cntrl in cell.Controls)
+                        {
+                            if (cntrl.ID != null)
+                            {
+                                if (cntrl.GetType() == typeof(LiteralControl))
+                                {
+                                    LiteralControl lc = (LiteralControl)cntrl;
+
+                                    if (lc.ID.StartsWith("seq"))
+                                    {
+                                        try
+                                        {
+                                            sl_seq_partid.Add(Convert.ToInt32(lc.Text), r.Attributes["part_id"]);
+                                        }
+                                        catch { }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            foreach (TableRow r in tblParts.Rows)
+            {
+                id = fw = bw = f1 = f2 = 0;
                 qty = 0;
                 nfound = 0;
                 welder = string.Empty;
+
+                bool is_pipe = r.Attributes[IS_PIPE] != null;
 
                 try { id = Convert.ToInt32((r.Attributes["spool_part_id"])); }
                 catch
@@ -1475,6 +1514,28 @@ namespace gbe
                                     nfound++;
                                 }
                             }
+
+                            if (cntrl.GetType() == typeof(TextBox))
+                            {
+                                if (cntrl.ID.StartsWith("f1_"))
+                                {
+                                    TextBox tb = (TextBox)cntrl;
+                                    try { f1 = Convert.ToInt32(tb.Text); }
+                                    catch { }
+                                    nfound++;
+                                }
+                            }
+
+                            if (cntrl.GetType() == typeof(TextBox))
+                            {
+                                if (cntrl.ID.StartsWith("f2_"))
+                                {
+                                    TextBox tb = (TextBox)cntrl;
+                                    try { f2 = Convert.ToInt32(tb.Text); }
+                                    catch { }
+                                    nfound++;
+                                }
+                            }
                         }
                     }
                 }
@@ -1493,6 +1554,43 @@ namespace gbe
 
                         sp.save_spool_parts_data(slp);
 
+                        if (is_pipe)
+                        {
+                            slp.Clear();
+
+                            int spool_pipe_fittings_id = 0;
+
+                            try {spool_pipe_fittings_id = Convert.ToInt32(r.Attributes[SPOOL_PIPE_FITTINGS_ID]); } catch { }
+
+                            if(spool_pipe_fittings_id > 0)
+                                slp.Add("spool_pipe_fittings_id", spool_pipe_fittings_id);
+
+                            slp.Add("spool_part_id", id);
+                            slp.Add("spool_id", spool_id);
+                            slp.Add("fitting_1_seq_no", f1);
+                            slp.Add("fitting_2_seq_no", f2);
+
+                            if (sl_seq_partid.ContainsKey(f1))
+                            {
+                                slp.Add("fitting_1_part_id", sl_seq_partid[f1]);
+                            }
+                            else
+                            {
+                                slp.Add("fitting_1_part_id", 0);
+                            }
+
+                            if (sl_seq_partid.ContainsKey(f2))
+                            {
+                                slp.Add("fitting_2_part_id", sl_seq_partid[f2]);
+                            }
+                            else
+                            {
+                                slp.Add("fitting_2_part_id", 0);
+                            }
+
+                            sp.save_spool_pipe_fittings_data(slp);
+                        }
+
                         int sd_id = Convert.ToInt32(r.Attributes["uid"]);
 
                         if (m_spools.ContainsKey(sd_id))
@@ -1509,6 +1607,18 @@ namespace gbe
                                         spd.fw = fw;
                                         spd.bw = bw;
                                         spd.welder = welder;
+
+                                        if (is_pipe)
+                                        {
+                                            if (spd.spool_pipe_fittings_data == null)
+                                            {
+                                                spd.spool_pipe_fittings_data = new spool_pipe_fittings_data();
+                                            }
+
+                                            spd.spool_pipe_fittings_data.fitting_1_seq_no = f1;
+                                            spd.spool_pipe_fittings_data.fitting_2_seq_no = f2;
+                                        }
+
                                         break;
                                     }
                                 }
@@ -1516,7 +1626,6 @@ namespace gbe
                         }
                     }
                 }
-                
             }
         }
 

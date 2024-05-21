@@ -338,20 +338,19 @@
 
     <table>
         <tr>
-            <td style="width: 195px">
+            <td style="width: 195px; height: 23px;">
             </td>
-            <td style="width: 438px">
+            <td style="width: 1153px; height: 23px;">
                 <asp:Label ID="lblSelected" runat="server" Font-Names="Verdana" Text="Selected Parts:"
                     Width="173px" ForeColor="Black" Font-Bold="False"></asp:Label></td>
-            <td style="width: 106px">
-            </td>
+            
         </tr>
 
         <tr>
             <td style="width: 195px">
             </td>
-            <td >
-                <asp:Table ID="tblParts" runat="server" Font-Names="Verdana" CellPadding="2" CellSpacing="2" Width="745px" EnableViewState="False">
+            <td style="width: 1153px" >
+                <asp:Table ID="tblParts" runat="server" Font-Names="Verdana" CellPadding="2" CellSpacing="2" EnableViewState="False">
                 </asp:Table>
             </td>
         </tr>
@@ -430,7 +429,7 @@
         {
             var txtlen = txt.value.length;
             var dotpos = txt.value.indexOf(".");
-            if ((txtlen - dotpos) > 2)
+            if ((txtlen - dotpos) > 3)
                 return false;
         }
 

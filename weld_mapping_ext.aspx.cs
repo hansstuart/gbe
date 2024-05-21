@@ -408,7 +408,16 @@ namespace gbe
                 TableRow r;
                 TableCell c;
 
-                string[] hdr_welder = new string[] { "Welder", "FW", "BW", "FW tested", "BW tested", "% FW tested", "% BW tested" };
+                r = new TableRow();
+                r.BackColor = System.Drawing.Color.FromName(LIGHTGRAY);
+                r.Font.Bold = true;
+
+                c = new TableCell();
+                c.Controls.Add(new LiteralControl("Total Welds:"));
+                r.Cells.Add(c);
+                tblResults.Rows.Add(r);
+
+                string[] hdr_welder = new string[] { "Welder", "FW", "BW" };
 
                 r = new TableRow();
                 r.BackColor = System.Drawing.Color.FromName(PURPLE);
@@ -463,26 +472,6 @@ namespace gbe
                     c.Controls.Add(new LiteralControl(fw_bw.bw.ToString()));
                     r.Cells.Add(c);
 
-                    c = new TableCell();
-                    c.HorizontalAlign = HorizontalAlign.Right;
-                    c.Controls.Add(new LiteralControl(fw_bw.fw_tested.ToString()));
-                    r.Cells.Add(c);
-
-                    c = new TableCell();
-                    c.HorizontalAlign = HorizontalAlign.Right;
-                    c.Controls.Add(new LiteralControl(fw_bw.bw_tested.ToString()));
-                    r.Cells.Add(c);
-
-                    c = new TableCell();
-                    c.HorizontalAlign = HorizontalAlign.Right;
-                    c.Controls.Add(new LiteralControl(fw_bw.pc_fw_tested().ToString("0.00")));
-                    r.Cells.Add(c);
-
-                    c = new TableCell();
-                    c.HorizontalAlign = HorizontalAlign.Right;
-                    c.Controls.Add(new LiteralControl(fw_bw.pc_bw_tested().ToString("0.00")));
-                    r.Cells.Add(c);
-
                     tblResults.Rows.Add(r);
                 }
 
@@ -502,35 +491,6 @@ namespace gbe
                 c = new TableCell();
                 c.HorizontalAlign = HorizontalAlign.Right;
                 c.Controls.Add(new LiteralControl(bw_total.ToString()));
-                r.Cells.Add(c);
-
-                c = new TableCell();
-                c.HorizontalAlign = HorizontalAlign.Right;
-                c.Controls.Add(new LiteralControl(fw_total_tested.ToString()));
-                r.Cells.Add(c);
-
-                c = new TableCell();
-                c.HorizontalAlign = HorizontalAlign.Right;
-                c.Controls.Add(new LiteralControl(bw_total_tested.ToString()));
-                r.Cells.Add(c);
-
-                decimal pc_fw_total_tested = 0;
-                decimal pc_bw_total_tested = 0;
-
-                if (fw_total > 0)
-                    pc_fw_total_tested = (Convert.ToDecimal(fw_total_tested) / Convert.ToDecimal(fw_total)) * 100;
-
-                if (bw_total > 0)
-                    pc_bw_total_tested = (Convert.ToDecimal(bw_total_tested) / Convert.ToDecimal(bw_total)) * 100;
-
-                c = new TableCell();
-                c.HorizontalAlign = HorizontalAlign.Right;
-                c.Controls.Add(new LiteralControl(pc_fw_total_tested.ToString("0.00")));
-                r.Cells.Add(c);
-
-                c = new TableCell();
-                c.HorizontalAlign = HorizontalAlign.Right;
-                c.Controls.Add(new LiteralControl(pc_bw_total_tested.ToString("0.00")));
                 r.Cells.Add(c);
 
                 tblResults.Rows.Add(r);
@@ -563,6 +523,15 @@ namespace gbe
                     grand_total_vi_fw += wtewd.vi_fw;
                     grand_total_vi_bw += wtewd.vi_bw;
                 }
+
+                r = new TableRow();
+                r.BackColor = System.Drawing.Color.FromName(LIGHTGRAY);
+                r.Font.Bold = true;
+
+                c = new TableCell();
+                c.Controls.Add(new LiteralControl("Number of Welds Tested:"));
+                r.Cells.Add(c);
+                tblResults.Rows.Add(r);
 
                 r = new TableRow();
                 r.BackColor = System.Drawing.Color.FromName(PURPLE);
@@ -653,7 +622,7 @@ namespace gbe
 
                 c = new TableCell();
                 c.HorizontalAlign = HorizontalAlign.Left;
-                c.Controls.Add(new LiteralControl("Total"));
+                c.Controls.Add(new LiteralControl("Total Number Tested"));
                 r.Cells.Add(c);
 
                 c = new TableCell();
@@ -698,6 +667,58 @@ namespace gbe
 
                 tblResults.Rows.Add(r);
 
+                // total % tested
+                r = new TableRow();
+                r.BackColor = System.Drawing.Color.FromName(LIGHTGRAY);
+                r.Font.Bold = true;
+
+                c = new TableCell();
+                c.HorizontalAlign = HorizontalAlign.Left;
+                c.Controls.Add(new LiteralControl("% Tested Welds"));
+                r.Cells.Add(c);
+
+                c = new TableCell();
+                c.HorizontalAlign = HorizontalAlign.Right;
+                c.Controls.Add(new LiteralControl((idiv(grand_total_mpi_fw,fw_total)*100).ToString("0.00")+"%"));
+                r.Cells.Add(c);
+
+                c = new TableCell();
+                c.HorizontalAlign = HorizontalAlign.Right;
+                c.Controls.Add(new LiteralControl((idiv(grand_total_mpi_bw,bw_total)*100).ToString("0.00")+"%"));
+                r.Cells.Add(c);
+
+                c = new TableCell();
+                c.HorizontalAlign = HorizontalAlign.Right; 
+                c.Controls.Add(new LiteralControl((idiv(grand_total_ut_bw,bw_total)*100).ToString("0.00")+"%"));
+                r.Cells.Add(c);
+
+                c = new TableCell();
+                c.HorizontalAlign = HorizontalAlign.Right;
+                c.Controls.Add(new LiteralControl((idiv(grand_total_xray_bw,bw_total)*100).ToString("0.00")+"%"));
+                r.Cells.Add(c);
+
+                c = new TableCell();
+                c.HorizontalAlign = HorizontalAlign.Right;
+                c.Controls.Add(new LiteralControl((idiv(grand_total_dp_fw,fw_total)*100).ToString("0.00")+"%"));
+                r.Cells.Add(c);
+
+                c = new TableCell();
+                c.HorizontalAlign = HorizontalAlign.Right;
+                c.Controls.Add(new LiteralControl((idiv(grand_total_dp_bw,bw_total)*100).ToString("0.00")+"%"));
+                r.Cells.Add(c);
+
+                c = new TableCell();
+                c.HorizontalAlign = HorizontalAlign.Right;
+                c.Controls.Add(new LiteralControl((idiv(grand_total_vi_fw,fw_total)*100).ToString("0.00")+"%"));
+                r.Cells.Add(c);
+
+                c = new TableCell();
+                c.HorizontalAlign = HorizontalAlign.Right;
+                c.Controls.Add(new LiteralControl((idiv(grand_total_vi_bw,bw_total)*100).ToString("0.00")+"%"));
+                r.Cells.Add(c);
+
+                tblResults.Rows.Add(r);
+
                 for (int i = 0; i < 3; i++)
                 {
                     r = new TableRow();
@@ -708,6 +729,15 @@ namespace gbe
 
                     tblResults.Rows.Add(r);
                 }
+
+                r = new TableRow();
+                r.BackColor = System.Drawing.Color.FromName(LIGHTGRAY);
+                r.Font.Bold = true;
+
+                c = new TableCell();
+                c.Controls.Add(new LiteralControl("Welders Individual %:"));
+                r.Cells.Add(c);
+                tblResults.Rows.Add(r);
 
                 r = new TableRow();
                 r.BackColor = System.Drawing.Color.FromName(PURPLE);
@@ -738,6 +768,7 @@ namespace gbe
                 
                 foreach (DictionaryEntry e0 in sl_report_test_totals_by_welder)
                 {
+                    string welder_id = e0.Key.ToString();
                     string welder = e0.Key.ToString();
 
                     if(sl_loginid_name_map.ContainsKey(welder))
@@ -759,8 +790,30 @@ namespace gbe
                     c.HorizontalAlign = HorizontalAlign.Right;
 
                     pc = 0;
-                    if(grand_total_mpi_fw > 0)
+
+                    // hs. 20240117
+                    int bw_welds_tested_by_welder = 0;
+                    int fw_welds_tested_by_welder = 0;
+
+                    if (m_sl_welder_totals.ContainsKey(welder_id))
+                    {
+                        weld_test_ext_fw_bw wtefb = (weld_test_ext_fw_bw)m_sl_welder_totals[welder_id];
+
+                        bw_welds_tested_by_welder = wtefb.bw;
+                        fw_welds_tested_by_welder = wtefb.fw;
+                    }
+
+                    /* // the old way hs. 20240117
+                    if (grand_total_mpi_fw > 0)
+                    {
                         pc = (Convert.ToDecimal(wtewd.mpi_fw) / Convert.ToDecimal(grand_total_mpi_fw)) * 100;
+                    }
+                    */
+                    // hs. 20240117
+                    if (fw_welds_tested_by_welder > 0)
+                    {
+                        pc = (Convert.ToDecimal(wtewd.mpi_fw) / Convert.ToDecimal(fw_welds_tested_by_welder)) * 100;
+                    }
 
                     c.Controls.Add(new LiteralControl(pc.ToString("0.00")));
                     r.Cells.Add(c);
@@ -769,8 +822,16 @@ namespace gbe
                     c.HorizontalAlign = HorizontalAlign.Right;
 
                     pc = 0;
+
+                    /* // the old way hs. 20240117
                     if(grand_total_mpi_bw > 0)
                         pc = (Convert.ToDecimal(wtewd.mpi_bw) / Convert.ToDecimal(grand_total_mpi_bw)) * 100;
+                    */
+                    // hs. 20240117
+                    if (bw_welds_tested_by_welder > 0)
+                    {
+                        pc = (Convert.ToDecimal(wtewd.mpi_bw) / Convert.ToDecimal(bw_welds_tested_by_welder)) * 100;
+                    }
 
                     c.Controls.Add(new LiteralControl(pc.ToString("0.00")));
                     r.Cells.Add(c);
@@ -779,8 +840,14 @@ namespace gbe
                     c.HorizontalAlign = HorizontalAlign.Right;
 
                     pc = 0;
+
+                    /* // the old way hs. 20240117
                     if(grand_total_ut_bw > 0)
 	                    pc = (Convert.ToDecimal(wtewd.ut_bw) / Convert.ToDecimal(grand_total_ut_bw)) * 100;
+                    */
+                    // hs. 20240117
+                    if(bw_welds_tested_by_welder > 0)
+	                    pc = (Convert.ToDecimal(wtewd.ut_bw) / Convert.ToDecimal(bw_welds_tested_by_welder)) * 100;
                     
                     c.Controls.Add(new LiteralControl(pc.ToString("0.00")));
                     
@@ -790,9 +857,15 @@ namespace gbe
                     c.HorizontalAlign = HorizontalAlign.Right;
 
                     pc = 0;
+
+                    /* // the old way hs. 20240117
                     if(grand_total_xray_bw > 0)
 	                    pc = (Convert.ToDecimal(wtewd.xray_bw) / Convert.ToDecimal(grand_total_xray_bw)) * 100;
-                    
+                     */
+                    // hs. 20240117
+                    if(bw_welds_tested_by_welder > 0)
+	                    pc = (Convert.ToDecimal(wtewd.xray_bw) / Convert.ToDecimal(bw_welds_tested_by_welder)) * 100;
+
                     c.Controls.Add(new LiteralControl(pc.ToString("0.00")));
                     
                     r.Cells.Add(c);
@@ -801,9 +874,15 @@ namespace gbe
                     c.HorizontalAlign = HorizontalAlign.Right;
 
                     pc = 0;
+
+                    /* // the old way hs. 20240117
                     if(grand_total_dp_fw > 0)
 	                    pc = (Convert.ToDecimal(wtewd.dp_fw) / Convert.ToDecimal(grand_total_dp_fw)) * 100;
-                    
+                     */
+                    // hs. 20240117
+                    if(fw_welds_tested_by_welder > 0)
+	                    pc = (Convert.ToDecimal(wtewd.dp_fw) / Convert.ToDecimal(fw_welds_tested_by_welder)) * 100;
+
                     c.Controls.Add(new LiteralControl(pc.ToString("0.00")));
 
                     r.Cells.Add(c);
@@ -817,9 +896,15 @@ namespace gbe
                     c.HorizontalAlign = HorizontalAlign.Right;
 
                     pc = 0;
+
+                     /* // the old way hs. 20240117
                     if(grand_total_vi_fw > 0)
 	                    pc = (Convert.ToDecimal(wtewd.vi_fw) / Convert.ToDecimal(grand_total_vi_fw)) * 100;
-                    
+                    */
+                    // hs. 20240117
+                    if(fw_welds_tested_by_welder > 0)
+	                    pc = (Convert.ToDecimal(wtewd.vi_fw) / Convert.ToDecimal(fw_welds_tested_by_welder)) * 100;
+
                     c.Controls.Add(new LiteralControl(pc.ToString("0.00")));
                     
                     r.Cells.Add(c);
@@ -828,8 +913,14 @@ namespace gbe
                     c.HorizontalAlign = HorizontalAlign.Right;
 
                     pc = 0;
+
+                    /* // the old way hs. 20240117
                     if(grand_total_vi_bw > 0)
 	                    pc = (Convert.ToDecimal(wtewd.vi_bw) / Convert.ToDecimal(grand_total_vi_bw)) * 100;
+                    */
+                    // hs. 20240117
+                    if(bw_welds_tested_by_welder > 0)
+	                    pc = (Convert.ToDecimal(wtewd.vi_bw) / Convert.ToDecimal(bw_welds_tested_by_welder)) * 100;
                     
                     c.Controls.Add(new LiteralControl(pc.ToString("0.00")));
                    
@@ -1764,32 +1855,45 @@ namespace gbe
             {
                 weld_test_ext_data wted = (weld_test_ext_data)e0.Value;
 
-                foreach (weld_test_ext_welder_data wtewd in wted.a_weld_test_ext_welder)
+                if (m_sl_spool_data.ContainsKey(wted.barcode))
                 {
-                    weld_test_ext_welder_data wtewd_total_for_welder = null;
-
-                    if (sl.ContainsKey(wtewd.welder))
+                    foreach (weld_test_ext_welder_data wtewd in wted.a_weld_test_ext_welder)
                     {
-                        wtewd_total_for_welder = (weld_test_ext_welder_data)sl[wtewd.welder];
-                    }
-                    else
-                    {
-                        wtewd_total_for_welder = new weld_test_ext_welder_data();
-                        sl.Add(wtewd.welder, wtewd_total_for_welder);
-                    }
+                        weld_test_ext_welder_data wtewd_total_for_welder = null;
 
-                    wtewd_total_for_welder.mpi_bw += wtewd.mpi_bw;
-                    wtewd_total_for_welder.mpi_fw += wtewd.mpi_fw;
-                    wtewd_total_for_welder.ut_bw += wtewd.ut_bw;
-                    wtewd_total_for_welder.xray_bw += wtewd.xray_bw;
-                    wtewd_total_for_welder.dp_bw += wtewd.dp_bw;
-                    wtewd_total_for_welder.dp_fw += wtewd.dp_fw;
-                    wtewd_total_for_welder.vi_bw += wtewd.vi_bw;
-                    wtewd_total_for_welder.vi_fw += wtewd.vi_fw;
+                        if (sl.ContainsKey(wtewd.welder))
+                        {
+                            wtewd_total_for_welder = (weld_test_ext_welder_data)sl[wtewd.welder];
+                        }
+                        else
+                        {
+                            wtewd_total_for_welder = new weld_test_ext_welder_data();
+                            sl.Add(wtewd.welder, wtewd_total_for_welder);
+                        }
+
+                        wtewd_total_for_welder.mpi_bw += wtewd.mpi_bw;
+                        wtewd_total_for_welder.mpi_fw += wtewd.mpi_fw;
+                        wtewd_total_for_welder.ut_bw += wtewd.ut_bw;
+                        wtewd_total_for_welder.xray_bw += wtewd.xray_bw;
+                        wtewd_total_for_welder.dp_bw += wtewd.dp_bw;
+                        wtewd_total_for_welder.dp_fw += wtewd.dp_fw;
+                        wtewd_total_for_welder.vi_bw += wtewd.vi_bw;
+                        wtewd_total_for_welder.vi_fw += wtewd.vi_fw;
+                    }
                 }
             }
 
             return sl;
+        }
+
+        decimal idiv(int dividend, int divisor)
+        {
+            decimal quotient = 0;
+
+            if (divisor > 0)
+                try { quotient = Convert.ToDecimal(dividend) / Convert.ToDecimal(divisor); } catch { }
+
+            return quotient;
         }
     }
 }

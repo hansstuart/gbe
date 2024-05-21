@@ -73,6 +73,9 @@
     <Reference Include="System.Web.Mobile" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="cut_length.aspx" />
+    <Content Include="cut_lengths.aspx" />
+    <Content Include="modular_fabrications.jpg" />
     <Content Include="Web References\imsl_ws\fab_order_details.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </Content>
@@ -154,6 +157,20 @@
     </Compile>
     <Compile Include="cutlist.aspx.designer.cs">
       <DependentUpon>cutlist.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="cut_length.aspx.cs">
+      <DependentUpon>cut_length.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="cut_length.aspx.designer.cs">
+      <DependentUpon>cut_length.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="cut_lengths.aspx.cs">
+      <DependentUpon>cut_lengths.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="cut_lengths.aspx.designer.cs">
+      <DependentUpon>cut_lengths.aspx</DependentUpon>
     </Compile>
     <Compile Include="data_row.cs" />
     <Compile Include="default.aspx.cs">

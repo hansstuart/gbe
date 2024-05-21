@@ -43,7 +43,7 @@
             <td style="width: 309px; height: 21px">
                 <asp:TextBox ID="txtSearch" runat="server" Width="288px"></asp:TextBox></td>
             <td style="width: 133px; height: 21px">
-                <asp:DropDownList ID="dlSearchFlds" runat="server" Width="128px">
+                <asp:DropDownList ID="dlSearchFlds" runat="server" Width="128px" Visible="False">
                 </asp:DropDownList></td>
             <td style="height: 21px">
                 </td>

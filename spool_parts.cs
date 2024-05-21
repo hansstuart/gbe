@@ -10,6 +10,7 @@ namespace gbe
     public class spool_parts : cdb_connection
     {
         string m_tbl = "spool_parts";
+        string m_spool_pipe_fittings_tbl = "spool_pipe_fittings";
 
         public spool_parts() { }
 
@@ -31,6 +32,23 @@ namespace gbe
             {
                 bret = false;
                 EventLog.WriteEntry("PCF gbe", "save_spool_parts_data() \n" + ex.ToString(), EventLogEntryType.Error);
+            }
+
+            return bret;
+        }
+
+        public bool save_spool_pipe_fittings_data(SortedList sl)
+        {
+            bool bret = true;
+
+            try
+            {
+                save(sl, m_spool_pipe_fittings_tbl, "spool_pipe_fittings_id");
+            }
+            catch (Exception ex)
+            {
+                bret = false;
+                EventLog.WriteEntry("PCF gbe", "save_spool_pipe_fittings_data() \n" + ex.ToString(), EventLogEntryType.Error);
             }
 
             return bret;
@@ -121,6 +139,33 @@ namespace gbe
 
             try { sd.seq = (int)dr["seq"]; }
             catch { }
+
+            try
+            {
+                sd.spool_pipe_fittings_data = new spool_pipe_fittings_data();
+
+                try { sd.spool_pipe_fittings_data.spool_pipe_fittings_id = (int)dr["spool_pipe_fittings_id"]; }
+                catch { }
+
+                try { sd.spool_pipe_fittings_data.spool_id = (int)dr["spool_id"]; }
+                catch { }
+
+                try { sd.spool_pipe_fittings_data.spool_part_id = (int)dr["spool_part_id"]; }
+                catch { }
+
+                try { sd.spool_pipe_fittings_data.fitting_1_part_id = (int)dr["fitting_1_part_id"]; }
+                catch { }
+
+                try { sd.spool_pipe_fittings_data.fitting_2_part_id = (int)dr["fitting_2_part_id"]; }
+                catch { }
+
+                try { sd.spool_pipe_fittings_data.fitting_1_seq_no = (int)dr["fitting_1_seq_no"]; }
+                catch { }
+
+                try { sd.spool_pipe_fittings_data.fitting_2_seq_no = (int)dr["fitting_2_seq_no"]; }
+                catch { }
+            }
+            catch { }
         }
 
         public ArrayList get_spool_parts_data(SortedList search_params)
@@ -133,7 +178,8 @@ namespace gbe
 
             try
             {
-                DataTable dta = get_data(m_tbl, search_params);
+                string sql_select = $@"select * from  {m_tbl} left join {m_spool_pipe_fittings_tbl} on {m_tbl}.id = {m_spool_pipe_fittings_tbl}.spool_part_id  where {m_tbl}.spool_id=@spool_id order by {order_by} ";
+                DataTable dta = get_data_p(sql_select, search_params);
 
                 foreach (DataRow dr in dta.Rows)
                 {
@@ -141,7 +187,19 @@ namespace gbe
 
                     populate_spool_part_data(sd, dr);
 
-                    a.Add(sd);
+                    bool badd = true;
+
+                    foreach (spool_part_data sd0 in a)
+                    {
+                        if (sd0.id == sd.id)
+                        {
+                            badd = false;
+                            break;
+                        }
+                    }
+
+                    if(badd)
+                        a.Add(sd);
                 }
             }
             catch (Exception ex)
@@ -158,6 +216,7 @@ namespace gbe
             sl.Add("spool_id", spool_id);
 
             delete_record(m_tbl, sl);
+            delete_record(m_spool_pipe_fittings_tbl, sl);
         }
 
         int get_sufficed_part_id(int part_id, string suffix)
@@ -285,9 +344,22 @@ namespace gbe
         public int porder = 0;
         public bool picked = false;
         public part_data part_data = null;
+        public spool_pipe_fittings_data spool_pipe_fittings_data = null;
         public bool include_in_weld_map = false;
         public int seq = 0;
 
         public string welder = string.Empty;
+    }
+
+    [Serializable]
+    public class spool_pipe_fittings_data
+    {
+        public int spool_pipe_fittings_id = 0;
+        public int spool_id = 0;
+        public int spool_part_id = 0;
+        public int fitting_1_part_id = 0;
+        public int fitting_2_part_id = 0;
+        public int fitting_1_seq_no = 0;
+        public int fitting_2_seq_no = 0;
     }
 }

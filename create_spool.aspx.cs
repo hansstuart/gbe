@@ -30,6 +30,8 @@ namespace gbe
         const string MAT_STAINLESS_STEEL = "Stainless Steel";
         const string MAT_SCREWED = "Screwed";
         const string MAT_HS = "HS";
+        const string PIPE_CUT_LENGTH_PART_NO = "pipe_cut_length_part_no";
+        const string IS_PIPE = "is_pipe";
 
         int m_state = 0;
         ArrayList m_parts_list = new ArrayList();
@@ -347,6 +349,8 @@ namespace gbe
                             ViewState["state"] = m_state;
 
                             ViewState["modify_id"] = id;
+
+                            paint_part_table();
                         }
                     }
                 }
@@ -1075,7 +1079,7 @@ namespace gbe
                 }
 
                 SortedList slp = new SortedList();
-                int  fw, bw;
+                int  fw, bw, f1, f2;
                 decimal qty;
                 TextBox tb = null;
 
@@ -1093,6 +1097,37 @@ namespace gbe
                     int sched_slots = 1;
 
                     int iseq = 0;
+
+                    SortedList sl_seq_partid = new SortedList();
+
+                    foreach (TableRow r in tblParts.Rows)
+                    {
+                        if (r.Attributes["part_id"] != null)
+                        {
+                            foreach (TableCell cell in r.Cells)
+                            {
+                                foreach (Control cntrl in cell.Controls)
+                                {
+                                    if (cntrl.ID != null)
+                                    {
+                                        if (cntrl.GetType() == typeof(LiteralControl))
+                                        {
+                                            LiteralControl lc = (LiteralControl)cntrl;
+
+                                            if (lc.ID.StartsWith("seq"))
+                                            {
+                                                try
+                                                {
+                                                    sl_seq_partid.Add(Convert.ToInt32(lc.Text), r.Attributes["part_id"]);
+                                                }
+                                                catch { }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     foreach (TableRow r in tblParts.Rows)
                     {
@@ -1113,20 +1148,13 @@ namespace gbe
                         {
                             slp.Clear();
 
-                            /*
-                            if (r.Attributes["spd_id"] != null)
-                                slp.Add("id", r.Attributes["spd_id"]);
-                            else
-                                slp.Add("include_in_weld_map", true);
-                             */
-
                             if (r.Attributes["spd_id"] == null)
                                 slp.Add("include_in_weld_map", true);
 
                             slp.Add("spool_id", spool_id);
                             slp.Add("part_id", r.Attributes["part_id"]);
 
-                            qty = fw = bw = 0;
+                            qty = fw = bw = f1 = f2 = 0;
 
                             foreach (TableCell cell in r.Cells)
                             {
@@ -1157,6 +1185,22 @@ namespace gbe
                                             try { bw = Convert.ToInt32(tb.Text.Trim()); }
                                             catch { }
                                         }
+                                        
+                                        if (c.ID.StartsWith("f1"))
+                                        {
+                                            tb = ((TextBox)c);
+
+                                            try { f1 = Convert.ToInt32(tb.Text.Trim()); }
+                                            catch { }
+                                        }
+
+                                        if (c.ID.StartsWith("f2"))
+                                        {
+                                            tb = ((TextBox)c);
+
+                                            try { f2 = Convert.ToInt32(tb.Text.Trim()); }
+                                            catch { }
+                                        }
                                     }
                                 }
                             }
@@ -1183,7 +1227,6 @@ namespace gbe
                                         slp[INCLUDE_IN_WELD_MAP] = r.Attributes[INCLUDE_IN_WELD_MAP];
                                     else
                                         slp.Add(INCLUDE_IN_WELD_MAP, r.Attributes[INCLUDE_IN_WELD_MAP]);
-
                                 }
 
                                 const string WELDER = "welder";
@@ -1196,6 +1239,29 @@ namespace gbe
                                 }
 
                                 sp.save_spool_parts_data(slp);
+
+                                if (r.Attributes[IS_PIPE] != null)
+                                {
+                                    int spool_part_id = Convert.ToInt32(slp["id"]);
+                                    slp.Clear();
+
+                                    slp.Add("spool_part_id", spool_part_id);
+                                    slp.Add("spool_id", spool_id);
+                                    slp.Add("fitting_1_seq_no", f1);
+                                    slp.Add("fitting_2_seq_no", f2);
+
+                                    if (sl_seq_partid.ContainsKey(f1))
+                                    {
+                                        slp.Add("fitting_1_part_id", sl_seq_partid[f1]);
+                                    }
+
+                                    if (sl_seq_partid.ContainsKey(f2))
+                                    {
+                                        slp.Add("fitting_2_part_id", sl_seq_partid[f2]);
+                                    }     
+
+                                    sp.save_spool_pipe_fittings_data(slp);
+                                }
                             }
                         }
                     }
@@ -1233,6 +1299,11 @@ namespace gbe
 
         protected void paint_part_table()
         {
+            ListItem [] seq_range = new ListItem[m_parts_list.Count];
+            
+            for(int iseq = 0; iseq < m_parts_list.Count; iseq++)
+                seq_range[iseq] = new ListItem((iseq + 1).ToString());
+
             System.Drawing.Color bc;
             int i = 0;
             foreach (TableRow r in tblParts.Rows)
@@ -1272,34 +1343,6 @@ namespace gbe
             if (!pd.attributes.ContainsKey(UID))
                 pd.attributes.Add(UID, pd.part_number + Guid.NewGuid().ToString("N"));
 
-            /* hs 20221116
-            foreach (TableRow r0 in tblParts.Rows)
-            {
-                if(pd.description.ToUpper() == ((LiteralControl)r0.Cells[1].Controls[0]).Text.ToUpper())
-                {
-                    if (pd.description.ToUpper().Contains("PIPE"))
-                        return;
-
-                    
-                    string sqty = ((TextBox)r0.Cells[2].Controls[1]).Text;
-
-                    int qty = 0;
-
-                    try { qty = Convert.ToInt32(sqty); }
-                    catch { }
-
-                    qty++;
-
-                    ((TextBox)r0.Cells[2].Controls[1]).Text = qty.ToString();
-
-                    return;
-                    
-                }
-            }
-            */
-    
-            
-
             TableRow r;
             TableCell c;
 
@@ -1311,23 +1354,35 @@ namespace gbe
             c = new TableCell();
             c.HorizontalAlign = HorizontalAlign.Right;
 
+            string guid = Guid.NewGuid().ToString("N");
+
             LiteralControl lc = new LiteralControl();
-            lc.ID = "seq_" + Guid.NewGuid().ToString("N");
-            lc.Text = (tblParts.Rows.Count + 1).ToString();
+            lc.ID = "seq_" + guid;
+            lc.Text = (tblParts.Rows.Count + 1).ToString("00");
 
             c.Controls.Add(lc);
             r.Cells.Add(c);
 
             c = new TableCell();
-            c.Controls.Add(new LiteralControl(pd.description));
+            Label lbldesc = new Label();
+            lbldesc.ID = "part_desc_" + guid;
+            lbldesc.Width = 380;
+            lbldesc.Text = pd.description;
+            c.Controls.Add(lbldesc);
             r.Cells.Add(c);
 
             c = new TableCell();
             c.Controls.Add(new LiteralControl((pd.description.ToUpper().Contains("PIPE")|| pd.part_type.ToUpper().Contains("PIPE")) ?"Len (m):":"Qty:"));
             TextBox qtb = null;
 
-            if (pd.description.ToUpper().Contains("PIPE")|| pd.part_type.ToUpper().Contains("PIPE"))
+            bool bpipe = is_pipe(pd);
+
+            if (bpipe)
+            {
                 qtb = create_decimal_textbox("qty_" + pd.attributes[UID].ToString());
+
+                r.Attributes[IS_PIPE] = "1";
+            }
             else
             {
                 qtb = create_numeric_textbox("qty_" + pd.attributes[UID].ToString());
@@ -1375,12 +1430,46 @@ namespace gbe
 
             r.Cells.Add(c);
 
+            if (bpipe)
+            {
+                TextBox f1tb = create_numeric_textbox("f1_" + pd.attributes[UID].ToString());
+
+                if (spd != null)
+                    if(spd.spool_pipe_fittings_data != null)
+                        f1tb.Text = spd.spool_pipe_fittings_data.fitting_1_seq_no.ToString();
+
+                c = new TableCell();
+                c.Controls.Add(new LiteralControl("F1:"));
+                c.Controls.Add(f1tb);
+                r.Cells.Add(c);
+
+                TextBox f2tb = create_numeric_textbox("f2_" + pd.attributes[UID].ToString());
+
+                if (spd != null)
+                    if(spd.spool_pipe_fittings_data != null)
+                        f2tb.Text = spd.spool_pipe_fittings_data.fitting_2_seq_no.ToString();
+
+                c = new TableCell();
+                c.Controls.Add(new LiteralControl("F2:"));
+                c.Controls.Add(f2tb);
+                r.Cells.Add(c);
+            }
+            else
+            {
+                c = new TableCell();
+                c.Controls.Add(new LiteralControl( ));
+                r.Cells.Add(c);
+
+                c = new TableCell();
+                c.Controls.Add(new LiteralControl( ));
+                r.Cells.Add(c);
+            }
+
             ImageButton btn_remove_part = new ImageButton();
             btn_remove_part.Click+= new ImageClickEventHandler(btn_remove_part_Click);
-           // btn_remove_part.Text = "X";
             btn_remove_part.ImageUrl = "~/delete.png";
             btn_remove_part.ToolTip = "Remove part";
-            btn_remove_part.ID = "btn_remove_part_" + pd.attributes[UID].ToString(); // tblParts.Rows.Count.ToString();
+            btn_remove_part.ID = "btn_remove_part_" + pd.attributes[UID].ToString();  
             btn_remove_part.Attributes[UID] = pd.attributes[UID].ToString();
                                     
             c = new TableCell();
@@ -1404,8 +1493,11 @@ namespace gbe
             string uid = Request.QueryString[UID];
 
             tblParts.Rows.Add(r);
-                
-            paint_part_table();
+        }
+
+        bool is_pipe(part_data pd) 
+        {
+            return pd.description.ToUpper().Contains("PIPE") || pd.part_type.ToUpper().Contains("PIPE");
         }
 
         TextBox create_numeric_textbox(string id)
@@ -1419,6 +1511,8 @@ namespace gbe
 
             return tb;
         }
+
+        
 
         TextBox create_decimal_textbox(string id)
         {
@@ -1437,24 +1531,14 @@ namespace gbe
             tblParts.Rows.Clear();
 
             int i = 0;
-
-            // hs. 20221115
-            /*
-            SortedList sl_parts_list = new SortedList();
-
-            foreach (part_data pd in m_parts_list)
-            {
-                sl_parts_list.Add(pd.description+sl_parts_list.Count.ToString(), pd);
-            }
-            */
-
-            //foreach(DictionaryEntry e0 in sl_parts_list)
+            
             foreach(part_data pd in m_parts_list)
             {
-                //part_data pd = (part_data)e0.Value;
                 add_part_to_table(pd, null);
                 i++;
             }
+
+            paint_part_table();
         }
 
         protected void btnAdd_Click(object sender, EventArgs e)
@@ -1480,27 +1564,13 @@ namespace gbe
 
                     if (pd.active)
                     {
+                        m_parts_list.Add(pd);
 
-                        bool b_already_there = false;
-
-                        /* hs 20221114
-                        foreach (part_data pd0 in m_parts_list)
-                        {
-                            if (pd0.description == pd.description)
-                            {
-                                pd = pd0;
-                                b_already_there = true;
-                                break;
-                            }
-                        }
-                        */
+                        ViewState["parts_list"] = m_parts_list;
 
                         add_part_to_table(pd, null);
 
-                        if (!b_already_there)
-                            m_parts_list.Add(pd);
-
-                        ViewState["parts_list"] = m_parts_list;
+                        paint_part_table();
                     }
                 }
             }
@@ -1550,9 +1620,9 @@ namespace gbe
                 m_parts_list.RemoveAt(n);
             }
 
-            paint_part_table();
-
             ViewState["parts_list"] = m_parts_list;
+
+            paint_part_table();
         }
 
         protected void dlDelAddr_SelectedIndexChanged(object sender, EventArgs e)

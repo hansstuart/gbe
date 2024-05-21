@@ -37,8 +37,8 @@
             background-color: #c4e2ed">
             
             <tr>
-                <td colspan="2" style="height: 132px; background-color: #313131;">
-                    <asp:Image ID="img_logo" runat="server" ImageAlign="Right" ImageUrl="~/gbe_logo.png" /></td>
+                <td colspan="2" style="height: 132px; background-color: #ffffff; padding-right:5px;">
+                    <asp:Image ID="img_logo" runat="server" ImageAlign="Right" ImageUrl="~/modular_fabrications.jpg" Height="75%" /></td>
             </tr>
             
             <tr>

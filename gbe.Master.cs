@@ -65,8 +65,8 @@ namespace gbe
             const string VIEW_DELIV_SCHEDULE = "View Delivery Schedule";
             const string VIEW_DELIV_QUARANTINE = "View Delivery Quarantine";
             const string IMSL_CUSTOMERS = "IMSL Customers";
-
             const string TOTALS = "Totals";
+            const string CUT_LENGTH = "Cut Lengths";
 
             SortedList m_sl_menu_items = new SortedList();
 
@@ -109,8 +109,8 @@ namespace gbe
             m_sl_menu_items.Add(VIEW_DELIV_SCHEDULE, "view_schedule.aspx?t=schedule_delivery");
             m_sl_menu_items.Add(VIEW_DELIV_QUARANTINE, "add_to_schedule.aspx?t=schedule_delivery&q=1");
             m_sl_menu_items.Add(IMSL_CUSTOMERS, "maint1.aspx?t=customer_fab_mat");
-
             m_sl_menu_items.Add(TOTALS, "totals.aspx");
+            m_sl_menu_items.Add(CUT_LENGTH, "cut_lengths.aspx");
 
             // admin menus
             string[] admin_menu_main = { 
@@ -145,7 +145,8 @@ namespace gbe
                 VIEW_DELIV_SCHEDULE,
                 VIEW_DELIV_QUARANTINE,
                 IMSL_CUSTOMERS,
-                TOTALS
+                TOTALS,
+                CUT_LENGTH
             };
 
             string[] admin_menu_stores = { 
@@ -172,8 +173,8 @@ namespace gbe
                 WELD_MAPPING,
                 WELD_MAPPING_EXT,
                 WELD_TESTS,
-                WELDER_FITTER_ACTIVITY
-
+                WELDER_FITTER_ACTIVITY,
+                CUT_LENGTH
             };
 
             string[] user_menu_stores = { 
@@ -201,7 +202,8 @@ namespace gbe
                 VIEW_FAB_QUARANTINE,
                 VIEW_FAB_SCHEDULE,
                 VIEW_DELIV_SCHEDULE,
-                VIEW_DELIV_QUARANTINE
+                VIEW_DELIV_QUARANTINE,
+                CUT_LENGTH
             };
 
             string[] supervisor_menu_stores = { 
@@ -237,12 +239,14 @@ namespace gbe
                 ORDER_PARTS,
                 QA,
                 SPOOLS,
+                CUT_LENGTH
             };
 
             string[] project_manager_menu_stores = { 
                 CLIENT_FREE_ISSUE_ITEMS,
                 STOCK_AUDIT_TRAIL,
-                STOCK
+                STOCK,
+                CUT_LENGTH                
             };
 
             string[] menu_main = { 

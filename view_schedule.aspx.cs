@@ -265,9 +265,10 @@ namespace gbe
             
             if (tbl.Trim().Length > 0)
             {
-                string select = "select !TBL!.*, spools.id, spools.barcode, spools.status, spools.welder, spools.fitter, spools.material, customers.*, ";
+                string select = "select !TBL!.*, spools.id, spools.barcode, spools.status, spools.welder, spools.fitter, spools.material, customers.* ";
 
-                select += " stuff ";
+                /*
+                select += " , stuff ";
                 select += " ( ";
                 select += "    (";
                 select += "       select '; ' + CAST( (parts.welder_rate * spool_parts.qty ) as  nvarchar)";
@@ -297,6 +298,7 @@ namespace gbe
                 select += "    , 1";
                 select += "    , ''";
                 select += ") FITTER_RATES";
+                */
 
                 select += " from !TBL! ";
                 select += " inner join spools on spools.id = !TBL!.spool_id ";
