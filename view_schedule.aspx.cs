@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Configuration;
 using System.Collections;
+using System.Collections.Generic;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
@@ -30,6 +31,7 @@ namespace gbe
         const string VS_EDIT_VIEW_RECS = "vs_edit_view_recs";
         const string UID = "uid";
         const string BARCODE = "barcode";
+        const string SPOOL_ID = "spool_id";
         const string DATE = "date";
         const string BATCH = "batch";
         const string TXT_TIME =  "txt_time_";
@@ -45,8 +47,10 @@ namespace gbe
         const string VS_NOTES_EDIT_DATA = "vs_notes_edit_data";
         const string VS_NOTES = "vs_notes";
         const string VS_NOTES_BY_ID = "vs_notes_by_id";
+        const string VS_CUTTING_SPOOL_IDS = "vs_cutting_spool_ids";
         const string VS_0 = "vs_0";
         const string EXTRAS = "Extras";
+        const string TBLCUTTINGDATA = "tblCuttingData";
         
         string SEQ_FMT = new string('0', 16);
         string BATCH_FMT = new string('0', 8);
@@ -59,6 +63,7 @@ namespace gbe
         SortedList m_sl_codes = null;
         SortedList m_sl_notes = null;
         SortedList m_sl_notes_by_id = null;
+        List<int> m_cutting_spool_ids = null;
         
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -189,6 +194,9 @@ namespace gbe
                 try { m_sl_notes_by_id = (SortedList)ViewState[VS_NOTES_BY_ID]; }
                 catch { }
 
+                try { m_cutting_spool_ids = (List<int>)ViewState[VS_CUTTING_SPOOL_IDS]; }
+                catch { }
+
                 if (MultiView1.ActiveViewIndex == 0 || MultiView1.ActiveViewIndex == 3 || MultiView1.ActiveViewIndex == 4 || MultiView1.ActiveViewIndex == 5)
                 {
                     if (m_curr_view == CALENDER_VIEW)
@@ -267,6 +275,23 @@ namespace gbe
             {
                 string select = "select !TBL!.*, spools.id, spools.barcode, spools.status, spools.welder, spools.fitter, spools.material, customers.* ";
 
+                if (is_holding_area())
+                {
+                    select += ", (";
+                    select += "select top 1 ";
+                    select += " CASE WHEN spool_parts.id > 0 THEN 1 END ";
+                    select += " from  spool_parts ";
+                    select += " join parts on parts.id = spool_parts.part_id ";
+                    select += " where ";
+                    select += " ( ";
+                    select += " spool_parts.spool_id  = spools.id ";
+                    select += " and ";
+                    select += " (parts.description like '%pipe%' or parts.part_type like '%pipe%') ";
+                    select += " ) ";
+                    select += " ) ";
+                    select += " as has_cutting_data  ";
+                    select += " ";
+                }
                 /*
                 select += " , stuff ";
                 select += " ( ";
@@ -384,6 +409,9 @@ namespace gbe
 
                         try { sr.schd.e_code = dr["e_code"].ToString(); }
                         catch { }
+
+                        try { sr.schd.has_cutting_data = (int)dr["has_cutting_data"] == 1;}
+                        catch {sr.schd.has_cutting_data = false; }
 
                         if (sr.schd.e_code.Trim().Length == 0)
                             sr.schd.e_code = schedule_data.DEF_ECODE;
@@ -1026,6 +1054,9 @@ namespace gbe
 
         void display_list()
         {
+            ArrayList a_spool_ids = new ArrayList();
+            ArrayList a_schd_ids = new ArrayList();
+
             imgReSeq.Visible = true;
 
             string fitter_id = string.Empty;
@@ -1281,6 +1312,11 @@ namespace gbe
                                 {
                                     c_schedule_rec sr = (c_schedule_rec)e1.Value;
 
+                                    if(a_schd_ids.Contains(sr.schd.id))
+                                        continue;
+
+                                    a_schd_ids.Add(sr.schd.id);
+
                                     if (sr.schd.status == "SH" || sr.schd.status == "OS" || sr.schd.status == "IN" || !display_list_record(sr.schd, fitter_id))
                                         continue;
 
@@ -1404,7 +1440,7 @@ namespace gbe
                                     }
 
                                     Table tblSpool = new Table();
-                                    tblSpool.Width = 500;
+                                    tblSpool.Width = 700;
                                     TableCell cellSpool = new TableCell();
                                     TableRow rowSpool = new TableRow();
                                     cellSpool.Controls.Add(new LiteralControl(sr.barcode));
@@ -1413,7 +1449,26 @@ namespace gbe
                                     tblSpool.Rows.Add(rowSpool);
                                     c.Controls.Add(tblSpool);
 
-                                    //c.Controls.Add(new LiteralControl(sr.barcode));  
+                                    if (sr.schd.has_cutting_data)
+                                    {
+                                        if (!a_spool_ids.Contains(sr.schd.spool_id))
+                                        {
+                                            a_spool_ids.Add(sr.schd.spool_id);
+
+                                            Table tblCuttingData = new Table();
+
+                                            tblCuttingData.ID = TBLCUTTINGDATA + sr.schd.spool_id.ToString();
+                                            tblCuttingData.Attributes[SPOOL_ID] = sr.schd.spool_id.ToString();
+
+                                            rowSpool = new TableRow();
+                                            rowSpool.BackColor = System.Drawing.Color.FromName("Bisque");
+                                            cellSpool = new TableCell();
+                                            cellSpool.Controls.Add(tblCuttingData);
+                                            rowSpool.Cells.Add(cellSpool);
+                                            tblSpool.Rows.Add(rowSpool);
+                                        }
+                                    }
+                                     
                                     r.Cells.Add(c);
 
                                     c = new TableCell();
@@ -1558,6 +1613,38 @@ namespace gbe
                                         r.Cells.Add(c);
                                     }
 
+                                    if (is_holding_area())
+                                    {
+                                        if (sr.schd.has_cutting_data)
+                                        {
+                                            c = new TableCell();
+                                            c.HorizontalAlign = HorizontalAlign.Center;
+                                            ImageButton btn_show_cutting_data = new ImageButton();
+                                            btn_show_cutting_data.ToolTip = "Cutting";
+                                            btn_show_cutting_data.ID = "btn_show_cutting_data" + sr.schd.spool_id;
+                                            btn_show_cutting_data.Attributes[SPOOL_ID] = sr.schd.spool_id.ToString();
+                                            btn_show_cutting_data.Attributes[UID] = sr.schd.id.ToString();
+                                            btn_show_cutting_data.Click += btn_show_cutting_data_Click; 
+                                            
+                                            bool bshow = false;
+
+                                            if (m_cutting_spool_ids != null)
+                                            {
+                                                if (m_cutting_spool_ids.Contains(sr.schd.spool_id))
+                                                    bshow = true;
+                                                else
+                                                    bshow = false;
+                                            }
+
+                                            set_show_hide_button_properties(bshow, btn_show_cutting_data);
+
+                                            c.Controls.Add(btn_show_cutting_data);
+                                            r.Cells.Add(c);
+
+                                            r.Attributes[SPOOL_ID] = sr.schd.spool_id.ToString();
+                                        }
+                                    }
+
                                     CheckBox chk_sched_tbl_rec = new CheckBox();
                                     chk_sched_tbl_rec.ID = "chk_sched_tbl_rec_" + e.Key.ToString()+ "|" + sr.barcode;
                                     chk_sched_tbl_rec.Attributes[UID] = e.Key.ToString();
@@ -1571,6 +1658,7 @@ namespace gbe
                                 }
                             }
 
+                                                    
                             pnl.Controls.Add(tbl);
 
                             r = new TableRow();
@@ -1585,10 +1673,257 @@ namespace gbe
 
                         }
                     }
+
+                    if (m_cutting_spool_ids != null)
+                    {
+                        foreach (int spool_id in m_cutting_spool_ids)
+                        {
+                            show_cutting_data(spool_id);
+                        }
+                    }
                 }
                 else
                 {
                     imgReSeq.Visible = false;
+                }
+            }
+        }
+
+        private void btn_show_cutting_data_Click(object sender, ImageClickEventArgs e)
+        {
+            ImageButton btn  = (ImageButton)sender;
+
+            if(m_cutting_spool_ids == null)
+                m_cutting_spool_ids = new List<int>();
+
+            int spool_id = Convert.ToInt32(btn.Attributes[SPOOL_ID]);
+            
+            bool bshow = false;
+
+            if (m_cutting_spool_ids.Contains(spool_id))
+            {
+                m_cutting_spool_ids.Remove(spool_id);
+                hide_cutting_data(spool_id);
+                bshow = false;
+            }
+            else
+            {
+                m_cutting_spool_ids.Add(spool_id);
+                show_cutting_data(spool_id);
+                bshow = true;
+            }
+
+            set_show_hide_button_properties(bshow, btn);
+
+            ViewState[VS_CUTTING_SPOOL_IDS] = m_cutting_spool_ids;
+        }
+
+        void hide_cutting_data(int spool_id)
+        {
+            Table tblCuttingData = get_cutting_data_table(spool_id, tblSchedule);
+
+            if (tblCuttingData != null)
+            {
+                tblCuttingData.Rows.Clear();
+            }
+        }
+
+        Table get_cutting_data_table(int spool_id, Table tbl_to_srch)
+        {
+            Table tblCuttingData = null;
+
+            foreach (TableRow row in tbl_to_srch.Rows)
+            {
+                foreach (TableCell cell in row.Cells)
+                {
+                    foreach (Control cntrl in cell.Controls)
+                    {
+                        Table tbl = get_cutting_data_table(spool_id, cell.Controls);
+
+                        if (tbl != null)
+                        {
+                            tblCuttingData = tbl;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return tblCuttingData;
+        }
+
+        Table get_cutting_data_table(int spool_id, ControlCollection cntrl_collection_to_srch)
+        {
+            Table tblCuttingData = null;
+
+            foreach (Control cntrl in cntrl_collection_to_srch)
+            {
+                if (cntrl.GetType() == typeof(Table))
+                {
+                    Table tbl = (Table)cntrl;
+
+                    if (tbl.ID != null && tbl.ID.ToString().StartsWith(TBLCUTTINGDATA) && Convert.ToInt32(tbl.Attributes[SPOOL_ID]) == spool_id)
+                    {
+                        tblCuttingData = tbl;
+                        break;
+                    }
+                    else
+                    {
+                        tbl = get_cutting_data_table(spool_id, tbl);
+
+                        if (tbl != null)
+                        {
+                            tblCuttingData = tbl;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    tblCuttingData = get_cutting_data_table(spool_id, cntrl.Controls);
+                }
+            }
+
+            return tblCuttingData;
+        }
+
+        List<CCutLengthData> get_cutting_data(int spool_id)
+        {
+            List<CCutLengthData> lst_cld = new List<CCutLengthData>();
+
+            try
+            {
+                string sql = $@"select 
+                                 barcode
+                                , spool_parts.qty 
+                                , spool_parts.seq
+                                , spool_parts.id as spool_parts_id
+                                , spool_parts.completed
+                                , parts.description
+                                , parts.part_type
+
+                                , spool_pipe_fittings_id
+	                            , fitting_1_part_id
+	                            , fitting_2_part_id
+
+	                            , f1.description as f1_part_description
+                                , f1.fitting_size_mm as f1_fitting_size_mm
+                                , f1.gap_mm  as f1_gap_mm
+
+	                            , f2.description as f2_part_description
+                                , f2.fitting_size_mm as f2_fitting_size_mm
+                                , f2.gap_mm as f2_gap_mm
+                            
+                                from spool_parts
+
+                                join spools on spools.id = spool_parts.spool_id
+                                join parts on parts.id = spool_parts.part_id
+								left join spool_pipe_fittings on spool_pipe_fittings.spool_part_id = spool_parts.id
+                                left join parts as f1 on f1.id = fitting_1_part_id
+                                left join parts as f2 on f2.id = fitting_2_part_id
+
+                                where 
+                                spool_parts.spool_id  = @spool_id
+                                and (parts.description like '%pipe%' or parts.part_type like '%pipe%')
+                            ";
+
+                SortedList sl_params = new SortedList();
+                sl_params.Add("@spool_id", spool_id);
+
+                using (cdb_connection dbc = new cdb_connection())
+                {
+                    DataTable dtab = dbc.get_data_p(sql, sl_params);
+
+                    foreach (DataRow dr in dtab.Rows)
+                    {
+                        bool badd = true;
+                        int spool_parts_id = (int)dr["spool_parts_id"];
+
+                        foreach (CCutLengthData cld0 in lst_cld)
+                        {
+                            if (cld0.spool_parts_id == spool_parts_id)
+                            {
+                                badd = false;
+                                break;
+                            }
+                        }
+
+                        if (badd)
+                        {
+                            CCutLengthData cld = new CCutLengthData();
+
+                            cld.spool_id = spool_id;
+                            cld.barcode = dr["barcode"].ToString();
+                            try { cld.length = (decimal)dr["qty"] * 1000; } catch { }
+                            cld.part_description = dr["description"].ToString();
+
+                            cld.spool_parts_id = (int)dr["spool_parts_id"];
+                            try { cld.spool_pipe_fittings_id = (int)dr["spool_pipe_fittings_id"]; } catch { }
+
+                            try { cld.completed = (bool)dr["completed"]; } catch { }
+
+                            cld.f1_part_description = dr["f1_part_description"].ToString();
+                            try { cld.f1_fitting_size_mm = (decimal)dr["f1_fitting_size_mm"]; } catch { }
+                            try { cld.f1_gap_mm = (decimal)dr["f1_gap_mm"]; } catch { }
+
+                            cld.f2_part_description = dr["f2_part_description"].ToString();
+                            try { cld.f2_fitting_size_mm = (decimal)dr["f2_fitting_size_mm"]; } catch { }
+                            try { cld.f2_gap_mm = (decimal)dr["f2_gap_mm"]; } catch { }
+
+                            lst_cld.Add(cld);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                lblMsg.Text = ex.Message.ToString();
+            }
+            return lst_cld;
+        }
+
+        void show_cutting_data(int spool_id)
+        {
+            Table tblCuttingData = get_cutting_data_table(spool_id, tblSchedule);
+
+            if (tblCuttingData != null)
+            {
+                List<CCutLengthData> lst_cutting_data =  get_cutting_data(spool_id);
+
+                foreach (CCutLengthData cld in lst_cutting_data)
+                {
+                    TableCell cellCuttingData = null;
+
+                    TableRow rowCuttingData = new TableRow();
+                    rowCuttingData.BackColor = System.Drawing.Color.FromName("Bisque");
+
+                    cellCuttingData = new TableCell();
+                    cellCuttingData.ForeColor = System.Drawing.Color.FromName("Black");
+                    cellCuttingData.Controls.Add(new LiteralControl(cld.part_description));
+                    rowCuttingData.Cells.Add(cellCuttingData);
+
+                    cellCuttingData = new TableCell();
+                    cellCuttingData.ForeColor = System.Drawing.Color.FromName("Black");
+                    cellCuttingData.Font.Bold = true;
+                    cellCuttingData.HorizontalAlign = HorizontalAlign.Right;
+                    cellCuttingData.Controls.Add(new LiteralControl("Cut (mm): " + CCutLengthData.get_cut_length(cld).ToString("0.00")));
+                    rowCuttingData.Cells.Add(cellCuttingData);
+
+                    cellCuttingData = new TableCell();
+
+                    rowCuttingData.Cells.Add(cellCuttingData);
+                    
+                    CheckBox chkCuttingData = new CheckBox();
+                    chkCuttingData.ID = "chkCuttingData_" + spool_id.ToString() + "_" + cld.spool_parts_id.ToString();
+                    chkCuttingData.Checked = cld.completed;
+                    chkCuttingData.AutoPostBack = false;
+                    chkCuttingData.Attributes[UID] = cld.spool_pipe_fittings_id.ToString();
+                    chkCuttingData.Attributes.Add("onclick", "UpdateCutComplete(this," + cld.spool_parts_id +");");
+
+                    cellCuttingData.Controls.Add(chkCuttingData);
+                    rowCuttingData.Cells.Add(cellCuttingData);
+
+                    tblCuttingData.Rows.Add(rowCuttingData);
                 }
             }
         }
@@ -3499,6 +3834,33 @@ namespace gbe
             }
 
             return sl_invoice_ammouts;
+        }
+
+        void set_show_hide_button_properties(bool bshow, ImageButton b)
+        {
+            if (bshow)
+            {
+                b.ImageUrl = "~/up.png";
+            }
+            else
+            {
+                b.ImageUrl = "~/down.png";
+            }
+        }
+
+        [System.Web.Services.WebMethod]
+        public static void UpdateCutComplete(int spool_parts_id, bool bcomplete)
+        {
+            int i = 0;
+
+            SortedList sl = new SortedList();
+            sl.Add("id", spool_parts_id);
+            sl.Add("completed", bcomplete);
+
+            using (cdb_connection dbc = new cdb_connection())
+            {
+                dbc.save(sl, "spool_parts", "id");
+            }
         }
     }
 }

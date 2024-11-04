@@ -1422,7 +1422,7 @@ namespace gbe
             {
                 decimal stock_count = ws().get_stock_count("eye_emm_ess_ell", pd.description);
                 
-                c.Controls.Add(new LiteralControl("IMSL Stock:" + stock_count.ToString("0")));
+                c.Controls.Add(new LiteralControl("Stock:" + stock_count.ToString("0")));
                 
                 if(stock_count == 0)
                     c.BackColor = System.Drawing.Color.FromName("Red");

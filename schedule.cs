@@ -333,6 +333,7 @@ namespace gbe
         public string welder_rates = string.Empty;
         public string fitter_rates = string.Empty;
         public int seq = 0;
+        public bool has_cutting_data = false;
 
         public void set_cut_and_clean_bit_on(int pos)
         {

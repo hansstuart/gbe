@@ -16,7 +16,7 @@ namespace gbe
         ArrayList m_welders = new ArrayList();
         ArrayList m_fitters = new ArrayList();
         ArrayList m_site_fitters = new ArrayList();
-        ArrayList m_results = new ArrayList();
+        DataTable m_results = null;
 
         const string ALL_WELDERS = "All welders";
         const string ALL_FITTERS = "All fitters";
@@ -30,7 +30,7 @@ namespace gbe
                 m_welders = (ArrayList)ViewState["welders"];
                 m_fitters = (ArrayList)ViewState["fitters"];
                 m_site_fitters = (ArrayList)ViewState["site_fitters"];
-                m_results = (ArrayList)ViewState["results"];
+                m_results = (DataTable)ViewState["results"];
                 display();
             }
             else
@@ -70,6 +70,7 @@ namespace gbe
 
                 sl.Clear();
 
+                /*
                 sl.Add("role", "SITE FITTER");
 
                 using (users u = new users())
@@ -80,10 +81,11 @@ namespace gbe
 
                 foreach (user_data ud in m_site_fitters)
                     dlWelders.Items.Add(ud.name + " (" + ud.login_id + ")");
+                */
 
                 dlWelders.Items.Add(ALL_WELDERS);
                 dlWelders.Items.Add(ALL_FITTERS);
-                dlWelders.Items.Add(ALL_SITE_FITTERS);
+                //dlWelders.Items.Add(ALL_SITE_FITTERS);
                 
                 m_welders.Add(new user_data());
 
@@ -134,9 +136,9 @@ namespace gbe
         void search()
         {
             tblResults.Rows.Clear();
-            m_results.Clear();
 
-            ViewState["results"] = m_results;
+            if(m_results != null)
+                m_results.Clear();
 
             if (txtSpool.Text.Trim().Length > 0)
                 if (txtSpool.Text.Trim().Length < 4)
@@ -177,10 +179,22 @@ namespace gbe
                         by_welder_or_fitter_or_site_fitter = 2;
                 }
             }
-
+            
             using (weld_jobs wj = new weld_jobs())
             {
-                m_results = wj.get_weld_job_data(uid, by_welder_or_fitter_or_site_fitter, dtfrom, dtto, txtSpool.Text.Trim());
+                //m_results = wj.get_weld_job_data(uid, by_welder_or_fitter_or_site_fitter, dtfrom, dtto, txtSpool.Text.Trim());
+
+                string login_id = string.Empty;
+
+                if(by_welder_or_fitter_or_site_fitter == 3)
+                    login_id = "Robot";
+                else
+                {
+                    if(ud != null)
+                        login_id = ud.login_id;
+                }
+
+                m_results = wj.get_weld_job_activity_data(login_id, by_welder_or_fitter_or_site_fitter, dtfrom, dtto, txtSpool.Text.Trim());
             }
             
             ViewState["results"] = m_results;
@@ -217,7 +231,8 @@ namespace gbe
 
             return by_welder_or_fitter;
         }
-        void display()
+        /*
+        void display_old()
         {
             TableRow r;
             TableCell c;
@@ -435,7 +450,8 @@ namespace gbe
                             if (by_welder_or_fitter == 0 || by_welder_or_fitter == 3)
                             {
                                 c = new TableCell();
-                                c.Controls.Add(new LiteralControl(wjd.spool_data.welder_data.login_id));
+                                //c.Controls.Add(new LiteralControl(wjd.spool_data.welder_data.login_id)); // HS. 20240806
+                                c.Controls.Add(new LiteralControl(spd.welder)); // HS. 20240806
                                 r.Cells.Add(c);
                             }
                             else if (by_welder_or_fitter == 1)
@@ -638,6 +654,391 @@ namespace gbe
 
                     tblResults.Rows.Add(r);
 
+                }
+            }
+        }
+        */
+        
+        void display()
+        {
+            if(m_results == null)
+                return;
+
+            TableRow r;
+            TableCell c;
+
+            string current_welder_fitter_id = string.Empty;
+
+            int by_welder_or_fitter = welder_or_fitter_view();
+            
+            decimal welder_total = 0;
+            decimal fitter_total = 0;
+            decimal robot_total = 0;
+
+            decimal welder_spool_total = 0;
+            decimal fitter_spool_total = 0;
+
+            string[] hdr_w = new string[] { "Robot", "Welder",  "Spool", "Part", "Qty", "Start", "Finish", "Welder Rate", "Welder Total"};
+            string[] hdr_f = new string[] { "Robot", "Fitter", "Spool", "Part", "Qty", "Start", "Finish", "Fitter Rate", "Fitter Total" };
+            
+            string[] hdr;
+
+            if (by_welder_or_fitter == 0 || by_welder_or_fitter == 3)
+                hdr = hdr_w;
+            else
+                hdr = hdr_f;
+
+            string current_spool = string.Empty;
+
+            int barcode_lines_output = 0;
+            int operative_lines_output = 0;
+
+            foreach (DataRow dr  in m_results.Rows)
+            {
+                if (tblResults.Rows.Count == 0)
+                {
+                    r = new TableRow();
+                    r.BackColor = System.Drawing.Color.FromName("LightGreen");
+
+                    foreach (string sh in hdr)
+                    {
+                        c = new TableCell();
+                        c.Controls.Add(new LiteralControl(sh));
+                        r.Cells.Add(c);
+                    }
+
+                    tblResults.Rows.Add(r);
+                }
+
+                data_row_weld_activity wjd = new data_row_weld_activity(dr);
+
+                string this_spool = wjd.barcode;
+            
+                // compare welder or fitter or site fitter
+                string this_welder_fitter_id = string.Empty;
+
+                if (by_welder_or_fitter == 0 || by_welder_or_fitter == 3)
+                {
+                    this_welder_fitter_id = wjd.welder_login_id;
+                }
+                else if (by_welder_or_fitter == 1)
+                {
+                    this_welder_fitter_id = wjd.fitter_login_id;
+                }
+
+                if (current_welder_fitter_id != this_welder_fitter_id)
+                {
+                    current_welder_fitter_id = this_welder_fitter_id;
+
+                    if (operative_lines_output > 0)
+                    {
+                        r = new TableRow();
+                        r.BackColor = System.Drawing.Color.FromName("LightGray");
+
+                        string s = string.Empty;
+
+                        foreach (string sh in hdr)
+                        {
+                            if (sh == "Welder Total")
+                                s = welder_spool_total.ToString("0.00");
+                            else if (sh == "Fitter Total")
+                                s = fitter_spool_total.ToString("0.00");
+                            else
+                                s = string.Empty;
+
+                            c = new TableCell();
+                            c.HorizontalAlign = HorizontalAlign.Right;
+                            c.Controls.Add(new LiteralControl(s));
+                            r.Cells.Add(c);
+
+                            current_spool = this_spool;
+                        }
+
+                        tblResults.Rows.Add(r);
+
+                        welder_spool_total = 0;
+                        fitter_spool_total = 0;
+                        
+
+                        r = new TableRow();
+                        r.BackColor = System.Drawing.Color.FromName("Silver");
+
+                        s = string.Empty;
+
+                        foreach (string sh in hdr)
+                        {
+                            if (sh == "Welder Total")
+                            {
+                                s = welder_total.ToString("0.00");
+                            }
+                            else if (sh == "Fitter Total")
+                                s = fitter_total.ToString("0.00");
+                            else
+                                s = string.Empty;
+
+                            c = new TableCell();
+                            c.HorizontalAlign = HorizontalAlign.Right;
+                            c.Font.Bold = true;
+                            c.Controls.Add(new LiteralControl(s));
+                            r.Cells.Add(c);
+                        }
+                        tblResults.Rows.Add(r);
+
+                        welder_total = 0;
+                        fitter_total = 0;
+
+                        current_spool = string.Empty;
+                        barcode_lines_output = 0;
+                        operative_lines_output = 0;
+
+                    }
+                }
+
+                if (current_spool.Length == 0)
+                    current_spool = this_spool;
+                else if (current_spool != this_spool && barcode_lines_output > 0)
+                {
+                    barcode_lines_output = 0;
+
+                    r = new TableRow();
+                    r.BackColor = System.Drawing.Color.FromName("LightGray");
+
+                    string s = string.Empty;
+
+                    foreach (string sh in hdr)
+                    {
+                        if (sh == "Welder Total")
+                            s = welder_spool_total.ToString("0.00");
+                        else if (sh == "Fitter Total")
+                            s = fitter_spool_total.ToString("0.00");
+                        else
+                            s = string.Empty;
+
+                        c = new TableCell();
+                        c.HorizontalAlign = HorizontalAlign.Right;
+                        c.Controls.Add(new LiteralControl(s));
+                        r.Cells.Add(c);
+
+                        current_spool = this_spool;
+                    }
+
+                    tblResults.Rows.Add(r);
+
+                    welder_spool_total = 0;
+                    fitter_spool_total = 0;
+                }
+
+                if (wjd.robot > 0)
+                {
+                    if (by_welder_or_fitter == 0)
+                    {
+                        if (wjd.fw == 0)
+                        {
+                            continue;
+                        }
+                    }
+                    else if (by_welder_or_fitter == 3)
+                    {
+                        if (wjd.bw == 0)
+                        {
+                            continue;
+                        }
+                    }
+                }
+
+                r = new TableRow();
+                r.BackColor = System.Drawing.Color.FromName("White");
+
+                if (by_welder_or_fitter == 0 || by_welder_or_fitter == 1 || by_welder_or_fitter == 3)
+                {
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Center;
+
+                    if (wjd.robot > 0)
+                    {
+                        LiteralControl lc_y = new LiteralControl("Y");
+                        lc_y.Visible = false;
+
+                        c.Controls.Add(lc_y);
+
+                        Image img_picked = new Image();
+                        img_picked.ToolTip = "Robot";
+                        img_picked.ImageUrl = "~/picked.png";
+                                
+                        c.Controls.Add(img_picked);
+                    }
+
+                    r.Cells.Add(c);
+
+                    if (by_welder_or_fitter == 0 || by_welder_or_fitter == 3)
+                    {
+                        c = new TableCell();
+                        c.Controls.Add(new LiteralControl(wjd.welder_login_id));
+                        r.Cells.Add(c);
+                    }
+                    else if (by_welder_or_fitter == 1)
+                    {
+                        string fitter = string.Empty;
+
+                        fitter = wjd.fitter_login_id;
+
+                        c = new TableCell();
+                        c.Controls.Add(new LiteralControl(fitter));
+                        r.Cells.Add(c);
+                    }
+                }
+
+                c = new TableCell();
+                c.Controls.Add(new LiteralControl(wjd.barcode));
+                r.Cells.Add(c);
+
+                c = new TableCell();
+                c.Controls.Add(new LiteralControl(wjd.description));
+                r.Cells.Add(c);
+
+                c = new TableCell();
+                c.HorizontalAlign = HorizontalAlign.Right;
+                c.Controls.Add(new LiteralControl(wjd.qty.ToString("0.00")));
+                r.Cells.Add(c);
+
+                decimal line_total;
+
+                if (by_welder_or_fitter == 0 || by_welder_or_fitter == 3)
+                {
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(wjd.start.ToString("dd:MM:yyyy HH:mm:ss")));
+                    r.Cells.Add(c);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(wjd.finish.ToString("dd:MM:yyyy HH:mm:ss")));
+                    r.Cells.Add(c);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(wjd.welder_rate.ToString("0.00")));
+                    r.Cells.Add(c);
+
+                    line_total = (wjd.qty * wjd.welder_rate);
+                    welder_total += line_total;
+                    welder_spool_total += line_total;
+
+                    if (dlWelders.Text == ROBOT)
+                    {
+                        robot_total += line_total;
+                    }
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(line_total.ToString("0.00")));
+                    r.Cells.Add(c);
+                }
+                else if (by_welder_or_fitter == 1)
+                {
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(wjd.start_fit.ToString("dd:MM:yyyy HH:mm:ss")));
+                    r.Cells.Add(c);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(wjd.finish_fit.ToString("dd:MM:yyyy HH:mm:ss")));
+                    r.Cells.Add(c);
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(wjd.fitter_rate.ToString("0.00")));
+                    r.Cells.Add(c);
+                    line_total = (wjd.qty * wjd.fitter_rate);
+                    fitter_total += line_total;
+                    fitter_spool_total += line_total;
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(line_total.ToString("0.00")));
+                    r.Cells.Add(c);
+                }
+
+                tblResults.Rows.Add(r);
+                barcode_lines_output++;
+                operative_lines_output++;
+            }
+
+            if (tblResults.Rows.Count > 1)
+            {
+                r = new TableRow();
+                r.BackColor = System.Drawing.Color.FromName("LightGray");
+
+                string s = string.Empty;
+
+                foreach (string sh in hdr)
+                {
+                    if (sh == "Welder Total")
+                        s = welder_spool_total.ToString("0.00");
+                    else if (sh == "Fitter Total")
+                        s = fitter_spool_total.ToString("0.00");
+                    else
+                        s = string.Empty;
+
+                    c = new TableCell();
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(s));
+                    r.Cells.Add(c);
+                }
+
+                tblResults.Rows.Add(r);
+
+                welder_spool_total = 0;
+                fitter_spool_total = 0;
+
+                r = new TableRow();
+                r.BackColor = System.Drawing.Color.FromName("Silver");
+
+                s = string.Empty;
+
+                foreach (string sh in hdr)
+                {
+                    if (sh == "Welder Total")
+                        s = welder_total.ToString("0.00");
+                    else if (sh == "Fitter Total")
+                        s = fitter_total.ToString("0.00");
+                    else
+                        s = string.Empty;
+
+                    c = new TableCell();
+                    c.Font.Bold = true;
+                    c.HorizontalAlign = HorizontalAlign.Right;
+                    c.Controls.Add(new LiteralControl(s));
+                    r.Cells.Add(c);
+                }
+
+                tblResults.Rows.Add(r);
+
+                welder_total = 0;
+                fitter_total = 0;
+
+                if (dlWelders.Text == ROBOT)
+                {
+                    r = new TableRow();
+                    r.BackColor = System.Drawing.Color.FromName("DarkGray");
+
+                    s = string.Empty;
+
+                    foreach (string sh in hdr)
+                    {
+                        if (sh == "Welder Total")
+                            s = robot_total.ToString("0.00");
+                        else
+                            s = string.Empty;
+
+                        c = new TableCell();
+                        c.Font.Bold = true;
+                        c.HorizontalAlign = HorizontalAlign.Right;
+                        c.Controls.Add(new LiteralControl(s));
+                        r.Cells.Add(c);
+                    }
+
+                    tblResults.Rows.Add(r);
                 }
             }
         }

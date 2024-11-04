@@ -39,10 +39,13 @@ namespace gbe
                                 , barcode
                                 , spool_parts.qty 
                                 , spool_parts.seq
+                                , spool_parts.completed
                                 , spool_parts.id as spool_parts_id
                                 , parts.description
                                 , parts.part_type
 
+                                , spool_pipe_fittings_id
+                                
 	                            , fitting_1_part_id
 	                            , fitting_2_part_id
 
@@ -87,7 +90,10 @@ namespace gbe
                         cld.barcode =  dr["barcode"].ToString();
                         try { cld.length = (decimal)dr["qty"]*1000; } catch { }
                         cld.part_description = dr["description"].ToString();
-                        
+
+                        try { cld.spool_pipe_fittings_id = (int)dr["spool_pipe_fittings_id"]; } catch { }
+                        try { cld.completed = (bool)dr["completed"]; } catch { }
+
                         cld.f1_part_description = dr["f1_part_description"].ToString();
                         try { cld.f1_fitting_size_mm = (decimal)dr["f1_fitting_size_mm"]; } catch { }
                         try { cld.f1_gap_mm = (decimal)dr["f1_gap_mm"]; } catch { }
@@ -96,7 +102,6 @@ namespace gbe
                         try { cld.f2_fitting_size_mm = (decimal)dr["f2_fitting_size_mm"]; } catch { }
                         try { cld.f2_gap_mm = (decimal)dr["f2_gap_mm"]; } catch { }
                         
-
                         string key = cld.barcode;
 
                         List<CCutLengthData> lst_cld = null;
@@ -203,7 +208,7 @@ namespace gbe
                         c = new TableCell();
                         c.Font.Bold = true;
                         c.HorizontalAlign = HorizontalAlign.Right;
-                        c.Controls.Add(new LiteralControl("Cut (mm): "+ get_cut_length(cld).ToString("0.00")) );
+                        c.Controls.Add(new LiteralControl("Cut (mm): " + CCutLengthData.get_cut_length(cld).ToString("0.00")) );
                         r.Cells.Add(c);
 
                         tblMain.Rows.Add(r);
@@ -249,7 +254,7 @@ namespace gbe
             }
         }
 
-        decimal get_cut_length(CCutLengthData cld)
+        decimal OLDget_cut_length(CCutLengthData cld)
         {
             decimal cut_length = 0M;
 
@@ -263,23 +268,41 @@ namespace gbe
 
             return cut_length;
         }
+    }
 
-        [Serializable]
-        class CCutLengthData
+    [Serializable]
+    class CCutLengthData
+    {
+        public int spool_id { get; set; }
+        public string barcode { get; set; }
+        public decimal length { get; set; }
+        public string part_description { get; set; }
+            
+        public int spool_pipe_fittings_id { get; set; }
+        public int spool_parts_id { get; set; }
+        public string f1_part_description { get; set; }
+        public decimal f1_fitting_size_mm { get; set; }
+        public decimal f1_gap_mm { get; set; }
+            
+        public string f2_part_description { get; set; }
+        public decimal f2_fitting_size_mm { get; set; }
+        public decimal f2_gap_mm { get; set; }
+
+        public bool completed { get; set; }
+            
+        public static decimal get_cut_length(CCutLengthData cld)
         {
-            public int spool_id { get; set; }
-            public string barcode { get; set; }
-            public decimal length { get; set; }
-            public string part_description { get; set; }
-            
-            public string f1_part_description { get; set; }
-            public decimal f1_fitting_size_mm { get; set; }
-            public decimal f1_gap_mm { get; set; }
-            
-            public string f2_part_description { get; set; }
-            public decimal f2_fitting_size_mm { get; set; }
-            public decimal f2_gap_mm { get; set; }
-            
+            decimal cut_length = 0M;
+
+            cut_length = cld.length;
+
+            cut_length -= cld.f1_fitting_size_mm;
+            cut_length -= cld.f1_gap_mm;
+
+            cut_length -= cld.f2_fitting_size_mm;
+            cut_length -= cld.f2_gap_mm;
+
+            return cut_length;
         }
     }
 }

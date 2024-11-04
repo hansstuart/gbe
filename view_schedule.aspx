@@ -399,7 +399,10 @@
     
 </asp:MultiView>
 
+<asp:ScriptManager ID="ScriptManager1" runat="server" EnablePageMethods="true" />
+
 <script type="text/javascript">
+    
     function Confirm() 
     {
         var confirm_save_value = document.createElement("INPUT");
@@ -417,6 +420,14 @@
         
         document.forms[0].appendChild(confirm_save_value);
     }
+
+    function UpdateCutComplete(chkbox, spool_parts_id)
+    {
+        var bComplete = chkbox.checked;
+
+        PageMethods.UpdateCutComplete(spool_parts_id, bComplete);
+    }
+
 </script>
 
 </asp:Content>

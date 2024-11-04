@@ -55,7 +55,7 @@
             <td style="width: 223px">
                 <asp:TextBox ID="txtSpool" runat="server" Width="215px"></asp:TextBox></td>
             <td style="width: 133px">
-                <asp:DropDownList ID="dlSearchFlds" runat="server" Width="128px">
+                <asp:DropDownList ID="dlSearchFlds" runat="server" Width="128px" Visible="False">
                 </asp:DropDownList></td>
             <td>
             </td>
