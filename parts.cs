@@ -90,6 +90,11 @@ namespace gbe
                          try { pd.shawston = (decimal)dr["Shawston"]; }
                          catch { }
 
+                        try { pd.fitting_size_mm = (decimal)dr["fitting_size_mm"]; }
+                         catch { }
+
+                        try { pd.gap_mm = (decimal)dr["gap_mm"]; }
+                         catch { }
                     }
 
                     catch { }
@@ -176,6 +181,10 @@ namespace gbe
         public decimal site_fitter_rate = 0;
         public int source = 0;
         public bool active = true;
+
+        public decimal fitting_size_mm = 0;
+        public decimal gap_mm = 0;
+
 
         public SortedList attributes = new SortedList();
     }

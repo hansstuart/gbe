@@ -43,6 +43,7 @@ namespace gbe
 
         protected void btnAssignWelder_Click(object sender, EventArgs e)
         {
+            /*
             string user_name = System.Web.HttpContext.Current.User.Identity.Name;
             int user_id = fy.ws().is_admin_user(fy.PASSKEY, user_name);
 
@@ -53,6 +54,9 @@ namespace gbe
             }
             else
                 Response.Redirect("fy_assign_job.aspx");
+            */
+
+            Response.Redirect("fy_assign_job.aspx");
         }
 
         public static int is_super_privileged_user()
@@ -99,7 +103,8 @@ namespace gbe
 
             bcan_start_stop_job |= ((fy.ws().is_welder(fy.PASSKEY, user_id) > 0)
                                     || (fy.ws().is_fitter(fy.PASSKEY, user_id) > 0)
-                                    || (fy.ws().is_module_builder(fy.PASSKEY, user_id) > 0));
+                                    || (fy.ws().is_module_builder(fy.PASSKEY, user_id) > 0)
+                                    );
 
             return bcan_start_stop_job;
         }
@@ -160,6 +165,21 @@ namespace gbe
             }
             else
                 Response.Redirect("fy_delivery.aspx");
+        }
+
+        protected void btnWeldTestV2_Click(object sender, EventArgs e)
+        {
+            string user_name = System.Web.HttpContext.Current.User.Identity.Name;
+
+            int user_id = fy.ws().is_weld_tester(fy.PASSKEY, user_name);
+
+            if (user_id == 0)
+            {
+                lblMsg.Text = (ACCESS_DENIED);
+                return;
+            }
+            else
+                Response.Redirect("fy_weld_test_v2.aspx");
         }
     }
 }

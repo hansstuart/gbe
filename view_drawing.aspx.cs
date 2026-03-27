@@ -26,7 +26,7 @@ namespace gbe
 
                 using (spools s = new spools())
                 {
-                    drawing_data dd = s.get_drawing_data(id);
+                    pdf_doc_data dd = s.get_drawing_data(id);
 
                     if (dd.pdf != null && dd.pdf.Length > 0)
                     {

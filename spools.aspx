@@ -139,7 +139,7 @@
             <td colspan="3" style="width: 1040px; height: 64px">
                 <br />
                 <asp:Table ID="tblMain" runat="server" EnableViewState="False" Font-Names="Verdana"
-                    Width="1309px" Font-Size="11pt">
+                    Width="2048px" Font-Size="11pt">
                 </asp:Table>
             </td>
         </tr>

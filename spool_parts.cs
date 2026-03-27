@@ -105,39 +105,39 @@ namespace gbe
 
         }
 
-        public static void populate_spool_part_data(spool_part_data sd, DataRow dr)
+        public static void populate_spool_part_data(spool_part_data sd, DataRow dr, string prefix="", string spool_pipe_fittings_prefix="")
         {
-            try {sd.id = (int)dr["id"];}
+            try {sd.id = (int)dr[prefix+"id"];}
             catch { }
 
             if (sd.id == 0)
             {
-                try {sd.id = (int)dr["spool_parts_id"];}
+                try {sd.id = (int)dr[prefix+"spool_parts_id"];}
                 catch { }
             }
 
-            try {sd.spool_id = (int)dr["spool_id"];}
+            try {sd.spool_id = (int)dr[prefix+"spool_id"];}
             catch { }
-            try { sd.part_id = (int)dr["part_id"]; }
+            try { sd.part_id = (int)dr[prefix+"part_id"]; }
             catch { }
-            try {sd.qty = (decimal)dr["qty"];}
+            try {sd.qty = (decimal)dr[prefix+"qty"];}
             catch { }
-            try {sd.fw = (int)dr["fw"];}
+            try {sd.fw = (int)dr[prefix+"fw"];}
             catch { }
-            try {sd.bw = (int)dr["bw"];}
+            try {sd.bw = (int)dr[prefix+"bw"];}
             catch { }
-            try { sd.porder = (int)dr["porder"]; }
-            catch { }
-
-            try { sd.picked = (bool)dr["picked"]; }
+            try { sd.porder = (int)dr[prefix+"porder"]; }
             catch { }
 
-            try { sd.include_in_weld_map = (bool)dr["include_in_weld_map"]; }
+            try { sd.picked = (bool)dr[prefix+"picked"]; }
             catch { }
 
-            try { sd.welder = dr["welder"].ToString(); } catch { }
+            try { sd.include_in_weld_map = (bool)dr[prefix+"include_in_weld_map"]; }
+            catch { }
 
-            try { sd.seq = (int)dr["seq"]; }
+            try { sd.welder = dr[prefix+"welder"].ToString(); } catch { }
+
+            try { sd.seq = (int)dr[prefix+"seq"]; }
             catch { }
 
             try
@@ -147,23 +147,51 @@ namespace gbe
                 try { sd.spool_pipe_fittings_data.spool_pipe_fittings_id = (int)dr["spool_pipe_fittings_id"]; }
                 catch { }
 
-                try { sd.spool_pipe_fittings_data.spool_id = (int)dr["spool_id"]; }
+                try { sd.spool_pipe_fittings_data.spool_id = (int)dr[spool_pipe_fittings_prefix+"spool_id"]; }
                 catch { }
 
-                try { sd.spool_pipe_fittings_data.spool_part_id = (int)dr["spool_part_id"]; }
+                try { sd.spool_pipe_fittings_data.spool_part_id = (int)dr[spool_pipe_fittings_prefix+"spool_part_id"]; }
                 catch { }
 
-                try { sd.spool_pipe_fittings_data.fitting_1_part_id = (int)dr["fitting_1_part_id"]; }
+                try { sd.spool_pipe_fittings_data.fitting_1_part_id = (int)dr[spool_pipe_fittings_prefix+"fitting_1_part_id"]; }
                 catch { }
 
-                try { sd.spool_pipe_fittings_data.fitting_2_part_id = (int)dr["fitting_2_part_id"]; }
+                try { sd.spool_pipe_fittings_data.fitting_2_part_id = (int)dr[spool_pipe_fittings_prefix+"fitting_2_part_id"]; }
                 catch { }
 
-                try { sd.spool_pipe_fittings_data.fitting_1_seq_no = (int)dr["fitting_1_seq_no"]; }
+                try { sd.spool_pipe_fittings_data.fitting_1_seq_no = (int)dr[spool_pipe_fittings_prefix+"fitting_1_seq_no"]; }
                 catch { }
 
-                try { sd.spool_pipe_fittings_data.fitting_2_seq_no = (int)dr["fitting_2_seq_no"]; }
+                try { sd.spool_pipe_fittings_data.fitting_2_seq_no = (int)dr[spool_pipe_fittings_prefix+"fitting_2_seq_no"]; }
                 catch { }
+                /*
+                try { sd.spool_pipe_fittings_data.additional_cut1 = (decimal)dr["additional_cut1"]; }
+                catch { }
+
+                try { sd.spool_pipe_fittings_data.additional_cut2 = (decimal)dr["additional_cut2"]; }
+                catch { }
+
+                try { sd.spool_pipe_fittings_data.additional_cut3 = (decimal)dr["additional_cut3"]; }
+                catch { }
+                */
+                 sd.spool_pipe_fittings_data.additional_info = dr[spool_pipe_fittings_prefix+"additional_info"].ToString(); 
+
+            }
+            catch { }
+
+            try
+            {
+                sd.cut_length_data = new CCutLengthData();
+
+                sd.cut_length_data.length = sd.qty*1000; // multiply by 1000 for m to mm
+
+                sd.cut_length_data.f1_part_description = dr["f1_part_description"].ToString();
+                try { sd.cut_length_data.f1_fitting_size_mm = (decimal)dr["f1_fitting_size_mm"]; } catch { }
+                try { sd.cut_length_data.f1_gap_mm = (decimal)dr["f1_gap_mm"]; } catch { }
+
+                sd.cut_length_data.f2_part_description = dr["f2_part_description"].ToString();
+                try { sd.cut_length_data.f2_fitting_size_mm = (decimal)dr["f2_fitting_size_mm"]; } catch { }
+                try { sd.cut_length_data.f2_gap_mm = (decimal)dr["f2_gap_mm"]; } catch { }
             }
             catch { }
         }
@@ -178,7 +206,26 @@ namespace gbe
 
             try
             {
-                string sql_select = $@"select * from  {m_tbl} left join {m_spool_pipe_fittings_tbl} on {m_tbl}.id = {m_spool_pipe_fittings_tbl}.spool_part_id  where {m_tbl}.spool_id=@spool_id order by {order_by} ";
+                string sql_select = $@"select 
+                                    {m_tbl}.* 
+
+                                    , {m_spool_pipe_fittings_tbl}.* 
+
+                                    , f1.description as f1_part_description
+                                    , f1.fitting_size_mm as f1_fitting_size_mm
+                                    , f1.gap_mm  as f1_gap_mm
+
+	                                , f2.description as f2_part_description
+                                    , f2.fitting_size_mm as f2_fitting_size_mm
+                                    , f2.gap_mm as f2_gap_mm
+
+                                    from  {m_tbl} 
+                                    left join {m_spool_pipe_fittings_tbl} on {m_tbl}.id = {m_spool_pipe_fittings_tbl}.spool_part_id  
+                                    left join parts as f1 on f1.id = fitting_1_part_id
+                                    left join parts as f2 on f2.id = fitting_2_part_id
+                                    
+                                    where {m_tbl}.spool_id=@spool_id order by {order_by} ";
+                                
                 DataTable dta = get_data_p(sql_select, search_params);
 
                 foreach (DataRow dr in dta.Rows)
@@ -347,8 +394,8 @@ namespace gbe
         public spool_pipe_fittings_data spool_pipe_fittings_data = null;
         public bool include_in_weld_map = false;
         public int seq = 0;
-
         public string welder = string.Empty;
+        public CCutLengthData cut_length_data = null;
     }
 
     [Serializable]
@@ -361,5 +408,57 @@ namespace gbe
         public int fitting_2_part_id = 0;
         public int fitting_1_seq_no = 0;
         public int fitting_2_seq_no = 0;
+        /*
+        public decimal additional_cut1 = 0;
+        public decimal additional_cut2 = 0;
+        public decimal additional_cut3 = 0;
+        */
+        public string additional_info = string.Empty;
+    }
+
+    [Serializable]
+    public class CCutLengthData 
+    {
+        public int spool_id { get; set; }
+        public string barcode { get; set; }
+        public decimal length { get; set; }
+        public string part_description { get; set; }
+        
+        public string batch_number { get; set; }
+
+        public int spool_pipe_fittings_id { get; set; }
+        public int spool_parts_id { get; set; }
+        public string f1_part_description { get; set; }
+        public decimal f1_fitting_size_mm { get; set; }
+        public decimal f1_gap_mm { get; set; }
+            
+        public string f2_part_description { get; set; }
+        public decimal f2_fitting_size_mm { get; set; }
+        public decimal f2_gap_mm { get; set; }
+
+        /*
+        public decimal additional_cut1{ get; set; }
+        public decimal additional_cut2{ get; set; }
+        public decimal additional_cut3{ get; set; }
+        */
+
+        public string additional_info{ get; set; }
+
+        public bool completed { get; set; }
+            
+        public static decimal get_cut_length(CCutLengthData cld)
+        {
+            decimal cut_length = 0M;
+
+            cut_length = cld.length;
+
+            cut_length -= cld.f1_fitting_size_mm;
+            cut_length -= cld.f1_gap_mm;
+
+            cut_length -= cld.f2_fitting_size_mm;
+            cut_length -= cld.f2_gap_mm;
+
+            return cut_length;
+        }
     }
 }

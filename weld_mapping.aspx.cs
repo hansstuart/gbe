@@ -975,36 +975,5 @@ namespace gbe
         public int fw_tested = 0;
     }
 
-    public class data_row_weld_mapping : data_row
-    {
-        public data_row_weld_mapping(DataRow dr)
-        {
-            m_dr = dr;
-        }
-
-        public int i_gf(  string fld)
-        {
-            return base.i_gf(m_dr, fld);
-        }
-
-        public string s_gf( string fld)
-        {
-            return base.s_gf(m_dr, fld);
-        }
-
-        public decimal d_gf( string fld)
-        {
-            return base.d_gf(m_dr, fld);
-        }
-
-        public bool b_gf( string fld)
-        {
-            return base.b_gf(m_dr, fld);
-        }
-
-        public DateTime dt_gf(string fld)
-        {
-            return base.dt_gf(m_dr, fld);
-        }
-    }
+    
 }

@@ -33,6 +33,24 @@ namespace gbe
         protected global::System.Web.UI.WebControls.HyperLink hlSpoolsView;
 
         /// <summary>
+        /// hlPrevSpool control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink hlPrevSpool;
+
+        /// <summary>
+        /// hlNextSpool control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink hlNextSpool;
+
+        /// <summary>
         /// txtContractNumber control.
         /// </summary>
         /// <remarks>
@@ -222,6 +240,24 @@ namespace gbe
         protected global::System.Web.UI.WebControls.TextBox txtEmail;
 
         /// <summary>
+        /// lblEmail2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblEmail2;
+
+        /// <summary>
+        /// txtEmail2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtEmail2;
+
+        /// <summary>
         /// lblDelAddr control.
         /// </summary>
         /// <remarks>
@@ -366,15 +402,6 @@ namespace gbe
         protected global::System.Web.UI.HtmlControls.HtmlTable tbl_spl_and_parts;
 
         /// <summary>
-        /// lblMsg2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMsg2;
-
-        /// <summary>
         /// lblFabNumber control.
         /// </summary>
         /// <remarks>
@@ -429,6 +456,15 @@ namespace gbe
         protected global::System.Web.UI.WebControls.Label lblFabDetails;
 
         /// <summary>
+        /// lblMsg2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMsg2;
+
+        /// <summary>
         /// txtSpoolNumber control.
         /// </summary>
         /// <remarks>
@@ -447,6 +483,15 @@ namespace gbe
         protected global::System.Web.UI.WebControls.TextBox txtRevision;
 
         /// <summary>
+        /// dlStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList dlStatus;
+
+        /// <summary>
         /// dlWeldMapping control.
         /// </summary>
         /// <remarks>
@@ -463,51 +508,6 @@ namespace gbe
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList dlMaterial;
-
-        /// <summary>
-        /// txtPipeSize control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtPipeSize;
-
-        /// <summary>
-        /// txtCutSize1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCutSize1;
-
-        /// <summary>
-        /// txtCutSize2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCutSize2;
-
-        /// <summary>
-        /// txtCutSize3 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCutSize3;
-
-        /// <summary>
-        /// txtCutSize4 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCutSize4;
 
         /// <summary>
         /// txtDrawing control.
@@ -535,6 +535,24 @@ namespace gbe
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSave;
+
+        /// <summary>
+        /// btnNewSpool control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnNewSpool;
+
+        /// <summary>
+        /// btnCopySpool control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnCopySpool;
 
         /// <summary>
         /// lblPartNo control.
@@ -580,5 +598,50 @@ namespace gbe
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Table tblParts;
+
+        /// <summary>
+        /// txtPipeSize control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtPipeSize;
+
+        /// <summary>
+        /// txtCutSize1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtCutSize1;
+
+        /// <summary>
+        /// txtCutSize2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtCutSize2;
+
+        /// <summary>
+        /// txtCutSize3 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtCutSize3;
+
+        /// <summary>
+        /// txtCutSize4 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtCutSize4;
     }
 }

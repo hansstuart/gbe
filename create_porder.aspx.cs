@@ -22,6 +22,8 @@ namespace gbe
         {
             if (!IsPostBack)
             {
+                user_data current_ud = null;
+
                 using (users u = new users())
                 {
                     u.order_by = "login_id";
@@ -32,12 +34,15 @@ namespace gbe
                     {
                         if (ud.role == "ADMIN")
                             dlUser.Items.Add(ud.login_id.ToUpper());
+
+                        if(ud.login_id.ToLower() == System.Web.HttpContext.Current.User.Identity.Name.ToLower())
+                            current_ud = ud;
                     }
                 }
 
                 dlUser.Text = System.Web.HttpContext.Current.User.Identity.Name.ToUpper();
 
-                dlUser.Enabled = (System.Web.HttpContext.Current.User.Identity.Name.ToUpper() == "PM");
+                dlUser.Enabled = current_ud.is_special_permission_set(0);
             }
 
             txtProject.Focus();
@@ -68,7 +73,7 @@ namespace gbe
 
                     using (spools spls = new spools())
                     {
-                        ArrayList a = spls.get_spool_data_ex(sl);
+                        ArrayList a = spls.get_spool_data_ex(sl, 9999);
 
                         if (a.Count > 0)
                         {
@@ -76,18 +81,24 @@ namespace gbe
 
                             foreach (spool_data sd in a)
                             {
-                                foreach (spool_part_data spd in sd.spool_part_data)
+                                if (sd.spool_part_data != null)
                                 {
-                                    if (spd.porder == 0)
+                                    foreach (spool_part_data spd in sd.spool_part_data)
                                     {
-                                        string k = spd.part_data.supplier.ToLower().Trim() + "_" + sd.delivery_address.ToString().Trim();
-
-                                        if (!sl_supplier_split.ContainsKey(k))
+                                        if (spd.porder == 0)
                                         {
-                                            sl_supplier_split.Add(k, new ArrayList());
-                                        }
+                                            if (spd.part_data != null)
+                                            {
+                                                string k = spd.part_data.supplier.ToLower().Trim() + "_" + sd.delivery_address.ToString().Trim();
 
-                                        ((ArrayList)sl_supplier_split[k]).Add(spd);
+                                                if (!sl_supplier_split.ContainsKey(k))
+                                                {
+                                                    sl_supplier_split.Add(k, new ArrayList());
+                                                }
+
+                                                ((ArrayList)sl_supplier_split[k]).Add(spd);
+                                            }
+                                        }
                                     }
                                 }
                             }

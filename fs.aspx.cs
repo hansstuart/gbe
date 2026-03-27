@@ -14,6 +14,7 @@ namespace gbe
     public partial class fs : System.Web.UI.Page
     {
         const string VS_FS_DATA = "VS_FS_DATA";
+        const string TBLSIZES = "tblSizes";
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -415,7 +416,7 @@ namespace gbe
                 {
                     Table tbl = (Table)cntrl;
 
-                    if (tbl.ID.StartsWith("tblSizes"))
+                    if (tbl.ID.StartsWith(TBLSIZES))
                     {
                         tbl.Rows.Clear();
                         pnl.Controls.Remove(cntrl);

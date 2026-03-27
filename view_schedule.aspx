@@ -155,6 +155,16 @@
             <td style="width: 148px">
                 </td>
         </tr>
+        <tr>
+            <td style="width: 310px">
+                <asp:Label ID="Label17" runat="server" Font-Names="Verdana" Text="Driver:"></asp:Label>
+            </td>
+            <td style="width: 141px">
+                <asp:DropDownList ID="dlDeliveryDriver" runat="server" Width="155px">
+                </asp:DropDownList>
+            </td>
+            <td style="width: 148px">&nbsp;</td>
+        </tr>
     </table>
 </asp:View>
 
@@ -211,9 +221,18 @@
             </tr>
             <tr>
                 <td style="width: 222px">
+                    <asp:CheckBox ID="chkDriver" runat="server" AutoPostBack="True" Font-Names="Verdana" OnCheckedChanged="chkDriver_CheckedChanged" Text="Driver:" />
                 </td>
                 <td>
-                    <asp:Button ID="btnSave" runat="server" Text="Save" Width="95px" OnClick="btnSave_Click" OnClientClick="Confirm() " /></td>
+                    <asp:DropDownList ID="dlDriver" runat="server" Enabled="False" Width="155px">
+                    </asp:DropDownList>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 222px">
+                </td>
+                <td>
+                    <asp:Button ID="btnSave" runat="server" Text="Save" Width="95px" OnClick="btnSave_Click" OnClientClick="Confirm('Save?')" /></td>
             </tr>
         </table>
     
@@ -256,7 +275,7 @@
         </tr>
         <tr>
             <td style="width: 297px">
-                <asp:Label ID="Label10" runat="server" Font-Names="Verdana" Text="EMail Recipients:"
+                <asp:Label ID="Label10" runat="server" Font-Names="Verdana" Text="E-Mail Recipients:"
                     Width="184px"></asp:Label></td>
             <td>
                 <asp:TextBox ID="txtEmailAddr" runat="server" ReadOnly="True" TextMode="MultiLine"
@@ -397,19 +416,102 @@
 
 </asp:View>
     
+<asp:View ID="email" runat="server">
+    <table style="width: 563px">
+        <tr>
+            <td style="width: 297px">
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 297px">
+                <asp:Label ID="lblEmail" runat="server" Font-Names="Verdana" Text="Delivery E-Mail"
+                    Width="247px"></asp:Label></td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 297px">
+                <asp:Label ID="lblEmailDate0" runat="server" Font-Names="Verdana" Text="Date:"
+                    Width="184px"></asp:Label></td>
+            <td>
+                <asp:Label ID="lblEmailDate" runat="server" Font-Names="Verdana" Width="348px"></asp:Label></td>
+        </tr>
+        <tr>
+            <td style="width: 297px">
+                <asp:Label ID="lblEmailTime0" runat="server" Font-Names="Verdana" Text="Time:" Width="184px"></asp:Label></td>
+            <td>
+                <asp:Label ID="lblEmailTime" runat="server" Font-Names="Verdana" Width="349px"></asp:Label></td>
+        </tr>
+        <tr>
+            <td style="width: 297px">
+                <asp:Label ID="lblEmailVehicle0" runat="server" Font-Names="Verdana" Text="Vehicle:"
+                    Width="184px"></asp:Label></td>
+            <td>
+                <asp:Label ID="lblEmailVehicle" runat="server" Font-Names="Verdana" Width="349px"></asp:Label></td>
+        </tr>
+        <tr>
+            <td style="width: 297px">
+                <asp:Label ID="lblEmailDriver0" runat="server" Font-Names="Verdana" Text="Driver:" Width="184px"></asp:Label>
+            </td>
+            <td>
+                <asp:Label ID="lblEmailDriver" runat="server" Font-Names="Verdana" Width="349px"></asp:Label>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 297px; height: 98px;">
+                <asp:Label ID="lblEmailNote0" runat="server" Font-Names="Verdana" Text="Note:" Width="247px"></asp:Label></td>
+            <td style="height: 98px">
+                <asp:TextBox ID="txtEmailNote" runat="server" Height="76px" TextMode="MultiLine" Width="100%" MaxLength="100" Enabled="False"></asp:TextBox></td>
+        </tr>
+        <tr>
+            <td style="width: 297px; height: 98px;">
+                <asp:Label ID="lblEmailAddr0" runat="server" Font-Names="Verdana" Text="E-Mail Addresses:" Width="247px"></asp:Label>
+            </td>
+            <td style="height: 98px">
+                <asp:TextBox ID="txtEmailAddrs" runat="server" Enabled="False" Height="76px" MaxLength="100" TextMode="MultiLine" Width="100%"></asp:TextBox>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 297px; height: 98px;">
+                <asp:Label ID="lblEmailSpools0" runat="server" Font-Names="Verdana" Text="Spools:" Width="247px"></asp:Label>
+            </td>
+            <td style="height: 98px">
+                <asp:TextBox ID="txtEmailSpools" runat="server" Enabled="False" Height="76px" MaxLength="100" TextMode="MultiLine" Width="100%"></asp:TextBox>
+            </td>
+        </tr>
+        <tr>
+            <td style="height: 51px; width: 297px;">
+            </td>
+            <td style="height: 51px">
+                <table style="width: 195px">
+                    <tr>
+                        <td style="width: 15px">
+                            <asp:Button ID="btnEmailCancel" runat="server" 
+                                Text="Back" Width="75px" OnClick="btnCancelNote_Click" /></td>
+                        <td style="width: 4px">
+                            <asp:Button ID="btnEmailSend" runat="server" Text="Send" Width="75px" OnClick="btnEmailSend_Click" OnClientClick="Confirm('Send email?')"  /></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</asp:View>
+
 </asp:MultiView>
 
 <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePageMethods="true" />
 
 <script type="text/javascript">
     
-    function Confirm() 
+    function Confirm(msg) 
     {
         var confirm_save_value = document.createElement("INPUT");
         confirm_save_value.type = "hidden";
         confirm_save_value.name = "confirm_save_value";
     
-        if (confirm("Save?")) 
+        if (confirm(msg))
         {
             confirm_save_value.value = "Yes";
         } 

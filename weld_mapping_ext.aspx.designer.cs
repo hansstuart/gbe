@@ -51,6 +51,33 @@ namespace gbe
         protected global::System.Web.UI.WebControls.Button btnSearch;
 
         /// <summary>
+        /// lblSearch0 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblSearch0;
+
+        /// <summary>
+        /// txtDTFrom control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtDTFrom;
+
+        /// <summary>
+        /// txtDTTo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtDTTo;
+
+        /// <summary>
         /// btnExport control.
         /// </summary>
         /// <remarks>

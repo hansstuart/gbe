@@ -52,7 +52,7 @@
             <td style="width: 190px; height: 21px">
             </td>
             <td style="width: 309px; height: 21px">
-                &nbsp;</td>
+                <asp:Label ID="lblSearch0" runat="server" Font-Names="Verdana" Text="Date range (dd/mm/yyyy):" Visible="False"></asp:Label></td>
             <td style="width: 133px; height: 21px">
             </td>
             <td style="height: 21px">
@@ -62,7 +62,8 @@
             <td style="width: 190px; height: 21px">
             </td>
             <td style="width: 309px; height: 21px">
-                &nbsp;</td>
+                <asp:TextBox ID="txtDTFrom" runat="server" Width="135px" Visible="False"></asp:TextBox>&nbsp;
+                <asp:TextBox ID="txtDTTo" runat="server" Width="135px" Visible="False"></asp:TextBox></td>
             <td style="width: 133px; height: 21px">
             </td>
             <td style="height: 21px">

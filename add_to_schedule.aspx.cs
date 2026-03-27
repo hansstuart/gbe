@@ -56,7 +56,7 @@ namespace gbe
                 {
                     if (tbl == FAB_TBL)
                     {
-                        lblTime.Visible = txtTime.Visible = lblVehicle.Visible = dlVehicle.Visible = false;
+                        lblTime.Visible = txtTime.Visible = lblVehicle.Visible = dlVehicle.Visible = lblDriver.Visible = dlDriver.Visible = false;
 
                         lblDate.Visible = txtDate.Visible = false;
 
@@ -83,7 +83,7 @@ namespace gbe
 
                         lblDate.Text = "Delivery Date (dd/mm/yyyy):";
 
-                        lblTime.Visible = txtTime.Visible = lblVehicle.Visible = dlVehicle.Visible = true;
+                        lblTime.Visible = txtTime.Visible = lblVehicle.Visible = dlVehicle.Visible = lblDriver.Visible = dlDriver.Visible = true;
                     }
                     else
                         Server.Transfer("default.aspx", true);
@@ -105,6 +105,24 @@ namespace gbe
                     {
                         dlVehicle.Items.Add(vd.registration.Trim());
                     }
+                }
+
+                using (users u = new users())
+                {
+                    u.order_by = "name";
+                    SortedList sl= new SortedList();
+                    sl.Add("role", "DRIVER"); 
+                    ArrayList adrvr = u.get_user_data(sl);
+
+                    dlDriver.Items.Add("TBC");
+
+                    foreach (user_data ud in adrvr)
+                    {
+                        if(ud.name.Trim().Length > 0)
+                            dlDriver.Items.Add(ud.name.Trim());
+                    }
+
+                    u.order_by = string.Empty;
                 }
 
                 get_schedule_recs();
@@ -499,6 +517,7 @@ namespace gbe
                                             sl_schd.Add("dt", dt_deliv);
                                             sl_schd.Add("batch_number", sr.schd.batch_number);
                                             sl_schd.Add("vehicle", "TBC");
+                                            sl_schd.Add("driver", "TBC");
 
                                             schdd.save_schedule_delivery_data(sl_schd);
                                         }
@@ -510,6 +529,7 @@ namespace gbe
                                     sl_schd.Add("id", schedule_id);
                                     sl_schd.Add("dt", dt_deliv);
                                     sl_schd.Add("vehicle", dlVehicle.Text);
+                                    sl_schd.Add("driver", dlDriver.Text);
 
                                     schdd.save_schedule_delivery_data(sl_schd);
                                 }

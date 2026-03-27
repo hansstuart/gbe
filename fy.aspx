@@ -50,6 +50,14 @@
     <div style="float:left; width: 20%">&nbsp;</div>
     
     <div style="float:left" >
+        <asp:Button ID="btnWeldTestV2" runat="server" Text="WELD TEST v2" CssClass="FY_Button" UseSubmitBehavior="False" OnClick="btnWeldTestV2_Click"  />  
+    </div>
+
+    <div style="clear:both">&nbsp;</div>
+    
+    <div style="float:left; width: 20%">&nbsp;</div>
+    
+    <div style="float:left" >
         <asp:Button ID="btnDelivery" runat="server" Text="DELIVERY" CssClass="FY_Button" UseSubmitBehavior="False" OnClick="btnDelivery_Click"/>  
     </div>
     

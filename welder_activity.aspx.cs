@@ -907,12 +907,12 @@ namespace gbe
                 {
                     c = new TableCell();
                     c.HorizontalAlign = HorizontalAlign.Right;
-                    c.Controls.Add(new LiteralControl(wjd.start.ToString("dd:MM:yyyy HH:mm:ss")));
+                    c.Controls.Add(new LiteralControl(wjd.start.ToString("dd/MM/yyyy HH:mm:ss")));
                     r.Cells.Add(c);
 
                     c = new TableCell();
                     c.HorizontalAlign = HorizontalAlign.Right;
-                    c.Controls.Add(new LiteralControl(wjd.finish.ToString("dd:MM:yyyy HH:mm:ss")));
+                    c.Controls.Add(new LiteralControl(wjd.finish.ToString("dd/MM/yyyy HH:mm:ss")));
                     r.Cells.Add(c);
 
                     c = new TableCell();
@@ -938,12 +938,12 @@ namespace gbe
                 {
                     c = new TableCell();
                     c.HorizontalAlign = HorizontalAlign.Right;
-                    c.Controls.Add(new LiteralControl(wjd.start_fit.ToString("dd:MM:yyyy HH:mm:ss")));
+                    c.Controls.Add(new LiteralControl(wjd.start_fit.ToString("dd/MM/yyyy HH:mm:ss")));
                     r.Cells.Add(c);
 
                     c = new TableCell();
                     c.HorizontalAlign = HorizontalAlign.Right;
-                    c.Controls.Add(new LiteralControl(wjd.finish_fit.ToString("dd:MM:yyyy HH:mm:ss")));
+                    c.Controls.Add(new LiteralControl(wjd.finish_fit.ToString("dd/MM/yyyy HH:mm:ss")));
                     r.Cells.Add(c);
 
                     c = new TableCell();

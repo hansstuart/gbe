@@ -118,14 +118,14 @@
         </tr>
     </table>
     <br />
-    <table style="width: 1095px">
+    <table style="width: 1599px">
         <tr>
             <td style="width: 192px">
             </td>
             <td colspan="3">
                 <br />
                 <asp:Table ID="tblResults" runat="server" EnableViewState="False" Font-Names="Verdana"
-                    Width="885px">
+                    Width="1307px">
                 </asp:Table>
             </td>
         </tr>

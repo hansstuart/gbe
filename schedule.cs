@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Collections;
 using System.Diagnostics;
+using System.Data.SqlClient;
 
 namespace gbe
 {
@@ -47,6 +48,16 @@ namespace gbe
         public virtual string m_tbl
         {
             get { return "schedule_fab"; }
+        }
+
+        public schedule_fab()
+        {
+        }
+       
+        public schedule_fab(SqlConnection sql_connection)
+        {
+            m_sql_connection = sql_connection;
+            m_b_keep_open = true;
         }
 
         public int get_extra_allocated_slots(string sdate)
@@ -334,6 +345,7 @@ namespace gbe
         public string fitter_rates = string.Empty;
         public int seq = 0;
         public bool has_cutting_data = false;
+        public string driver = string.Empty;
 
         public void set_cut_and_clean_bit_on(int pos)
         {
@@ -448,6 +460,12 @@ namespace gbe
             try
             {
                 vd.vehicle = dr["vehicle"].ToString();
+            }
+            catch{}
+
+            try
+            {
+                vd.driver = dr["driver"].ToString();
             }
             catch{}
 

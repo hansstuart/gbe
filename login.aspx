@@ -77,7 +77,7 @@
             <td style="width: 371px; height: 21px">
             </td>
             <td style="width: 659px; height: 21px">
-                <asp:Button ID="btnLogin" runat="server" OnClick="btnLogin_Click" Text="Login" Width="94px" /></td>
+                <asp:Button ID="btnLogin" runat="server" OnClick="btnLogin_Click" Text="Login" Width="94px" Height="33px" /></td>
             <td style="height: 21px">
             </td>
         </tr>

@@ -290,7 +290,15 @@ namespace gbe
                                 imsl_order_data io = (imsl_order_data)a_io[0];
 
                                 btn_imsl.ImageUrl = "~/upload_grey.png";
-                                btn_imsl.ToolTip = "Sent to IMSL on " + io.dt_sent.ToString("dd/MM/yyyy hh:mm") + " by " + io.ud.login_id;
+
+                                string sent_by = string.Empty;
+
+                                if (io.ud != null) // hs. 20251002
+                                {
+                                    sent_by =  " by " + io.ud.login_id;
+                                }
+
+                                btn_imsl.ToolTip = "Sent to IMSL on " + io.dt_sent.ToString("dd/MM/yyyy hh:mm") + sent_by;
                             }
                             else
                             {

@@ -132,14 +132,21 @@ namespace gbe
                    
                     m_flds.Add(new cfields("Manufacturer", "manufacturer", cfields.STR, string.Empty));
                 }
+
                 if (m_tbl == "customers")
                 {
+                    cost_centre gb_cc = new cost_centre();
+
                     m_order_by = "name";
 
+                    m_flds.Add(new cfields("Active", "active", cfields.BOOL, "Yes|No"));
                     m_flds.Add(new cfields("Name", "name", cfields.STR, string.Empty));
                     m_flds[m_flds.Count - 1].bsearch_fld = true;
                     m_flds.Add(new cfields("email", "email", cfields.STR, string.Empty));
                     m_flds[m_flds.Count - 1].text_len = 100;
+                    m_flds.Add(new cfields("Additional emails", "email_additional", cfields.STR, string.Empty));
+                    m_flds[m_flds.Count - 1].bmulti_line = true;
+                    m_flds[m_flds.Count - 1].text_len = 2000;
                     m_flds.Add(new cfields("Address line 1", "address_line1", cfields.STR, string.Empty));
                     m_flds.Add(new cfields("Address line 2", "address_line2", cfields.STR, string.Empty));
                     m_flds.Add(new cfields("Address line 3", "address_line3", cfields.STR, string.Empty));
@@ -148,8 +155,11 @@ namespace gbe
                     m_flds.Add(new cfields("Telephone", "telephone", cfields.STR, string.Empty));
                     m_flds.Add(new cfields("Contract number", "contract_number", cfields.STR, string.Empty));
                     m_flds[m_flds.Count - 1].text_len = 10;
-                    
+                    m_flds[m_flds.Count - 1].bsearch_fld = true;
+                    m_flds.Add(new cfields("GBE cost centre", "gbe_cost_cost_centre", cfields.STR, gb_cc.m_sl_is_cost_centre));
+                    m_flds.Add(new cfields("IMSL cost centre", "imsl_cost_cost_centre", cfields.STR, string.Empty, "customer_fab_mat", "name"));
                 }
+
                 if (m_tbl == "vehicles")
                 {
                     m_order_by = "registration";
@@ -242,7 +252,8 @@ namespace gbe
                     m_flds.Add(new cfields("Fab.", "bfab", cfields.BOOL, "Yes|No"));
                 }
 
-                dlActive.Visible = (m_tbl == "parts");
+                dlActive.Visible = (m_tbl == "parts" || m_tbl == "customers");
+
                 if (IsPostBack)
                 {
                     m_state = (int)ViewState["state"];
@@ -271,10 +282,10 @@ namespace gbe
                             ArrayList pt = p.get_distinct_part_types();
                             ViewState["part_types"] = pt;
                         }
-
-                        dlActive.Items.Add("Active");
-                        dlActive.Items.Add("Inactive");
                     }
+
+                    dlActive.Items.Add("Active");
+                    dlActive.Items.Add("Inactive");
 
                     txtSearch.Focus();
                 }
@@ -414,6 +425,12 @@ namespace gbe
                                 tb.MaxLength = cf1.text_len;
                                 tb.ReadOnly = cf1.bread_only;
 
+                                if (cf1.bmulti_line)
+                                {
+                                    tb.TextMode = TextBoxMode.MultiLine;
+                                    tb.Height = 16;
+                                }
+
                                 if(cf1._db_field_type == cfields.DEC)
                                     tb.Attributes.Add("onkeypress", "return isDecimal(event)");
                                 c.Controls.Add(tb);
@@ -474,12 +491,6 @@ namespace gbe
                     srch = dlPartType.Text;
 
                 sl.Add(cf._db_field_name, srch);
-
-                bool bactive = true;
-                if (dlActive.Text == "Inactive")
-                    bactive = false;
-
-                sl.Add("active", bactive);
             }
             else
             {
@@ -487,6 +498,15 @@ namespace gbe
                 {
                     sl.Add(cf._db_field_name, txtSearch.Text.Trim());
                 }
+            }
+
+            if (m_tbl == "parts" || m_tbl == "customers")
+            {
+                bool bactive = true;
+                if (dlActive.Text == "Inactive")
+                    bactive = false;
+
+                sl.Add("active", bactive);
             }
 
             ViewState["search_params"] = sl;
@@ -988,6 +1008,7 @@ namespace gbe
         public static int STR = 1;
         public static int DEC = 2;
         public static int BOOL = 3;
+        
 
         public string _display_label = string.Empty;
         public string _db_field_name = string.Empty;
@@ -1000,8 +1021,30 @@ namespace gbe
         public bool bsearch_fld = false;
         public int text_len = 50;
         public bool bread_only = false;
+        public bool bmulti_line = false;
 
         public cfields() { }
+
+        public cfields(string display_label, string db_field_name, int db_field_type, SortedList<int, string> sortedlist)
+        {
+            _display_label = display_label;
+            _db_field_name = db_field_name;
+            _db_field_type = db_field_type;
+
+            try
+            {
+                foreach (KeyValuePair<int, string> kvp in sortedlist)
+                {
+                    try 
+                    {
+                        sl_from_tbl_id.Add(kvp.Key, kvp.Value);
+                        sl_from_tbl_fld.Add(kvp.Value, kvp.Key);
+                    }
+                    catch { }
+                }
+            }
+            catch { }
+        }
 
         public cfields(string display_label, string db_field_name, int db_field_type, string values, string from_table, string from_fld)
         {

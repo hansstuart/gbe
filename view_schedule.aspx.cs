@@ -20,8 +20,9 @@ namespace gbe
         const string VS_CURR_VIEW = "vs_curr_view";
         const string ATT_BC = "att_bc";
         const string LIST_VIEW = "List View";
-        const string CALENDER_VIEW = "Calender View";
+        const string CALENDER_VIEW = "Calendar View";
         const string K_DATE = "K_DATE";
+        const string DISPLAY_DATE = "DISPLAY_DATE";
         const string DT_FMT = "yyyyMMdd";
         const string DT_FMT2 = "yyyyMMdd_HH:mm";
         const string FAB_TBL = "schedule_fab";
@@ -37,6 +38,7 @@ namespace gbe
         const string TXT_TIME =  "txt_time_";
         const string TXT_DATE = "txt_date_";
         const string DL_VEH = "dl_veh_";
+        const string DL_DRV = "dl_drv_";
         const string CHK = "chk_";
         const string VS_DATE_FROM = "vs_date_from";
         const string INVALID_DATE = "**INVALID DATE**";
@@ -85,7 +87,7 @@ namespace gbe
 
             if (!IsPostBack)
             {
-                Label3.Visible = Label4.Visible = Label5.Visible = Label6.Visible = txtDeliveryDate.Visible = txtDeliveryTime.Visible = dlDeliveryVehicle.Visible = false;
+                Label3.Visible = Label4.Visible = Label5.Visible = Label6.Visible = Label17.Visible = txtDeliveryDate.Visible = txtDeliveryTime.Visible = dlDeliveryVehicle.Visible =  dlDeliveryDriver.Visible = false;
 
                 chkRed.Checked = chkOrange.Checked = chkBlue.Checked = chkGreen.Checked = true;
 
@@ -110,6 +112,7 @@ namespace gbe
 
                 tbl = Request.QueryString["t"];
                 
+                
                 if (tbl != null)
                 {
                     if (tbl == FAB_TBL)
@@ -133,6 +136,7 @@ namespace gbe
 
                     ViewState[VS_TBL] = tbl;
                     ViewState[VS_HOLDING] = bholding_area;
+                    ViewState[DISPLAY_DATE] = string.Empty;
                 }
                 else
                     Server.Transfer("default.aspx", true);
@@ -169,6 +173,31 @@ namespace gbe
                     }
                 }
 
+                using (users u = new users())
+                {
+                    u.order_by = "name";
+                    SortedList sl= new SortedList();
+                    sl.Add("role", "DRIVER"); 
+                    ArrayList adrvr = u.get_user_data(sl);
+
+                     dlDeliveryDriver.Items.Add(string.Empty);
+                    dlDriver.Items.Add(string.Empty);
+
+                    dlDeliveryDriver.Items.Add("TBC");
+                    dlDriver.Items.Add("TBC");
+
+                    foreach (user_data ud in adrvr)
+                    {
+                        if (ud.name.Trim().Length > 0)
+                        {
+                            dlDeliveryDriver.Items.Add(ud.name.Trim());
+                            dlDriver.Items.Add(ud.name.Trim());
+                        }
+                    }
+
+                    u.order_by = string.Empty;
+                }
+
                 MultiView1.ActiveViewIndex = 0;
             }
             else
@@ -197,7 +226,7 @@ namespace gbe
                 try { m_cutting_spool_ids = (List<int>)ViewState[VS_CUTTING_SPOOL_IDS]; }
                 catch { }
 
-                if (MultiView1.ActiveViewIndex == 0 || MultiView1.ActiveViewIndex == 3 || MultiView1.ActiveViewIndex == 4 || MultiView1.ActiveViewIndex == 5)
+                if (MultiView1.ActiveViewIndex == 0 || MultiView1.ActiveViewIndex == 3 || MultiView1.ActiveViewIndex == 4 || MultiView1.ActiveViewIndex == 5|| MultiView1.ActiveViewIndex == 6)
                 {
                     if (m_curr_view == CALENDER_VIEW)
                         display_calender();
@@ -474,7 +503,7 @@ namespace gbe
                         if (!sl1.ContainsKey(k2))
                             sl1.Add(k2, sr);
 
-                        k0 = sr.schd.dt.ToString(DT_FMT2 + "_" + sr.schd.vehicle);
+                        k0 = sr.schd.dt.ToString(DT_FMT2) + "_" + sr.schd.vehicle;
 
                         if (!m_sl_dt_time_schedule_rec.ContainsKey(k0))
                         {
@@ -545,6 +574,10 @@ namespace gbe
 
         void display_calender()
         {
+            tblRecs.Rows.Clear();
+
+            ViewState[DISPLAY_DATE] = string.Empty;
+
             MultiView1.ActiveViewIndex = 0;
 
             m_curr_view = CALENDER_VIEW;
@@ -700,17 +733,22 @@ namespace gbe
                             }
                         }
 
-                        Label l = new Label();
-                        l.Text = dt.DayOfWeek.ToString() + "\x20" + dt.ToLongDateString();
-                        l.Width = SQ_DIM;
-                        l.ForeColor = System.Drawing.Color.FromName("DarkGreen");
-                        l.Font.Bold = true;
-
+                        Button btnCalenderDate = new Button();
+                        string sdt = dt.ToString("yyyyMMdd");
+                        btnCalenderDate.ID = "btnCalenderDate" + sdt;
+                        btnCalenderDate.CssClass = "Btn_Hand";
+                        btnCalenderDate.Text = dt.DayOfWeek.ToString() + "\x20" + dt.ToLongDateString();
+                        btnCalenderDate.Width = SQ_DIM;
+                        btnCalenderDate.ForeColor = System.Drawing.Color.FromName("DarkGreen");
+                        btnCalenderDate.Font.Bold = true;
+                        btnCalenderDate.Click += BtnCalenderDate_Click;
+                        btnCalenderDate.Attributes[DISPLAY_DATE] = sdt;
+                                             
                         if (is_fab_schedule())
                         {
                             Label l2 = new Label();
-                            l2.ForeColor = l.ForeColor;
-                            l2.Font.Bold = l.Font.Bold;
+                            l2.ForeColor = btnCalenderDate.ForeColor;
+                            l2.Font.Bold = btnCalenderDate.Font.Bold;
 
                             ArrayList a_slots_available = get_available_slots(dt.ToString("dd/MM/yyyy"));
 
@@ -733,18 +771,18 @@ namespace gbe
                                 btn_add.Attributes[K_DATE] = k;
                                 btn_add.Click += new ImageClickEventHandler(btn_add_Click);
 
-                                l.Width = (int)(SQ_DIM - 16);
+                                btnCalenderDate.Width = (int)(SQ_DIM - 16);
                             }
                         }
                         
-                        c.Controls.Add(l);
+                        c.Controls.Add(btnCalenderDate);
 
                         if (is_fab_schedule())
                         {
                             Label l2 = new Label();
-                            l2.ForeColor = l.ForeColor;
-                            l2.Font.Bold = l.Font.Bold;
-                            l2.Width = l.Width;
+                            l2.ForeColor = btnCalenderDate.ForeColor;
+                            l2.Font.Bold = btnCalenderDate.Font.Bold;
+                            l2.Width = btnCalenderDate.Width;
 
                             ArrayList a_slots_available = get_available_slots(dt.ToString("dd/MM/yyyy"));
 
@@ -778,6 +816,23 @@ namespace gbe
             }
         }
 
+        private void BtnCalenderDate_Click(object sender, EventArgs e)
+        {
+            Button b = (Button)sender;
+
+            string dateToDisplay = (b.Attributes[DISPLAY_DATE]);
+            ViewState[DISPLAY_DATE] = dateToDisplay;
+
+            display_list();
+
+            set_view_btn_text();
+        }
+
+        private void Cal_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         void display_edit_view()
         {
             if (m_edit_view_recs.Trim().Length > 0)
@@ -796,11 +851,11 @@ namespace gbe
 
                     if (is_fab_schedule())
                     {
-                        txtTime.Visible = dlVehicle.Visible = chkTime.Visible = chkVehicle.Visible = false;
+                        txtTime.Visible = dlVehicle.Visible = chkTime.Visible = chkVehicle.Visible = dlDriver.Visible = chkDriver.Visible = false;
                     }
                     else if (is_delivery_schedule())
                     {
-                        txtTime.Visible = dlVehicle.Visible = chkTime.Visible = chkVehicle.Visible = true;
+                        txtTime.Visible = dlVehicle.Visible = chkTime.Visible = chkVehicle.Visible = dlDriver.Visible = chkDriver.Visible= true;
                         chkAddToExtras.Visible = false;
                     }
 
@@ -845,6 +900,10 @@ namespace gbe
 
                                 c = new TableCell();
                                 c.Controls.Add(new LiteralControl("Vehicle"));
+                                r.Cells.Add(c);
+
+                                c = new TableCell();
+                                c.Controls.Add(new LiteralControl("Driver"));
                                 r.Cells.Add(c);
                             }
 
@@ -910,17 +969,45 @@ namespace gbe
                                     r.Cells.Add(c);
 
                                     c = new TableCell();
-                                    DropDownList dl = new DropDownList();
-                                    dl.ID = DL_VEH + sr.schd.id.ToString();
-                                    dl.Attributes[UID] = sr.schd.id.ToString();
-                                    dl.Attributes[BARCODE] = sr.barcode.ToUpper();
+                                    DropDownList dlveh = new DropDownList();
+                                    dlveh.ID = DL_VEH + sr.schd.id.ToString();
+                                    dlveh.Attributes[UID] = sr.schd.id.ToString();
+                                    dlveh.Attributes[BARCODE] = sr.barcode.ToUpper();
                                     
                                     foreach (ListItem li in dlVehicle.Items)
-                                        dl.Items.Add(li.Text);
+                                        dlveh.Items.Add(li.Text);
 
-                                    dl.Text = sr.schd.vehicle;
+                                    dlveh.Text = sr.schd.vehicle;
 
-                                    c.Controls.Add(dl);
+                                    c.Controls.Add(dlveh);
+
+                                    r.Cells.Add(c);
+
+                                    c = new TableCell(); 
+                                    
+                                    TextBox txtDriver = new TextBox();
+                                    txtDriver.ID = DL_DRV + sr.schd.id.ToString();
+                                    txtDriver.Attributes[UID] = sr.schd.id.ToString();
+                                    txtDriver.Attributes[BARCODE] = sr.barcode.ToUpper();
+                                    txtDriver.Text = sr.schd.driver;
+                                    txtDriver.Attributes.Add("readonly", "readonly");
+                                    c.Controls.Add(txtDriver);
+
+                                    /*
+                                    DropDownList dldrv = new DropDownList();
+                                    dldrv.ID = DL_DRV + sr.schd.id.ToString();
+                                    dldrv.Attributes[UID] = sr.schd.id.ToString();
+                                    dldrv.Attributes[BARCODE] = sr.barcode.ToUpper();
+                                    
+                                    foreach (ListItem li in dlDriver.Items)
+                                        dldrv.Items.Add(li.Text);
+
+                                    dldrv.Text = sr.schd.driver;
+
+                                    dldrv.Attributes.Add("readonly", "readonly");
+
+                                    c.Controls.Add(dldrv);
+                                    */
 
                                     r.Cells.Add(c);
                                 }
@@ -1054,6 +1141,8 @@ namespace gbe
 
         void display_list()
         {
+            string dateToDisplay = ViewState[DISPLAY_DATE].ToString();
+
             ArrayList a_spool_ids = new ArrayList();
             ArrayList a_schd_ids = new ArrayList();
 
@@ -1080,7 +1169,7 @@ namespace gbe
             bool b_holding = (bool)ViewState[VS_HOLDING];
 
             pnlFilter.Visible = !b_holding;
-            btnView.Visible = is_delivery_schedule();
+            btnView.Visible = is_delivery_schedule() && MultiView1.ActiveViewIndex != 6;
 
             tblSchedule.Rows.Clear();
 
@@ -1111,6 +1200,11 @@ namespace gbe
 
                     foreach (DictionaryEntry e0 in sl_schedule_rec)
                     {
+                        if (dateToDisplay.Trim().Length > 0 && !e0.Key.ToString().StartsWith(dateToDisplay))
+                        {
+                            continue;
+                        }
+
                         int i = 0;
 
                         SortedList sl0 = (SortedList)e0.Value;
@@ -1137,7 +1231,7 @@ namespace gbe
                                 {
                                     c = new TableCell();
                                     c.BackColor = (ROW_DL1);
-                                    c.HorizontalAlign = HorizontalAlign.Center;
+                                    c.HorizontalAlign = HorizontalAlign.Left;
 
                                     ImageButton btn_notes = new ImageButton();
 
@@ -1150,6 +1244,33 @@ namespace gbe
                                     r.ID = e0.Key.ToString();
 
                                     c.Controls.Add(btn_notes);
+
+                                    c.Controls.Add(new LiteralControl(" | "));
+
+                                    ImageButton btn_email = new ImageButton();
+
+                                    btn_email.ToolTip = "E-Mail";
+                                    btn_email.ImageUrl = "~/email.png";
+                                    btn_email.Click += new ImageClickEventHandler(btn_email_Click);
+                                    btn_email.ID = "BTN_EMAIL_" + n.ToString();
+                                    btn_email.Attributes[UID] = e0.Key.ToString();
+
+                                    c.Controls.Add(btn_email);
+
+                                    c.Controls.Add(new LiteralControl(" | "));
+
+                                    ImageButton btn_pdf = new ImageButton();
+
+                                    btn_pdf.ToolTip = "PDF";
+                                    btn_pdf.ImageUrl = "~/pdf.png";
+                                    btn_pdf.Click += new ImageClickEventHandler(btn_pdf_Click);
+                                    btn_pdf.ID = "BTN_PDF_" + n.ToString();
+                                    btn_pdf.Attributes[UID] = e0.Key.ToString();
+
+                                    c.Controls.Add(btn_pdf);
+
+                                    c.Controls.Add(new LiteralControl(" | "));
+
                                     r.Cells.Add(c);
                                 }
                                 else
@@ -1287,6 +1408,12 @@ namespace gbe
                             {
                                 c = new TableCell();
                                 c.Controls.Add(new LiteralControl("Vehicle"));
+                                c.BackColor = (HDR_ROW_BC);
+                                c.ForeColor = (HDR_ROW_FC);
+                                r.Cells.Add(c);
+
+                                c = new TableCell();
+                                c.Controls.Add(new LiteralControl("Driver"));
                                 c.BackColor = (HDR_ROW_BC);
                                 c.ForeColor = (HDR_ROW_FC);
                                 r.Cells.Add(c);
@@ -1606,6 +1733,10 @@ namespace gbe
                                     {
                                         c = new TableCell();
                                         c.Controls.Add(new LiteralControl(sr.schd.vehicle));
+                                        r.Cells.Add(c);
+
+                                        c = new TableCell();
+                                        c.Controls.Add(new LiteralControl(sr.schd.driver));
                                         r.Cells.Add(c);
 
                                         c = new TableCell();
@@ -2140,6 +2271,283 @@ namespace gbe
             }
         }
 
+        private void btn_email_Click(object sender, ImageClickEventArgs e)
+        {
+            ImageButton btn_email  = (ImageButton)sender;
+
+            string key = btn_email.Attributes[UID];
+
+            display_email(key);
+
+            js_scroll_to_top();
+        }
+
+        string gen_var_data_for_pdf(string key)
+        {
+            const char SEP = '|';
+            string NL = Environment.NewLine;
+            string FF = "\f";
+            const int LPP = 20;
+
+            string[] sa = key.Split('_');
+            
+            string date = string.Empty;
+
+            try
+            {
+                date = sa[0].Substring(6, 2);
+                date += "/";
+                date += sa[0].Substring(4, 2);
+                date += "/";
+                date += sa[0].Substring(0, 4);
+            }
+            catch { }
+
+            string time = sa[1];
+            string vehicle = sa[2];
+            string note = string.Empty;
+
+            if (m_sl_notes != null)
+                if (m_sl_notes.ContainsKey(key))
+                    note = m_sl_notes[key].ToString().Replace(NL, "\x20");
+
+            ArrayList a_project = new ArrayList();
+            ArrayList a_barcodes = new ArrayList();
+            ArrayList a_customers = new ArrayList();
+            SortedList sl_driver = new SortedList();
+
+            SortedList sl = (SortedList)m_sl_dt_time_schedule_rec[key];
+
+            foreach (DictionaryEntry e0 in sl)
+            {
+                foreach (DictionaryEntry e1 in (SortedList)e0.Value)
+                {
+                    c_schedule_rec sr = (c_schedule_rec)e1.Value;
+                    
+                    a_barcodes.Add( sr.schd.batch_number + SEP.ToString() +  sr.barcode);
+
+                    string proj = sr.barcode.Split('-')[0].ToUpper();
+
+                    if(!a_project.Contains(proj))
+                        a_project.Add(proj);
+
+                    ArrayList a_driver = null;
+
+                    if (!sl_driver.ContainsKey(proj))
+                    {
+                        a_driver = new ArrayList();
+                        sl_driver.Add(proj, a_driver);
+                    }
+                    else
+                    {
+                        a_driver = (ArrayList)sl_driver[proj];
+                    }
+
+                    if(sr.schd.driver.Trim().Length > 0)
+                        if(!a_driver.Contains(sr.schd.driver))
+                            a_driver.Add(sr.schd.driver);
+                }
+            }
+
+            a_project.Sort();
+            a_barcodes.Sort();
+
+            foreach (string contract_number in a_project)
+            {
+                using (customers cust = new customers())
+                {
+                    SortedList slp = new SortedList();
+
+                    slp.Add("contract_number", contract_number);
+
+                    ArrayList a = cust.get_customer_data(slp);
+
+                    customer_data cd = null;
+                    if (a.Count > 0)
+                    {
+                        cd = (customer_data)a[0];
+                    }
+                    else
+                    {
+                        cd = new customer_data();
+                        cd.contract_number = contract_number;
+                    }
+
+                    a_customers.Add(cd);
+                }
+            }
+
+            string vardata = string.Empty;
+
+            foreach (customer_data cd in a_customers)
+            {
+                string hdr = string.Empty;
+
+                hdr += DateTime.Now.ToString("dd/MM/yyyy HH:mm") + NL;
+
+                hdr += date + NL;
+                hdr += time + NL;
+                hdr += vehicle + NL;
+
+                string driver = string.Empty;
+
+                if (sl_driver.ContainsKey(cd.contract_number.ToUpper()))
+                {
+                    ArrayList a_driver = (ArrayList) sl_driver[cd.contract_number.ToUpper()];
+
+                    foreach (string drvr in a_driver)
+                    {
+                        if (drvr.Trim().Length > 0)
+                        {
+                            if(driver.Trim().Length > 0)
+                                driver += ", ";
+
+                            driver += drvr.Trim();
+                        }
+                    }
+                }
+
+                hdr += driver + NL;
+
+                hdr += note + NL;
+
+                hdr += cd.contract_number.ToUpper() + NL;
+                hdr += cd.contact_name + NL;
+                hdr += cd.name + NL;
+                hdr += cd.address_line1 + NL;
+                hdr += cd.address_line2 + NL;
+                hdr += cd.address_line3 + NL;
+                hdr += cd.address_line4 + NL;
+                hdr += cd.telephone + NL;
+
+                hdr += NL;
+
+                int linecnt = 0;
+
+                foreach (string barcode in a_barcodes)
+                {
+                    string [] sabc = barcode.Split(SEP);
+
+                    if (sabc[1].ToUpper().StartsWith(cd.contract_number.ToUpper()))
+                    {
+                        if (linecnt == 0 || linecnt == LPP)
+                        {
+                            if(vardata.Length > 0)
+                                vardata += FF;
+                        
+                            vardata += hdr;
+
+                            linecnt = 0;
+                        }
+
+                        vardata += sabc[0].PadRight(15) + sabc[1] + NL;
+                        linecnt++;
+                    }
+                }
+            }
+
+            string dir = Path.Combine(Server.MapPath("~/"), "temp");
+
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            string vardata_file = get_unique_file_name(dir, ".txt");
+
+            File.WriteAllText(vardata_file, vardata, System.Text.Encoding.Default);
+
+            return vardata_file;
+        }
+
+        string get_unique_file_name(string path, string ext)
+        {
+            string fnname = string.Empty;
+
+            if (!path.EndsWith("\\"))
+                path += "\\";
+
+            Random r = new Random();
+
+            do
+            {
+                fnname = path + DateTime.Now.ToString("yyyyMMdd_HHmmssfff") + "_" + r.Next(1, 10000).ToString("00000") + ext;
+            } while (File.Exists(fnname));
+
+            return fnname;
+        }
+
+        string gen_ps_file_for_pdf(string vardata_file)
+        {
+            string ps_file = string.Empty;
+
+            string dir = Path.Combine(Server.MapPath("~/"), "temp");
+
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            ps_file = get_unique_file_name(dir, ".ps");
+
+            string FORMS_DIR = "forms_dir";
+            string forms_dir = string.Empty;
+
+            try { forms_dir = System.Web.Configuration.WebConfigurationManager.AppSettings[FORMS_DIR].ToString(); }
+            catch { forms_dir = Server.MapPath("forms"); }
+
+            string ps_form = forms_dir + "\\GBE_DEL_SCHD";
+
+            File.Copy(ps_form, ps_file);
+
+            FileStream fs = new FileStream(ps_file, FileMode.Append, FileAccess.Write);
+            StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.Default);
+
+            sw.Write(File.ReadAllText(vardata_file, System.Text.Encoding.Default));
+
+            sw.Close();
+
+            return ps_file;
+        }
+
+        string gen_pdf(string ps_file)
+        {
+            string pdf_file = string.Empty;
+
+            string dir = Path.Combine(Server.MapPath("~/"), "temp");
+
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            pdf_file = get_unique_file_name(dir, ".pdf");
+
+            string gsbin = System.Web.Configuration.WebConfigurationManager.AppSettings["gsbin"].ToString();
+
+            PCFUtil util = new PCFUtil();
+            int ret = util.ps_convert(gsbin, ps_file, pdf_file, "pdfwrite", true, "plop", 0);
+
+            return pdf_file;
+        }
+
+        private void btn_pdf_Click(object sender, ImageClickEventArgs e)
+        {
+            ImageButton btn_pdf = (ImageButton)sender;
+            string key = btn_pdf.Attributes[UID];
+
+            string vardata_file = gen_var_data_for_pdf(key);
+            string ps_file = gen_ps_file_for_pdf(vardata_file);
+            string pdf_file = gen_pdf(ps_file);
+
+            try { File.Delete(vardata_file); }
+            catch { }
+
+            try { File.Delete(ps_file); }
+            catch { }
+
+            string url = $"mf_document.aspx?fn={Path.GetFileName(pdf_file)}&dn={"DeliverySchedule"}&df=1";
+             
+            Response.Write("<script>");
+            Response.Write("window.open('" + url + "','_blank','','false')");
+            Response.Write("</script>");
+             
+        }
+
         void btn_notes_Click(object sender, ImageClickEventArgs e)
         {
             ImageButton btn_notes = (ImageButton)sender;
@@ -2287,6 +2695,112 @@ namespace gbe
             js_scroll_to_top();
         }
 
+        void display_email(string key)
+        {
+            HiddenField h = (HiddenField)Master.FindControl("hdnScroll");
+
+            notes_edit_data ned = new notes_edit_data();
+
+            if (h.Value.Contains("|"))
+            {
+                ned.scroll_left = h.Value.Split('|')[0];
+                ned.scroll_top = h.Value.Split('|')[1];
+            }
+
+            ned.key = key;
+
+            ViewState[VS_NOTES_EDIT_DATA] = ned;
+                        
+            string[] sa = key.Split('_');
+            
+            lblEmailDate.Text = sa[0];
+            lblEmailTime.Text = sa[1];
+            lblEmailVehicle.Text = sa[2];
+
+            txtEmailNote.Text = string.Empty;
+
+            if (m_sl_notes != null)
+                if (m_sl_notes.ContainsKey(key))
+                    txtEmailNote.Text = m_sl_notes[key].ToString();
+
+            txtEmailAddrs.Text = string.Empty;
+
+            txtEmailSpools.Text = string.Empty;
+
+            ArrayList a_project = new ArrayList();
+
+            SortedList sl = (SortedList)m_sl_dt_time_schedule_rec[key];
+
+            foreach (DictionaryEntry e0 in sl)
+            {
+                foreach (DictionaryEntry e1 in (SortedList)e0.Value)
+                {
+                    c_schedule_rec sr = (c_schedule_rec)e1.Value;
+
+                    if (!lblEmailDriver.Text.Contains(sr.schd.driver))
+                    {
+                        if (lblEmailDriver.Text.Trim().Length > 0)
+                            lblEmailDriver.Text += ", ";
+
+                        lblEmailDriver.Text += sr.schd.driver;
+                    }
+
+                    txtEmailSpools.Text += sr.barcode + Environment.NewLine;
+
+                    string proj = sr.barcode.Split('-')[0].ToUpper();
+
+                    if(!a_project.Contains(proj))
+                        a_project.Add(proj);
+                }
+            }
+
+            foreach (string email_addr in get_project_email_addrs(a_project))
+            {
+                txtEmailAddrs.Text += email_addr + Environment.NewLine;
+            }
+
+            js_scroll_to_top();
+
+            MultiView1.ActiveViewIndex = 6;
+            
+        }
+
+        ArrayList get_project_email_addrs(ArrayList a_project)
+        {
+            ArrayList a_email_addrs = new ArrayList();
+
+            SortedList sl = new SortedList();
+            ArrayList acd = new ArrayList();
+
+            using (customers c = new customers())
+            {
+                foreach (string proj in a_project)
+                {
+                    sl.Clear();
+
+                    sl.Add("contract_number", proj);
+
+                    foreach (customer_data cd in c.get_customer_data(sl))
+                    {
+                        if (cd.email.Trim().Length > 0)
+                            if(!a_email_addrs.Contains(cd.email.ToLower().Trim()))
+                                a_email_addrs.Add(cd.email.ToLower().Trim());
+
+                        foreach (string email2 in cd.email2.Split('\n'))
+                        {
+                            if(email2.Trim().Length > 0)
+                                if(!a_email_addrs.Contains(email2.ToLower().Trim()))
+                                    a_email_addrs.Add(email2.ToLower().Trim());
+                        }
+                    }
+                }
+            }
+            
+            a_email_addrs.Sort();
+            
+            return a_email_addrs;
+        }
+
         void display_notes_edit(string key)
         {
             HiddenField h = (HiddenField)Master.FindControl("hdnScroll");
@@ -2422,6 +2936,8 @@ namespace gbe
             }
 
             set_view_btn_text();
+
+
         }
 
         protected void btnAddSpool_Click(object sender, EventArgs e)
@@ -2549,7 +3065,7 @@ namespace gbe
 
                                 lblMsg.Text = txtBarcode.Text + " added";
 
-                                txtBarcode.Text = txtDeliveryDate.Text = txtDeliveryTime.Text = dlDeliveryVehicle.Text = string.Empty;
+                                txtBarcode.Text = txtDeliveryDate.Text = txtDeliveryTime.Text = dlDeliveryVehicle.Text = dlDeliveryDriver.Text = string.Empty;
                                 txtBarcode.Focus();
                             }
                         }
@@ -2602,9 +3118,22 @@ namespace gbe
             ena_save_button();
         }
 
+        protected void chkDriver_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox chk = (CheckBox)sender;
+            dlDriver.Enabled = chk.Checked;
+
+            if (dlDriver.Enabled)
+                dlDriver.Focus();
+            else
+                dlDriver.Text = string.Empty;
+
+            ena_save_button();
+        }
+
         void ena_save_button()
         {
-            btnSave.Enabled = (chkTime.Checked || chkDate.Checked || chkVehicle.Checked || chkAddToExtras.Checked || chkQuarantine.Checked) && (tblRecs.Rows.Count>0);
+            btnSave.Enabled = (chkTime.Checked || chkDate.Checked || chkVehicle.Checked || chkAddToExtras.Checked || chkQuarantine.Checked || chkDriver.Checked) && (tblRecs.Rows.Count>0);
         }
 
         bool is_valid_date(string date)
@@ -2650,7 +3179,7 @@ namespace gbe
 
         protected void btnSave_Click(object sender, EventArgs e)
         {
-            if (chkTime.Checked || chkDate.Checked || chkVehicle.Checked || chkQuarantine.Checked)
+            if (chkTime.Checked || chkDate.Checked || chkVehicle.Checked || chkQuarantine.Checked || chkDriver.Checked)
             {
                 string confirm_value = Request.Form["confirm_save_value"];
 
@@ -2693,10 +3222,16 @@ namespace gbe
                     }
 
                     string vehicle = null;
+                    string driver = null;
 
                     if (chkVehicle.Checked)
                     {
                         vehicle = dlVehicle.Text.Trim();
+                    }
+
+                    if (chkDriver.Checked)
+                    {
+                        driver = dlDriver.Text.Trim();
                     }
 
                     ArrayList a_quarantined_tbl_idx = new ArrayList();
@@ -2737,7 +3272,7 @@ namespace gbe
                                         a_quarantined_tbl_idx.Add(idx_to_remove);
                                     }
 
-                                    update_record(uid, sr, sdate, stime, vehicle, chkAddToExtras.Checked);
+                                    update_record(uid, sr, sdate, stime, vehicle, driver, chkAddToExtras.Checked);
 
                                     TextBox txtbox = null;
 
@@ -2761,6 +3296,17 @@ namespace gbe
                                         DropDownList dl_veh = get_tbl_row_dropdownlist(r, DL_VEH + uid);
                                         dl_veh.Text = vehicle;
                                     }
+
+                                    if (chkDriver.Checked)
+                                    {
+                                        TextBox txt_drv = get_tbl_row_textbox(r, DL_DRV + uid);
+                                        txt_drv.Text = driver;
+
+                                        /*
+                                        DropDownList dl_drv = get_tbl_row_dropdownlist(r, DL_DRV + uid);
+                                        dl_drv.Text = driver;
+                                        */
+                                    }
                                 }
                             }
                         }
@@ -2778,13 +3324,14 @@ namespace gbe
                     if (tblRecs.Rows.Count == 1)
                         tblRecs.Rows.Clear();
 
-                    chkDate.Checked = chkTime.Checked = chkVehicle.Checked = chkAddToExtras.Checked = chkQuarantine.Checked = false;
+                    chkDate.Checked = chkTime.Checked = chkVehicle.Checked = chkAddToExtras.Checked = chkQuarantine.Checked = chkDriver.Checked = false;
 
-                    txtDate.Text = txtTime.Text = dlVehicle.Text = string.Empty;
+                    txtDate.Text = txtTime.Text = dlVehicle.Text = dlDriver.Text = string.Empty;
 
                     chkDate_CheckedChanged(chkDate, null);
                     chkTime_CheckedChanged(chkTime, null);
                     chkVehicle_CheckedChanged(chkVehicle, null);
+                    chkDriver_CheckedChanged(chkDriver, null);
 
                     DateTime dt_from = (DateTime)ViewState[VS_DATE_FROM];
                     
@@ -2863,16 +3410,24 @@ namespace gbe
             }
 
             string vehicle = string.Empty;
+            string driver = string.Empty;
 
             if (is_delivery_schedule())
             {
                 DropDownList dl_veh = get_tbl_row_dropdownlist(uid, DL_VEH + uid);
                 vehicle = dl_veh.Text.Trim();
+
+                TextBox txt_drv = get_tbl_row_textbox(uid, DL_DRV + uid);
+                driver = txt_drv.Text.Trim();
+                /*
+                DropDownList dl_drv = get_tbl_row_dropdownlist(uid, DL_DRV + uid);
+                driver = dl_drv.Text.Trim();
+                */
             }
 
             c_schedule_rec sr = get_update_record(barcode, sdt, sbatch);
 
-            update_record(uid, sr, sdate, stime, vehicle, false);
+            update_record(uid, sr, sdate, stime, vehicle, driver, false);
 
             DateTime dt_from = (DateTime)ViewState[VS_DATE_FROM];
 
@@ -2995,7 +3550,7 @@ namespace gbe
             return control;
         }
 
-        void update_record(string uid, c_schedule_rec sr, string sdate, string stime, string vehicle, bool badd_to_extras)
+        void update_record(string uid, c_schedule_rec sr, string sdate, string stime, string vehicle, string driver, bool badd_to_extras)
         {
             SortedList sl = new SortedList();
 
@@ -3012,6 +3567,14 @@ namespace gbe
                 if (is_delivery_schedule())
                 {
                     sl.Add("vehicle", vehicle);
+                }
+            }
+
+            if (driver != null)
+            {
+                if (is_delivery_schedule())
+                {
+                    sl.Add("driver", driver);
                 }
             }
 
@@ -3848,6 +4411,51 @@ namespace gbe
             }
         }
 
+        protected void btnEmailSend_Click(object sender, EventArgs e)
+        {
+            string confirm_value = Request.Form["confirm_save_value"];
+
+            if (confirm_value == "Yes")
+            {
+                int user_id = 0;
+                string login_id = System.Web.HttpContext.Current.User.Identity.Name;
+
+                SortedList sl0 = new SortedList();
+
+                sl0.Add("login_id", login_id);
+
+                ArrayList a = new ArrayList();
+
+                using (users u = new users())
+                {
+                    a = u.get_user_data(sl0);
+                }
+
+                if (a.Count > 0)
+                {
+                    user_data ud = (user_data)a[0];
+
+                    user_id = ud.id;
+                }
+
+                notes_edit_data ned = (notes_edit_data)ViewState[VS_NOTES_EDIT_DATA];
+
+                using (delivery_schedule_email dse = new delivery_schedule_email())
+                {
+                    SortedList sl = new SortedList();
+
+                    sl.Add(delivery_schedule_email_data.DELIVERY_KEY, ned.key);
+                    sl.Add(delivery_schedule_email_data.EMAIL_SENT, false);
+                    sl.Add(delivery_schedule_email_data.USER_ID, user_id);
+                    sl.Add(delivery_schedule_email_data.RECORD_DATETIME, DateTime.Now);
+
+                    dse.save_delivery_schedule_email_data(sl);
+
+                    lblMsg.Text = "E-mail queued";
+                }
+            }
+        }
+
         [System.Web.Services.WebMethod]
         public static void UpdateCutComplete(int spool_parts_id, bool bcomplete)
         {
@@ -3862,5 +4470,7 @@ namespace gbe
                 dbc.save(sl, "spool_parts", "id");
             }
         }
+
+        
     }
 }

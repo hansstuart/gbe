@@ -17,6 +17,19 @@ namespace gbe
         {
             bool val = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
 
+            user_data ud = null;
+
+            using (users u = new users())
+            {
+                ud = u.get_user_data(System.Web.HttpContext.Current.User.Identity.Name);
+            }
+
+            if(ud.role.ToUpper() == "WELD_TESTER")
+                Response.Redirect("fy.aspx");
+
+            if(ud.role.ToUpper() == "IRISNDT" || ud.role.ToUpper() == "APAVE")
+                Response.Redirect("apave.aspx");
+
             if(val)
                 build_menu();
         }
@@ -67,6 +80,7 @@ namespace gbe
             const string IMSL_CUSTOMERS = "IMSL Customers";
             const string TOTALS = "Totals";
             const string CUT_LENGTH = "Cut Lengths";
+            const string WELD_TEST_REPORTS = "Weld Test Reports";
 
             SortedList m_sl_menu_items = new SortedList();
 
@@ -111,6 +125,7 @@ namespace gbe
             m_sl_menu_items.Add(IMSL_CUSTOMERS, "maint1.aspx?t=customer_fab_mat");
             m_sl_menu_items.Add(TOTALS, "totals.aspx");
             m_sl_menu_items.Add(CUT_LENGTH, "cut_lengths.aspx");
+            m_sl_menu_items.Add(WELD_TEST_REPORTS, "weld_test_report_admin.aspx");
 
             // admin menus
             string[] admin_menu_main = { 
@@ -146,7 +161,8 @@ namespace gbe
                 VIEW_DELIV_QUARANTINE,
                 IMSL_CUSTOMERS,
                 TOTALS,
-                CUT_LENGTH
+                CUT_LENGTH,
+                WELD_TEST_REPORTS
             };
 
             string[] admin_menu_stores = { 
@@ -249,6 +265,11 @@ namespace gbe
                 CUT_LENGTH                
             };
 
+            string[] qa_menu_main = { 
+                QA,
+                SPOOLS,
+            };
+
             string[] menu_main = { 
                 
             };
@@ -307,6 +328,12 @@ namespace gbe
                 {
                     menu_main = project_manager_menu_main;
                     menu_stores = project_manager_menu_stores;
+                }
+
+                if (ud.role.ToUpper() == "QA")
+                {
+                    menu_main = qa_menu_main;
+                     
                 }
             }
 

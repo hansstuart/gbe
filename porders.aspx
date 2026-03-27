@@ -44,7 +44,7 @@
         </tr>
         <tr>
             <td style="width: 189px; height: 21px">
-                <asp:Label ID="Label4" runat="server" Font-Names="Verdana" Text="Date (dd/mm/yyy):"
+                <asp:Label ID="Label4" runat="server" Font-Names="Verdana" Text="Date (dd/mm/yyyy):"
                     Width="184px"></asp:Label></td>
             <td style="width: 309px; height: 21px">
                 <asp:TextBox ID="txtDate" runat="server" Width="288px"></asp:TextBox></td>

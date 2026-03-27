@@ -472,6 +472,7 @@ namespace gbe
                     return false;
                 }
 
+                
                 string user_id = System.Web.HttpContext.Current.User.Identity.Name;
 
                 if (!fy.can_start_stop_job())
@@ -479,6 +480,7 @@ namespace gbe
                     lblMsg.Text = ("Incorrect User ID");
                     return false;
                 }
+                
 
                 bool bwelder, bfitter, bmodule_builder, bprivileged_user;
                 bwelder = bfitter = bmodule_builder = bprivileged_user = false;

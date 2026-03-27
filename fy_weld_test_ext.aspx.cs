@@ -143,7 +143,7 @@ namespace gbe
                     sl_weldtest.Add("report8VI_BW", txtReport8VI_BW.Text.Trim());
 
                     weld_test_ext wte = new weld_test_ext();
-                    wte.save_weld_test_ext_data(sl_weldtest, a_welder_tests);
+                    wte.save_weld_test_ext_data(sl_weldtest, a_welder_tests, null);
                 }
 
                 /*
@@ -207,13 +207,10 @@ namespace gbe
                             if (!m_sl_wedlers.ContainsKey(welder))
                                 m_sl_wedlers.Add(welder, welder_id);
                         }
-                       
                     }
                     else
                     {
                         ret = 1;
-
-                        
                     }
                 }
             }

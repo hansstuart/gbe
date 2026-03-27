@@ -1,4 +1,4 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="Current">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -23,6 +23,8 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,6 +34,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -40,6 +43,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,6 +52,7 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -56,15 +61,20 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">
       <HintPath>..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -72,14 +82,22 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Web.Mobile" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="cut_length.aspx" />
     <Content Include="cut_lengths.aspx" />
+    <Content Include="DELETEcut_lengths_print.aspx" />
+    <Content Include="fy_weld_test_v2.aspx" />
+    <Content Include="apave.aspx" />
+    <Content Include="mf_document.aspx" />
     <Content Include="modular_fabrications.jpg" />
+    <Content Include="view_weld_test_report.aspx" />
     <Content Include="Web References\imsl_ws\fab_order_details.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </Content>
+    <Content Include="gbe_irisndt.Master" />
+    <Content Include="weld_test_report_admin.aspx" />
     <None Include="Web References\imsl_ws\imsl_ws.disco" />
     <Content Include="fy_weld_test_ext.aspx" />
     <Content Include="Web.config">
@@ -173,6 +191,13 @@
     <Compile Include="cut_lengths.aspx.designer.cs">
       <DependentUpon>cut_lengths.aspx</DependentUpon>
     </Compile>
+    <Compile Include="DELETEcut_lengths_print.aspx.cs">
+      <DependentUpon>DELETEcut_lengths_print.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DELETEcut_lengths_print.aspx.designer.cs">
+      <DependentUpon>DELETEcut_lengths_print.aspx</DependentUpon>
+    </Compile>
     <Compile Include="data_row.cs" />
     <Compile Include="default.aspx.cs">
       <SubType>ASPXCodeBehind</SubType>
@@ -197,6 +222,7 @@
     <Compile Include="delivery_note.aspx.designer.cs">
       <DependentUpon>delivery_note.aspx</DependentUpon>
     </Compile>
+    <Compile Include="delivery_schedule_email.cs" />
     <Compile Include="delivery_schedule_notes.cs" />
     <Compile Include="fs.aspx.cs">
       <SubType>ASPXCodeBehind</SubType>
@@ -261,12 +287,26 @@
     <Compile Include="fy_weld_test_ext.aspx.designer.cs">
       <DependentUpon>fy_weld_test_ext.aspx</DependentUpon>
     </Compile>
+    <Compile Include="fy_weld_test_v2.aspx.cs">
+      <DependentUpon>fy_weld_test_v2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="fy_weld_test_v2.aspx.designer.cs">
+      <DependentUpon>fy_weld_test_v2.aspx</DependentUpon>
+    </Compile>
     <Compile Include="gbe_fy.Master.cs">
       <DependentUpon>gbe_fy.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="gbe_fy.Master.designer.cs">
       <DependentUpon>gbe_fy.Master</DependentUpon>
+    </Compile>
+    <Compile Include="gbe_irisndt.Master.cs">
+      <DependentUpon>gbe_irisndt.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="gbe_irisndt.Master.designer.cs">
+      <DependentUpon>gbe_irisndt.Master</DependentUpon>
     </Compile>
     <Compile Include="imsl_orders.cs" />
     <Compile Include="installation_report.cs" />
@@ -278,6 +318,15 @@
     <Compile Include="invoicing.aspx.designer.cs">
       <DependentUpon>invoicing.aspx</DependentUpon>
     </Compile>
+    <Compile Include="apave.aspx.cs">
+      <DependentUpon>apave.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="apave.aspx.designer.cs">
+      <DependentUpon>apave.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="irisndt_download.cs" />
+    <Compile Include="irisndt_upload.cs" />
     <Compile Include="key_value.cs" />
     <Compile Include="locations.cs" />
     <Compile Include="login.aspx.cs">
@@ -293,6 +342,14 @@
     </Compile>
     <Compile Include="maint1.aspx.designer.cs">
       <DependentUpon>maint1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="material.cs" />
+    <Compile Include="mf_document.aspx.cs">
+      <DependentUpon>mf_document.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="mf_document.aspx.designer.cs">
+      <DependentUpon>mf_document.aspx</DependentUpon>
     </Compile>
     <Compile Include="modules.aspx.cs">
       <SubType>ASPXCodeBehind</SubType>
@@ -366,8 +423,8 @@
     <Compile Include="scheduled_delivery.cs" />
     <Compile Include="settings.cs" />
     <Compile Include="spools.aspx.cs">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>spools.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="spools.aspx.designer.cs">
       <DependentUpon>spools.aspx</DependentUpon>
@@ -415,6 +472,13 @@
     <Compile Include="view_schedule.aspx.designer.cs">
       <DependentUpon>view_schedule.aspx</DependentUpon>
     </Compile>
+    <Compile Include="view_weld_test_report.aspx.cs">
+      <DependentUpon>view_weld_test_report.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="view_weld_test_report.aspx.designer.cs">
+      <DependentUpon>view_weld_test_report.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Web References\gbe_ws\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -447,6 +511,7 @@
     <Compile Include="weld_mapping_ext.aspx.designer.cs">
       <DependentUpon>weld_mapping_ext.aspx</DependentUpon>
     </Compile>
+    <Compile Include="weld_mapping_ext_tables.cs" />
     <Compile Include="weld_tests.aspx.cs">
       <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>weld_tests.aspx</DependentUpon>
@@ -455,7 +520,15 @@
       <DependentUpon>weld_tests.aspx</DependentUpon>
     </Compile>
     <Compile Include="weld_tests.cs" />
+    <Compile Include="weld_test_data.cs" />
     <Compile Include="weld_test_ext.cs" />
+    <Compile Include="weld_test_report_admin.aspx.cs">
+      <DependentUpon>weld_test_report_admin.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="weld_test_report_admin.aspx.designer.cs">
+      <DependentUpon>weld_test_report_admin.aspx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="add_to_schedule.aspx" />

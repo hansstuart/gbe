@@ -9,12 +9,14 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using System.Data.SqlClient;
+using System.Collections.Generic;
+
 
 namespace gbe
 {
     public partial class spools1 : System.Web.UI.Page
     {
-        const int REC_PER_PG = 15;
+        const int REC_PER_PG = 10;
         const string SHOW_PARTS_INSERTION_POINT = "SHOW_PARTS_INSERTION_POINT";
         const string PART_DATA_ROW = "PART_DATA_ROW";
         const string VS_SPOOLS = "VS_SPOOLS";
@@ -23,16 +25,28 @@ namespace gbe
         const string VS_RECORD_COUNT = "VS_RECORD_COUNT";
         const string IS_PIPE = "is_pipe";
         const string SPOOL_PIPE_FITTINGS_ID = "spool_pipe_fittings_id";
+        const string UID = "uid";
+        const string SPOOL_ID = "spool_id";
+        const string SPOOL_PART_ID = "spool_part_id";
+        const string VS_WELDERS = "welders";
+        const string VS_WELD_TEST_DATA = "weld_test_data";
+        const string BARCODE = "barcode";
+        const string TBLSIZES = "tblSizes";
+        const string TBLWTD = "tblWTD";
 
         SortedList m_spools = null;
         SortedList m_welders = null;
+        
+        SortedList m_sl_weld_test_data = new SortedList();
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack)
             {
-                m_welders = (SortedList)ViewState["welders"];
+                m_welders = (SortedList)ViewState[VS_WELDERS];
                 m_spools = (SortedList)ViewState[VS_SPOOLS];
+                m_sl_weld_test_data = (SortedList)ViewState[VS_WELD_TEST_DATA];
+
                 display();
             }
             else
@@ -205,7 +219,7 @@ namespace gbe
             using (spools spls = new spools())
             {
                 spls.pg = pg;
-                spls.recs_per_pg = REC_PER_PG;
+                spls.recs_per_pg = spools.REC_PER_PG;
                 spls.order_by = "barcode";
 
                 if (m_spools != null)
@@ -230,6 +244,12 @@ namespace gbe
 
             if (get_last_page() == 0)
                 pg = 0;
+
+            if (m_sl_weld_test_data != null)
+            {
+                m_sl_weld_test_data.Clear();
+                ViewState[VS_WELD_TEST_DATA] = m_sl_weld_test_data;
+            }
 
             ViewState[VS_SPOOLS] = m_spools;
             ViewState[VS_CURRENT_PAGE] = pg;
@@ -310,8 +330,10 @@ namespace gbe
 
                     tblResults.ID = "tblResults" + sd.id.ToString();
 
-                    pnlResults.Attributes["uid"] = sd.id.ToString();
-                    tblResults.Attributes["uid"] = sd.id.ToString();
+                    pnlResults.Attributes[UID] = sd.id.ToString();
+                    pnlResults.Attributes[BARCODE] = sd.barcode;
+
+                    tblResults.Attributes[UID] = sd.id.ToString();
 
                     pnlResults.Controls.Add(tblResults);
 
@@ -327,10 +349,10 @@ namespace gbe
 
                     r = new TableRow();
 
-                    r.Attributes["uid"] = sd.id.ToString();
+                    r.Attributes[UID] = sd.id.ToString();
 
                     r.BackColor = System.Drawing.Color.FromName("SeaGreen");
-
+                    r.ForeColor = System.Drawing.Color.FromName("LightYellow");
                     foreach (string sh in hdr)
                     {
                         c = new TableCell();
@@ -343,7 +365,7 @@ namespace gbe
                     tblResults.Rows.Add(r);
 
                     r = new TableRow();
-                    r.Attributes["uid"] = sd.id.ToString();
+                    r.Attributes[UID] = sd.id.ToString();
 
                     r.BackColor = System.Drawing.Color.FromName("White");
 
@@ -353,11 +375,11 @@ namespace gbe
                     chk_include_spool_in_weld_map.CheckedChanged += new EventHandler(chk_include_spool_in_weld_map_CheckedChanged);
                     chk_include_spool_in_weld_map.ID = "chk_include_spool_in_weld_map" + sd.id.ToString();
                     chk_include_spool_in_weld_map.Checked = sd.include_in_weld_map;
-                    chk_include_spool_in_weld_map.Attributes["uid"] = sd.id.ToString();
+                    chk_include_spool_in_weld_map.Attributes[UID] = sd.id.ToString();
                     chk_include_spool_in_weld_map.ToolTip = "Include spool in weld map";
                     
-                    if (!badmin)
-                        chk_include_spool_in_weld_map.Enabled = false;
+                   // if (!badmin)
+                     //   chk_include_spool_in_weld_map.Enabled = false;
 
                     c.Controls.Add(chk_include_spool_in_weld_map);
                     r.Cells.Add(c);
@@ -371,7 +393,7 @@ namespace gbe
                     cellSpool.Controls.Add(new LiteralControl(sd.spool));
                     rowSpool.Cells.Add(cellSpool);
 
-                    if (System.Web.HttpContext.Current.User.Identity.Name.ToUpper() == "xxxxPCF")
+                    if (System.Web.HttpContext.Current.User.Identity.Name.ToUpper() == "xxPCF")
                     {
                         decimal material_amount; decimal fab_amount;
                         material_amount = fab_amount = 0;
@@ -551,8 +573,9 @@ namespace gbe
                         dlstatus.AutoPostBack = true;
                         dlstatus.SelectedIndexChanged += new EventHandler(dlstatus_SelectedIndexChanged);
                         dlstatus.ID = "dlstatus" + sd.id.ToString();
-                        dlstatus.Attributes["uid"] = sd.id.ToString();
+                        dlstatus.Attributes[UID] = sd.id.ToString();
 
+                        dlstatus.Items.Add("A0");
                         dlstatus.Items.Add("SC");
                         dlstatus.Items.Add("RP");
                         dlstatus.Items.Add("IP");
@@ -583,9 +606,10 @@ namespace gbe
                     chk_onhold.CheckedChanged += new EventHandler(chk_onhold_CheckedChanged);
                     chk_onhold.ID = "chk_onhold" + sd.id.ToString();
                     chk_onhold.Checked = sd.on_hold;
-                    chk_onhold.Attributes["uid"] = sd.id.ToString();
-                    if (!badmin)
-                        chk_onhold.Enabled = false;
+                    chk_onhold.Attributes[UID] = sd.id.ToString();
+                    
+                    //if (!badmin)
+                      //  chk_onhold.Enabled = false;
 
                     c.Controls.Add(chk_onhold);
 
@@ -599,7 +623,7 @@ namespace gbe
                         btn_checked.ImageUrl = "~/checked.png";
                         btn_checked.ToolTip = "Click to confirm spool has been checked";
                         btn_checked.ID = "btn_checked_" + sd.id.ToString();
-                        btn_checked.Attributes["uid"] = sd.id.ToString();
+                        btn_checked.Attributes[UID] = sd.id.ToString();
 
                         c = new TableCell();
                         c.HorizontalAlign = HorizontalAlign.Center;
@@ -622,13 +646,28 @@ namespace gbe
                         btn_view_drawing.ImageUrl = "~/pdf.png";
                         btn_view_drawing.Click += new ImageClickEventHandler(btn_view_drawing_Click);
                         btn_view_drawing.ID = "btn_view_drawing" + sd.id.ToString();
-                        btn_view_drawing.Attributes["uid"] = sd.drawing_id.ToString();
+                        btn_view_drawing.Attributes[UID] = sd.drawing_id.ToString();
 
                         c.Controls.Add(btn_view_drawing);
                         r.Cells.Add(c);
                     }
 
-                    if (badmin)
+                    if (sd.weld_test_report_count > 0)
+                    {
+                        c = new TableCell();
+                        c.HorizontalAlign = HorizontalAlign.Center;
+                        ImageButton btn_weld_test_report = new ImageButton();
+                        btn_weld_test_report.ToolTip = "View Weld Test Report";
+                        btn_weld_test_report.ImageUrl = "~/pdf2.png";
+                        btn_weld_test_report.Click += btn_weld_test_report_Click;
+                        btn_weld_test_report.ID = "btn_weld_test_report" + sd.id.ToString();
+                        btn_weld_test_report.Attributes[UID] = sd.id.ToString();
+
+                        c.Controls.Add(btn_weld_test_report);
+                        r.Cells.Add(c);
+                    }
+
+                    if (badmin || ud.is_special_permission_set(0))
                     {
                         //if (status == "SC" || status == "RP")
                         //{
@@ -637,7 +676,7 @@ namespace gbe
                             btn_modify_spool.ImageUrl = "~/modify.png";
                             btn_modify_spool.ToolTip = "Modify spool";
                             btn_modify_spool.ID = "btn_modify_spool_" + sd.id.ToString();
-                            btn_modify_spool.Attributes["uid"] = sd.id.ToString();
+                            btn_modify_spool.Attributes[UID] = sd.id.ToString();
 
                             c = new TableCell();
                             c.HorizontalAlign = HorizontalAlign.Center;
@@ -653,7 +692,7 @@ namespace gbe
                             btn_remove_spool.ImageUrl = "~/delete.png";
                             btn_remove_spool.ToolTip = "Delete spool";
                             btn_remove_spool.ID = "btn_remove_spool_" + sd.id.ToString();
-                            btn_remove_spool.Attributes["uid"] = sd.id.ToString();
+                            btn_remove_spool.Attributes[UID] = sd.id.ToString();
 
                             c = new TableCell();
                             c.HorizontalAlign = HorizontalAlign.Center;
@@ -674,7 +713,7 @@ namespace gbe
                             chk_dispatch.CheckedChanged += new EventHandler(chk_dispatch_CheckedChanged);
                             chk_dispatch.ID = "chk_dispatch" + sd.id.ToString();
                             chk_dispatch.Checked = sd.tag == "RD";
-                            chk_dispatch.Attributes["uid"] = sd.id.ToString();
+                            chk_dispatch.Attributes[UID] = sd.id.ToString();
                             c.Controls.Add(chk_dispatch);
                             r.Cells.Add(c);
                         }
@@ -693,7 +732,7 @@ namespace gbe
                     tblResults.Rows.Add(r);
 
                     r = new TableRow();
-                    r.Attributes["uid"] = sd.id.ToString();
+                    r.Attributes[UID] = sd.id.ToString();
                     r.Attributes[SHOW_PARTS_INSERTION_POINT] = sd.id.ToString();
 
                     r.BackColor = System.Drawing.Color.FromName("White");
@@ -703,7 +742,7 @@ namespace gbe
                     ImageButton btn_show_parts = new ImageButton();
                     btn_show_parts.Click += new ImageClickEventHandler(btn_show_parts_Click);
                     btn_show_parts.ID = "btn_show_parts_" + sd.id.ToString();
-                    btn_show_parts.Attributes["uid"] = sd.id.ToString();
+                    btn_show_parts.Attributes[UID] = sd.id.ToString();
                     c.Controls.Add(btn_show_parts);
                     r.Cells.Add(c);
 
@@ -714,7 +753,7 @@ namespace gbe
 
                     TextBox txt_delivery_date = new TextBox();
                     txt_delivery_date.ID = "txt_delivery_date_" + sd.id.ToString();
-                    txt_delivery_date.Attributes["uid"] = sd.id.ToString();
+                    txt_delivery_date.Attributes[UID] = sd.id.ToString();
 
                     if (sd.delivery_date > DateTime.MinValue)
                         txt_delivery_date.Text = sd.delivery_date.ToString("dd/MM/yyyy");
@@ -727,7 +766,7 @@ namespace gbe
                     btn_save_delivery_date.ImageUrl = "~/disk.png";
                     btn_save_delivery_date.Click += new ImageClickEventHandler(btn_save_delivery_date_Click);
                     btn_save_delivery_date.ID = "btn_save_delivery_date_" + sd.id.ToString();
-                    btn_save_delivery_date.Attributes["uid"] = sd.id.ToString();
+                    btn_save_delivery_date.Attributes[UID] = sd.id.ToString();
                     c.Controls.Add(btn_save_delivery_date);
 
                     r.Cells.Add(c);
@@ -750,6 +789,54 @@ namespace gbe
             }
         }
 
+        ArrayList get_irisndt_report_ids(string spool_id)
+        {
+            ArrayList a = new ArrayList();
+
+            using (cdb_connection dbc = new cdb_connection())
+            {
+                dbc.connect();
+                string select = string.Empty;
+
+                select = $@"select irisndt_upload_id
+                from [weld_test_reports]
+				where [spool_id] = '{spool_id}'
+                ";
+
+                DataTable dtab = dbc.get_data(select);
+
+                foreach (DataRow dr in dtab.Rows)
+                {
+                    try
+                    {
+                        a.Add((int)dr["irisndt_upload_id"]);
+                    }
+                    catch { }
+                }
+
+                dbc.disconnect();
+            }
+
+            return a;
+        }
+
+        private void btn_weld_test_report_Click(object sender, ImageClickEventArgs e)
+        {
+            ImageButton b = (ImageButton)sender;
+
+            string spool_id = (b.Attributes[UID]);
+            string url = string.Empty;
+
+            foreach (int irisndt_upload_id in get_irisndt_report_ids(spool_id))
+            {
+                url = "view_weld_test_report.aspx?id=" + irisndt_upload_id;
+
+                Response.Write("<script>");
+                Response.Write("window.open('" + url + "','_blank','','false')");
+                Response.Write("</script>");
+            }
+        }
+
         private void btn_checked_Click(object sender, ImageClickEventArgs e)
         {
             string confirmValue = Request.Form["confirm_checked_value"];
@@ -758,7 +845,7 @@ namespace gbe
             {
                 ImageButton b = (ImageButton)sender;
 
-                string uid = (b.Attributes["uid"]);
+                string uid = (b.Attributes[UID]);
 
                 string login_id = System.Web.HttpContext.Current.User.Identity.Name;
 
@@ -791,7 +878,7 @@ namespace gbe
         {
             ImageButton b = (ImageButton)sender;
 
-            string uid = (b.Attributes["uid"]);
+            string uid = (b.Attributes[UID]);
             string url = string.Empty;
 
             url = "view_drawing.aspx?id=" + uid;
@@ -815,7 +902,33 @@ namespace gbe
                         {
                             Panel pnl = ((Panel)cntrl);
 
-                            if (pnl.Attributes["uid"] == uid.ToString())
+                            if (pnl.Attributes[UID] == uid.ToString())
+                            {
+                                return pnl;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return ret_pnl;
+        }
+
+        Panel get_pnlResults(string barcode)
+        {
+            Panel ret_pnl = null;
+
+            foreach (TableRow r in tblMain.Rows)
+            {
+                foreach (TableCell c in r.Cells)
+                {
+                    foreach (Control cntrl in c.Controls)
+                    {
+                        if (cntrl.GetType() == typeof(Panel))
+                        {
+                            Panel pnl = ((Panel)cntrl);
+
+                            if (pnl.Attributes[BARCODE] == barcode)
                             {
                                 return pnl;
                             }
@@ -839,7 +952,7 @@ namespace gbe
 
         Table get_tblSizes(int id)
         {
-            return get_tbl(id, "tblSizes");
+            return get_tbl(id, TBLSIZES);
         }
 
         Table get_tbl(int id, string tbl_name)
@@ -869,7 +982,7 @@ namespace gbe
         {
             ImageButton b = (ImageButton)sender;
 
-            string uid = (b.Attributes["uid"]);
+            string uid = (b.Attributes[UID]);
                 
             int id = Convert.ToInt32(uid);
 
@@ -923,7 +1036,7 @@ namespace gbe
                 {
                     Table tbl = (Table)cntrl;
 
-                    if (tbl.ID.StartsWith("tblSizes"))
+                    if (tbl.ID.StartsWith(TBLSIZES) || tbl.ID.StartsWith(TBLWTD))
                     {
                         tbl.Rows.Clear();
                         pnl.Controls.Remove(cntrl);
@@ -965,7 +1078,7 @@ namespace gbe
 
         void show_size_and_part_data(int id)
         {
-            show_size_data(id);
+           // show_size_data(id);
             show_part_data(id);
         }
 
@@ -981,7 +1094,7 @@ namespace gbe
 
                 Panel pnlResults = get_pnlResults(id);
                 Table tblSizes = new Table();
-                tblSizes.ID = "tblSizes" + id;
+                tblSizes.ID = TBLSIZES + id;
 
                 pnlResults.Controls.Add(tblSizes);
 
@@ -1055,7 +1168,7 @@ namespace gbe
                 btn_save_size_data.ImageUrl = "~/disk.png";
                 btn_save_size_data.Click += new ImageClickEventHandler(btn_save_size_data_Click);
                 btn_save_size_data.ID = "btn_save_part_" + sd.id.ToString();
-                btn_save_size_data.Attributes["spool_id"] = sd.id.ToString();
+                btn_save_size_data.Attributes[SPOOL_ID] = sd.id.ToString();
                 c.Controls.Add(btn_save_size_data);
 
                 r.Cells.Add(c);
@@ -1068,7 +1181,7 @@ namespace gbe
         {
             ImageButton b = (ImageButton)sender;
 
-            string spool_id = (b.Attributes["spool_id"]);
+            string spool_id = (b.Attributes[SPOOL_ID]);
 
             Table tblSizes = get_tblSizes(Convert.ToInt32(spool_id));
 
@@ -1129,8 +1242,8 @@ namespace gbe
             if (m_spools.ContainsKey(id))
             {
                 user_data ud = get_user_data();
-                bool badmin = is_admin(ud);
-                bool bsupervisor = is_supervisor(ud);
+                bool badmin = true; //is_admin(ud);
+                //bool bsupervisor =  true; //is_supervisor(ud);
 
                 spool_data sd = ((spool_data_ex) m_spools[id]).sd;
 
@@ -1144,7 +1257,6 @@ namespace gbe
                             TableCell c;
 
                             Panel pnlResults = get_pnlResults(id);
-
                             
                             //hs. 20221114
                             Table tblPartsHdr = new Table();
@@ -1158,7 +1270,7 @@ namespace gbe
                             tblPartsHdr.Rows.Add(r);
 
                             r = new TableRow();
-                            r.Attributes["uid"] = sd.id.ToString();
+                            r.Attributes[UID] = sd.id.ToString();
 
                             r.BackColor = System.Drawing.Color.FromName("LightGray");
 
@@ -1173,8 +1285,9 @@ namespace gbe
                             btn_save_parts.ImageUrl = "~/disk.png";
                             btn_save_parts.Click += btn_save_parts_Click;
                             btn_save_parts.ID = "btn_save_parts_" + sd.id.ToString();
-                            btn_save_parts.Attributes["uid"] = sd.id.ToString();
-                            btn_save_parts.Attributes["spool_id"] = sd.id.ToString();
+                            btn_save_parts.Attributes[UID] = sd.id.ToString();
+                            btn_save_parts.Attributes[SPOOL_ID] = sd.id.ToString();
+                            
                             if (!badmin)
                                 btn_save_parts.Visible = false;
 
@@ -1196,12 +1309,38 @@ namespace gbe
                             foreach (spool_part_data spd in sd.spool_part_data)
                             {
                                 r = new TableRow();
-                                r.Attributes["uid"] = sd.id.ToString();
+                                r.Attributes[UID] = sd.id.ToString();
                                 r.Attributes["PART_DATA_ROW"] = sd.id.ToString();
-                                r.Attributes["spool_part_id"] = spd.id.ToString();
+                                r.Attributes[SPOOL_PART_ID] = spd.id.ToString();
                                 r.Attributes["part_id"] = spd.part_id.ToString();
 
                                 r.BackColor = System.Drawing.Color.FromName("LightGray");
+                                
+                                ImageButton btn_move_part_down = new ImageButton();
+                                btn_move_part_down.ImageUrl = "~/down.png";
+                                btn_move_part_down.ToolTip = "Move part down";
+                                btn_move_part_down.ID = "btn_move_part_down_" + spd.id.ToString();
+                                btn_move_part_down.Attributes[SPOOL_PART_ID] = spd.id.ToString();
+                                btn_move_part_down.Attributes[SPOOL_ID] = sd.id.ToString();
+                                btn_move_part_down.Click +=  new ImageClickEventHandler(btn_move_part_down_Click);
+
+                                c = new TableCell();
+                                c.HorizontalAlign = HorizontalAlign.Center;
+                                c.Controls.Add(btn_move_part_down);
+                                r.Cells.Add(c);
+
+                                ImageButton btn_move_part_up = new ImageButton();
+                                btn_move_part_up.ImageUrl = "~/up.png";
+                                btn_move_part_up.ToolTip = "Move part up";
+                                btn_move_part_up.ID = "btn_move_part_up_" + spd.id.ToString();
+                                btn_move_part_up.Attributes[SPOOL_PART_ID] = spd.id.ToString();
+                                btn_move_part_up.Attributes[SPOOL_ID] = sd.id.ToString();
+                                btn_move_part_up.Click += new ImageClickEventHandler(btn_move_part_up_Click);
+
+                                c = new TableCell();
+                                c.HorizontalAlign = HorizontalAlign.Center;
+                                c.Controls.Add(btn_move_part_up);
+                                r.Cells.Add(c);
 
                                 c = new TableCell();
                                 CheckBox chk_include_spool_part_in_weld_map = new CheckBox();
@@ -1209,8 +1348,8 @@ namespace gbe
                                 chk_include_spool_part_in_weld_map.CheckedChanged += new EventHandler(chk_include_spool_part_in_weld_map_CheckedChanged);
                                 chk_include_spool_part_in_weld_map.ID = "chk_include_spool_part_in_weld_map" + spd.id.ToString();
                                 chk_include_spool_part_in_weld_map.Checked = spd.include_in_weld_map;
-                                chk_include_spool_part_in_weld_map.Attributes["uid"] = spd.id.ToString();
-                                chk_include_spool_part_in_weld_map.Attributes["spool_id"] = sd.id.ToString();
+                                chk_include_spool_part_in_weld_map.Attributes[UID] = spd.id.ToString();
+                                chk_include_spool_part_in_weld_map.Attributes[SPOOL_ID] = sd.id.ToString();
                                 chk_include_spool_part_in_weld_map.ToolTip = "Include spool part in weld map";
 
                                 if (!badmin)
@@ -1318,7 +1457,7 @@ namespace gbe
                                 DropDownList dl_welder = new DropDownList();
                                 dl_welder.ID = "dl_welder" + spd.id.ToString();
                                 dl_welder.Items.Add(string.Empty);
-                                dl_welder.Attributes["uid"] = spd.id.ToString();
+                                dl_welder.Attributes[UID] = spd.id.ToString();
 
                                 foreach (DictionaryEntry e0 in m_welders)
                                     dl_welder.Items.Add(e0.Key.ToString());
@@ -1392,14 +1531,247 @@ namespace gbe
                                         tb.ReadOnly = true;
                                     c.Controls.Add(tb);
                                     r.Cells.Add(c);
+
+                                    c = new TableCell();
+                                    c.Controls.Add(new LiteralControl("Cut:" + CCutLengthData.get_cut_length(spd.cut_length_data).ToString("0.00")));
+                                    r.Cells.Add(c);
                                 }
 
                                 tblParts.Rows.Add(r);
+                            }
+
+                            for (int i = 0; i < 3; i++)
+                            {
+                                r = new TableRow();
+                                c = new TableCell();
+                                c.HorizontalAlign = HorizontalAlign.Right;
+                                c.Controls.Add(new LiteralControl(string.Empty));
+                                r.Cells.Add(c);
+
+                                tblParts.Rows.Add(r);
+                            }
+
+                            cweld_test_data wtd = get_weld_test_data(sd.barcode);
+
+                            Table tblWTD = new Table();
+                            tblWTD.ID = TBLWTD + "_" + sd.barcode;
+                            tblWTD.Attributes[BARCODE] = sd.barcode;
+
+                            pnlResults.Controls.Add(tblWTD);
+
+                            weld_mapping_ext_tables wmet = new weld_mapping_ext_tables();
+
+                            wmet.populate_table(tblWTD, wtd.m_sl_weld_tests, wtd.m_sl_spool_data, wtd.m_sl_welder_totals, wtd.m_sl_weld_test_failure_codes, sd.barcode, 
+                                btn_save_report_details_Click, btn_save_test_details_Click);
+                        }
+                    }
+                }
+            }
+        }
+
+        Table get_weld_test_data_table(string barcode)
+        {
+            Table tbl = null;
+
+            Panel pnl = get_pnlResults(barcode);
+
+            foreach (Control cntrl in pnl.Controls)
+            {
+                if (cntrl.GetType() == typeof(Table))
+                {
+                    tbl = (Table)cntrl;
+
+                    if (tbl.ID.StartsWith(TBLWTD) && tbl.Attributes[BARCODE] == barcode)
+                        break;
+                    else
+                        tbl = null;
+                }
+            }
+
+            return tbl;
+        }
+
+        private void btn_save_report_details_Click(object sender, ImageClickEventArgs e)
+        {
+            ImageButton b = (ImageButton)sender;
+
+            string barcode = b.Attributes[BARCODE];
+
+            if (m_sl_weld_test_data.ContainsKey(barcode))
+            {
+                cweld_test_data wtd = (cweld_test_data)m_sl_weld_test_data[barcode];
+
+                weld_mapping_ext_tables wmet = new weld_mapping_ext_tables();
+
+                wmet.save_report_details(b, get_weld_test_data_table(barcode), wtd.m_sl_weld_tests);
+
+                ViewState[VS_WELD_TEST_DATA] = m_sl_weld_test_data;
+            }
+        }
+
+        private void btn_save_test_details_Click(object sender, ImageClickEventArgs e)
+        {
+            ImageButton b = (ImageButton)sender;
+            string barcode = b.Attributes[BARCODE];
+
+            if (m_sl_weld_test_data.ContainsKey(barcode))
+            {
+                cweld_test_data wtd = (cweld_test_data)m_sl_weld_test_data[barcode];
+
+                weld_mapping_ext_tables wmet = new weld_mapping_ext_tables();
+
+                wmet.save_test_details(b, get_weld_test_data_table(barcode), ref wtd.m_sl_weld_tests, ref wtd.m_sl_welder_totals, ref wtd.m_sl_weld_test_failure_codes);
+
+                ViewState[VS_WELD_TEST_DATA] = m_sl_weld_test_data;
+                 
+                wmet.populate_table(get_weld_test_data_table(barcode), wtd.m_sl_weld_tests, wtd.m_sl_spool_data, wtd.m_sl_welder_totals, wtd.m_sl_weld_test_failure_codes, barcode, 
+                btn_save_report_details_Click, btn_save_test_details_Click);
+            }
+        }
+
+        cweld_test_data get_weld_test_data(string barcode)
+        {
+            cweld_test_data wtd = null;
+
+            if (m_sl_weld_test_data != null && m_sl_weld_test_data.ContainsKey(barcode))
+            {
+                wtd = (cweld_test_data)m_sl_weld_test_data[barcode];
+            }
+            else
+            {
+                wtd = new cweld_test_data(barcode);
+
+                try
+                {
+                    weld_mapping_ext_tables wmet = new weld_mapping_ext_tables();
+
+                    wmet.get_spool_part_data(barcode, ref wtd.m_sl_spool_data, ref wtd.m_sl_welder_totals);
+                    wmet.get_weld_test_data(barcode, ref wtd.m_sl_weld_tests, ref wtd.m_sl_welder_totals, wtd.m_sl_spool_data, DateTime.MinValue, DateTime.MaxValue);
+                    wmet.get_weld_test_failure_codes(barcode, ref wtd.m_sl_weld_test_failure_codes);
+
+                    if (m_sl_weld_test_data == null)
+                        m_sl_weld_test_data = new SortedList();
+
+                    m_sl_weld_test_data.Add(barcode, wtd);
+
+                    ViewState[VS_WELD_TEST_DATA] = m_sl_weld_test_data;
+
+                }
+                catch (Exception ex)
+                {
+                    lblMsg.Text = ex.ToString();
+                }
+            }
+
+            return wtd;
+        }
+
+        void btn_move_part_down_Click(object sender, EventArgs e)
+        {
+            ImageButton b = (ImageButton)sender;
+
+            string spool_part_id = (b.Attributes[SPOOL_PART_ID]);
+
+            string spool_id = (b.Attributes[SPOOL_ID]);
+
+            Table tblParts = get_tblParts(Convert.ToInt32(spool_id));
+
+            int i = 0;
+
+            foreach (TableRow r in tblParts.Rows)
+            {
+                if (r.Attributes[SPOOL_PART_ID] == spool_part_id)
+                    break;
+
+                i++;
+            }
+
+            if (i + 1 < tblParts.Rows.Count)
+            {
+                TableRow r = tblParts.Rows[i];
+                tblParts.Rows.RemoveAt(i);
+                tblParts.Rows.AddAt(i + 1, r);
+            }
+
+            resequence_spool_parts(spool_id);
+        }
+
+        void btn_move_part_up_Click(object sender, EventArgs e)
+        {
+            ImageButton b = (ImageButton)sender;
+
+            string spool_part_id = (b.Attributes[SPOOL_PART_ID]);
+
+            string spool_id = (b.Attributes[SPOOL_ID]);
+
+            Table tblParts = get_tblParts(Convert.ToInt32(spool_id));
+
+            int i = 0;
+            foreach (TableRow r in tblParts.Rows)
+            {
+                string rsplid = r.Attributes[SPOOL_PART_ID];
+
+                if (rsplid  == spool_part_id)
+                    break;
+
+                i++;
+            }
+
+            if (i > 0)
+            {
+                TableRow r = tblParts.Rows[i];
+                tblParts.Rows.RemoveAt(i);
+                tblParts.Rows.AddAt(i - 1, r);
+            }
+
+            resequence_spool_parts(spool_id);
+        }
+
+        void resequence_spool_parts(string spool_id)
+        {
+            Table tblParts = get_tblParts(Convert.ToInt32(spool_id));
+            ArrayList a_spd = ((spool_data_ex) m_spools[Convert.ToInt32(spool_id)]).sd.spool_part_data;
+            int iseq = 0;
+
+            foreach (TableRow r in tblParts.Rows)
+            {
+                if (r.Attributes["part_id"] != null)
+                {
+                    string spool_part_id = r.Attributes[SPOOL_PART_ID];
+
+                    foreach (TableCell cell in r.Cells)
+                    {
+                        foreach (Control cntrl in cell.Controls)
+                        {
+                            if (cntrl.ID != null)
+                            {
+                                if (cntrl.GetType() == typeof(LiteralControl))
+                                {
+                                    LiteralControl lc = (LiteralControl)cntrl;
+
+                                    if (lc.ID.StartsWith("seq"))
+                                    {
+                                        iseq++;
+
+                                        lc.Text = iseq.ToString("00");
+
+                                        foreach (spool_part_data spd in a_spd)
+                                        {
+                                            if (spd.id.ToString() == spool_part_id)
+                                            {
+                                                spd.seq = iseq;
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
+
+            a_spd.Sort(new SpdSeqComparer());
+            ViewState[VS_SPOOLS] = m_spools;
         }
 
         private void btn_save_parts_Click(object sender, ImageClickEventArgs e)
@@ -1408,12 +1780,12 @@ namespace gbe
 
             ImageButton b = (ImageButton)sender;
             
-            int id, fw, bw, f1, f2;
+            int id, fw, bw, f1, f2, seq;
             decimal qty = 0;
             int nfound = 0;
             string welder = string.Empty;
 
-            string spool_id = (b.Attributes["spool_id"]);
+            string spool_id = (b.Attributes[SPOOL_ID]);
 
             Table tblParts = get_tblParts(Convert.ToInt32(spool_id));
 
@@ -1450,21 +1822,21 @@ namespace gbe
 
             foreach (TableRow r in tblParts.Rows)
             {
-                id = fw = bw = f1 = f2 = 0;
+                id = fw = bw = f1 = f2 = seq = 0;
                 qty = 0;
                 nfound = 0;
                 welder = string.Empty;
 
                 bool is_pipe = r.Attributes[IS_PIPE] != null;
 
-                try { id = Convert.ToInt32((r.Attributes["spool_part_id"])); }
+                try { id = Convert.ToInt32((r.Attributes[SPOOL_PART_ID])); }
                 catch
                 {
                     continue;
                 }
 
                 if (id == 0)
-                    return;
+                    continue;
 
                 foreach (TableCell c in r.Cells)
                 {
@@ -1472,6 +1844,20 @@ namespace gbe
                     {
                         if (cntrl.ID != null)
                         {
+                            if (cntrl.GetType() == typeof(LiteralControl))
+                            {
+                                LiteralControl lc = (LiteralControl)cntrl;
+
+                                if (lc.ID.StartsWith("seq"))
+                                {
+                                    try
+                                    {
+                                        seq = Convert.ToInt32(lc.Text);
+                                    }
+                                    catch { }
+                                }
+                            }
+
                             if (cntrl.GetType() == typeof(TextBox))
                             {
                                 if (cntrl.ID.StartsWith("qty_"))
@@ -1551,6 +1937,7 @@ namespace gbe
                         slp.Add("fw", fw);
                         slp.Add("bw", bw);
                         slp.Add("welder", welder);
+                        slp.Add("seq", seq);
 
                         sp.save_spool_parts_data(slp);
 
@@ -1565,7 +1952,7 @@ namespace gbe
                             if(spool_pipe_fittings_id > 0)
                                 slp.Add("spool_pipe_fittings_id", spool_pipe_fittings_id);
 
-                            slp.Add("spool_part_id", id);
+                            slp.Add(SPOOL_PART_ID, id);
                             slp.Add("spool_id", spool_id);
                             slp.Add("fitting_1_seq_no", f1);
                             slp.Add("fitting_2_seq_no", f2);
@@ -1590,8 +1977,8 @@ namespace gbe
 
                             sp.save_spool_pipe_fittings_data(slp);
                         }
-
-                        int sd_id = Convert.ToInt32(r.Attributes["uid"]);
+                        /*
+                        int sd_id = Convert.ToInt32(r.Attributes[UID]);
 
                         if (m_spools.ContainsKey(sd_id))
                         {
@@ -1624,7 +2011,36 @@ namespace gbe
                                 }
                             }
                         }
+                        */
                     }
+                }
+            }
+
+            int ispool_id = Convert.ToInt32(spool_id); 
+
+            using (spools spls = new spools())
+            {
+                SortedList sl = new SortedList();
+                sl.Add("id", spool_id);
+                
+                ArrayList asd = spls.get_spool_data_ex(sl);
+
+                if (asd.Count > 0)
+                {
+                    spool_data sd = (spool_data)asd[0];
+                    sd.tag = sd.status;
+                    spool_data_ex sdx = new spool_data_ex();
+                    sdx.sd = sd;
+                    sdx.bshowing_parts = true;
+                    m_spools[ispool_id] = sdx;
+
+                    m_sl_weld_test_data.Remove(sd.barcode); //force reload
+
+
+                    ViewState[VS_SPOOLS] = m_spools;
+                    hide_size_and_part_data(ispool_id);
+                    show_size_and_part_data(ispool_id);
+                    display();
                 }
             }
         }
@@ -1634,7 +2050,7 @@ namespace gbe
             int id = 0;
 
             DropDownList dl = (DropDownList)sender;
-            string uid = (dl.Attributes["uid"]);
+            string uid = (dl.Attributes[UID]);
 
             try { id = Convert.ToInt32(uid); }
             catch
@@ -1675,16 +2091,14 @@ namespace gbe
                         m_welders.Add(ud.login_id.Trim(), ud);
             }
 
-            
-
-            ViewState["welders"] = m_welders;
+            ViewState[VS_WELDERS] = m_welders;
         }
 
         void btn_save_delivery_date_Click(object sender, ImageClickEventArgs e)
         {
             ImageButton b = (ImageButton)sender;
 
-            string uid = (b.Attributes["uid"]);
+            string uid = (b.Attributes[UID]);
             int id = Convert.ToInt32(uid);
 
             Table tblResults = get_tblResults(id);
@@ -1693,7 +2107,7 @@ namespace gbe
             {
                 string ruid = string.Empty;
 
-                try { ruid = r.Attributes["uid"]; }
+                try { ruid = r.Attributes[UID]; }
                 catch { }
                 if (ruid == uid)
                 {
@@ -1745,7 +2159,7 @@ namespace gbe
         {
             ImageButton b = (ImageButton)sender;
 
-            string uid = (b.Attributes["uid"]);
+            string uid = (b.Attributes[UID]);
 
             string url = "create_spool.aspx?uid=" + uid;
             url += "&s=" + txtSearch.Text.Trim();
@@ -1776,8 +2190,8 @@ namespace gbe
             
             int nfound = 0;
 
-            string spool_id = (b.Attributes["spool_id"]);
-            string uid = (b.Attributes["uid"]);
+            string spool_id = (b.Attributes[SPOOL_ID]);
+            string uid = (b.Attributes[UID]);
 
             try { id = Convert.ToInt32(uid); }
             catch 
@@ -1843,7 +2257,7 @@ namespace gbe
 
                                 sp.save_spool_parts_data(slp);
 
-                                int sd_id = Convert.ToInt32(r.Attributes["uid"]);
+                                int sd_id = Convert.ToInt32(r.Attributes[UID]);
 
                                 if (m_spools.ContainsKey(sd_id))
                                 {
@@ -1876,7 +2290,7 @@ namespace gbe
         {
             DropDownList dl = (DropDownList)sender;
 
-            string uid = (dl.Attributes["uid"]);
+            string uid = (dl.Attributes[UID]);
 
             SortedList sl = new SortedList();
 
@@ -1917,7 +2331,7 @@ namespace gbe
             {
                 ImageButton b = (ImageButton)sender;
 
-                string uid = (b.Attributes["uid"]);
+                string uid = (b.Attributes[UID]);
 
                 ArrayList del_i = new ArrayList();
                 int i = 0;
@@ -1926,7 +2340,7 @@ namespace gbe
 
                 foreach (TableRow r in tblResults.Rows)
                 {
-                    if (r.Attributes["uid"] == uid)
+                    if (r.Attributes[UID] == uid)
                         del_i.Add(i);
 
                     i++;
@@ -1986,7 +2400,7 @@ namespace gbe
         {
             CheckBox chk = (CheckBox)sender;
 
-            string uid = (chk.Attributes["uid"]);
+            string uid = (chk.Attributes[UID]);
 
             SortedList sl = new SortedList();
 
@@ -2011,7 +2425,7 @@ namespace gbe
         {
             CheckBox chk = (CheckBox)sender;
 
-            string uid = (chk.Attributes["uid"]);
+            string uid = (chk.Attributes[UID]);
             
             SortedList sl = new SortedList();
 
@@ -2048,8 +2462,8 @@ namespace gbe
         {
             CheckBox chk = (CheckBox)sender;
 
-            string uid = (chk.Attributes["uid"]);
-            string spool_id = (chk.Attributes["spool_id"]);
+            string uid = (chk.Attributes[UID]);
+            string spool_id = (chk.Attributes[SPOOL_ID]);
 
             int id = 0;
             int spoolid = 0;
@@ -2086,7 +2500,7 @@ namespace gbe
         {
             CheckBox chk = (CheckBox)sender;
 
-            string uid = (chk.Attributes["uid"]);
+            string uid = (chk.Attributes[UID]);
 
             SortedList sl = new SortedList();
 
@@ -2540,7 +2954,12 @@ namespace gbe
                         base_material_cost = base_mat_sale_cost;
                     }
 
-                    select = "select dt, base_fab_sale_cost as dval from part_base_fab_prices where part_id = @part_id order by dt desc";
+                    string part_base_fab_prices_tbl = "part_base_fab_prices";
+
+                    if(imsl_cost_centre == 2 || imsl_cost_centre == 9)
+                        part_base_fab_prices_tbl = "part_base_fab_prices_gbe";
+
+                    select = $"select dt, base_fab_sale_cost as dval from {part_base_fab_prices_tbl} where part_id = @part_id order by dt desc";
 
                     cmd.Parameters.Clear();
                     cmd.Parameters.AddWithValue("@part_id", part_id);
@@ -2663,5 +3082,25 @@ namespace gbe
 
             return dval;
         }
+    }
+
+    class SpdSeqComparer : IComparer
+    {
+        public int Compare(object x, object y)
+        {
+            return ((spool_part_data)x).seq.CompareTo( ((spool_part_data)y).seq );
+        }
+    }
+
+    [Serializable]
+    class cweld_test_data
+    {
+        public cweld_test_data(string barcode) { m_barcode =  barcode;}
+
+        public string m_barcode = string.Empty;
+        public SortedList m_sl_welder_totals = new SortedList();
+        public SortedList m_sl_weld_tests = new SortedList();
+        public SortedList m_sl_spool_data = new SortedList();
+        public SortedList m_sl_weld_test_failure_codes = new SortedList();
     }
 }

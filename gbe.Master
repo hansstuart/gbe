@@ -3,14 +3,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" >
+
 <head runat="server">
     <title>gbe</title>
     
     <link href="~/Styles/Site.css" rel="stylesheet" type="text/css" />
     
-    
-    
 </head>
+
 <body bgcolor="#696969" id="MasterBody">
     <form id="form1" runat="server">
     <div>
@@ -60,7 +60,7 @@
     
     function store_scroll_pos() 
     {
-        document.getElementById('ctl00_hdnScroll').value = document.documentElement.scrollLeft + '|' + document.documentElement.scrollTop;
+        document.getElementById('hdnScroll').value = document.documentElement.scrollLeft + '|' + document.documentElement.scrollTop;
     }
     
     </script>

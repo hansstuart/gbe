@@ -50,6 +50,10 @@ namespace gbe
                         cd.telephone = dr["telephone"].ToString();
                         cd.contract_number = dr["contract_number"].ToString();
                         cd.email = dr["email"].ToString();
+                        try { cd.gbe_cost_cost_centre =  (int)dr["gbe_cost_cost_centre"];} catch { }
+                        try { cd.imsl_cost_cost_centre =  (int) dr["imsl_cost_cost_centre"];} catch { }
+                        try { cd.email2 = dr["email_additional"].ToString();} catch { }
+                        cd.active = (bool) dr["active"];
                     }
                     catch { }
 
@@ -77,7 +81,10 @@ namespace gbe
         public string telephone = string.Empty;
         public string contract_number = string.Empty;
         public string email = string.Empty;
+        public int gbe_cost_cost_centre = 0;
+        public int imsl_cost_cost_centre = 0;
+        public string email2 = string.Empty;
+        public bool active = true;
     }
-
 }
 

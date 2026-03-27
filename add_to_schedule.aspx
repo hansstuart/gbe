@@ -22,7 +22,7 @@
         <tr>
             <td style="width: 288px; height: 26px;">
                 <asp:Label ID="lblDate" runat="server" Font-Names="Verdana" Text="Fabrication Date (dd/mm/yyyy):" Width="273px"></asp:Label></td>
-            <td colspan="2" style="width: 198px; height: 26px;">
+            <td style="width: 198px; height: 26px;">
                 <asp:TextBox ID="txtDate" runat="server" MaxLength="10"></asp:TextBox></td>
                 
                 <td colspan="1" style="width: 304px; height: 26px" align="right">
@@ -39,13 +39,13 @@
         <tr>
             <td style="width: 288px">
                 <asp:Label ID="lblTime" runat="server" Font-Names="Verdana" Text="Time (hh:mm):" Visible="False"></asp:Label></td>
-            <td colspan="2" style="width: 198px">
+            <td style="width: 198px">
                 <asp:TextBox ID="txtTime" runat="server" MaxLength="5" Visible="False"></asp:TextBox></td>
         </tr>
         <tr>
             <td style="width: 288px">
                 <asp:Label ID="lblVehicle" runat="server" Font-Names="Verdana" Text="Vehicle:" Visible="False"></asp:Label></td>
-            <td colspan="2" style="width: 198px">
+            <td style="width: 198px">
                 <asp:DropDownList ID="dlVehicle" runat="server" Width="155px" Visible="False">
                 </asp:DropDownList></td>
             <td colspan="1" style="width: 304px">
@@ -53,8 +53,17 @@
         </tr>
         <tr>
             <td style="width: 288px">
+                <asp:Label ID="lblDriver" runat="server" Font-Names="Verdana" Text="Driver:" Visible="False"></asp:Label></td>
+            <td style="width: 198px">
+                <asp:DropDownList ID="dlDriver" runat="server" Width="155px" Visible="False">
+                </asp:DropDownList></td>
+            <td colspan="1" style="width: 304px">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td style="width: 288px">
             </td>
-            <td colspan="2" style="width: 198px">
+            <td style="width: 198px">
             </td>
         </tr>
     </table>

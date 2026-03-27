@@ -560,7 +560,8 @@ namespace gbe
                 else if (by_welder_or_fitter == 1   )
                 {
                     if(login_id.Trim().Length > 0)
-                        select += " and login_id = @login_id ";
+                        select += " and ( fitter_user.login_id = @login_id  ) ";
+                        //select += " and login_id = @login_id ";
 
                     select += " order by fitter_login_id, barcode ";    
                 }
@@ -577,7 +578,7 @@ namespace gbe
                 cmd.Parameters.AddWithValue("@to", to);
                 cmd.Parameters.AddWithValue("@login_id", login_id);
 
-                if (spool.Trim().Length > 0)
+                //if (spool.Trim().Length > 0)
                     cmd.Parameters.AddWithValue("@barcode", spool+"%");
 
                 cmd.CommandText = select;

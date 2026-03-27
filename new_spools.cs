@@ -9,6 +9,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using System.Collections;
 using System.Diagnostics;
+using System.Data.SqlClient;
 
 namespace gbe
 {

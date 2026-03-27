@@ -2,6 +2,11 @@ body
 {
 }
 
+.Btn_Hand {
+    text-align: center;
+    cursor: pointer
+}
+
 .FY_LabelErrorMsg {
         color: Red;
         font-family: Verdana;
@@ -45,7 +50,11 @@ body
     border-left: 1px solid #CCCCCC;
 }
 
-    .GBE_Link:hover {
-        background-color: #d8ecf3;
-    }
+.GBE_Link:hover {
+    background-color: #d8ecf3;
+}
+
+.invisible {
+    display: none;
+}
 
