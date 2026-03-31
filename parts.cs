@@ -139,6 +139,62 @@ namespace gbe
             return a;
         }
 
+        public ArrayList get_imsl_part_types()
+        {
+            ArrayList a = new ArrayList();
+            connect();
+
+            SqlCommand cmd = new SqlCommand();
+
+            cmd.Connection = m_sql_connection;
+
+            cmd.CommandText = "select distinct part_type from parts where supplier = 'IMSL' and active = 1 order by part_type asc";
+
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            DataSet ds = new DataSet();
+
+            const string R_LIST = "r_list";
+            ad.Fill(ds, R_LIST);
+
+            DataTable dta = ds.Tables[R_LIST];
+
+            foreach (DataRow dr in dta.Rows)
+            {
+                try { a.Add(dr["part_type"].ToString()); }
+                catch { }
+            }
+
+            return a;
+        }
+
+        public ArrayList get_material()
+        {
+            ArrayList a = new ArrayList();
+            connect();
+
+            SqlCommand cmd = new SqlCommand();
+
+            cmd.Connection = m_sql_connection;
+
+            cmd.CommandText = "select distinct material from parts where supplier = 'IMSL' and active = 1 order by material asc";
+
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            DataSet ds = new DataSet();
+
+            const string R_LIST = "r_list";
+            ad.Fill(ds, R_LIST);
+
+            DataTable dta = ds.Tables[R_LIST];
+
+            foreach (DataRow dr in dta.Rows)
+            {
+                try { a.Add(dr["material"].ToString()); }
+                catch { }
+            }
+
+            return a;
+        }
+
         public int get_record_count(SortedList search_params)
         {
             return get_record_count(m_tbl, search_params);

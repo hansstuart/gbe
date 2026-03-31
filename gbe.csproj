@@ -92,6 +92,7 @@
     <Content Include="apave.aspx" />
     <Content Include="mf_document.aspx" />
     <Content Include="modular_fabrications.jpg" />
+    <Content Include="parts.aspx" />
     <Content Include="view_weld_test_report.aspx" />
     <Content Include="Web References\imsl_ws\fab_order_details.datasource">
       <DependentUpon>Reference.map</DependentUpon>
@@ -382,6 +383,13 @@
     </Compile>
     <Compile Include="order_parts.aspx.designer.cs">
       <DependentUpon>order_parts.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="parts.aspx.cs">
+      <DependentUpon>parts.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="parts.aspx.designer.cs">
+      <DependentUpon>parts.aspx</DependentUpon>
     </Compile>
     <Compile Include="parts.cs" />
     <Compile Include="part_stock.cs" />

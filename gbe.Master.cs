@@ -92,7 +92,7 @@ namespace gbe
             m_sl_menu_items.Add(ORDER_PARTS, "order_parts.aspx");
             m_sl_menu_items.Add(SPOOLS, "spools.aspx");
             m_sl_menu_items.Add(MODULES, "modules.aspx");
-            m_sl_menu_items.Add(PARTS, "maint1.aspx?t=parts");
+            m_sl_menu_items.Add(PARTS, "parts.aspx");
             m_sl_menu_items.Add(CUSTOMERS, "maint1.aspx?t=customers");
             m_sl_menu_items.Add(WELDER_FITTER_ACTIVITY, "welder_activity.aspx");
             m_sl_menu_items.Add(WELD_MAPPING, "weld_mapping.aspx");
